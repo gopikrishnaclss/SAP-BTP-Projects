@@ -1,0 +1,31 @@
+{
+  "xsappname": "capApp_07-4ab2e66atrial-dev",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Viewer",
+      "description": "Viewer"
+    }
+  ],
+  "authorities": [
+    "$XSAPPNAME.Viewer"
+  ],
+  "role-templates": [
+    {
+      "name": "Viewer",
+      "scope-references": ["$XSAPPNAME.Viewer"]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "MyApp_Viewer",
+      "role-template-references": ["$XSAPPNAME.Viewer"]
+    }
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://*.cfapps.us10-001.hana.ondemand.com/**",
+      "https://*.us10.hana.ondemand.com/**"
+    ]
+  }
+}

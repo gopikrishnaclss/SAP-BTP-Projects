@@ -1,0 +1,113 @@
+/* ── Page Background ── */
+.sapMPage > .sapMPageBg {
+  background: linear-gradient(135deg, #0a2140 0%, #0f3460 60%, #1a5276 100%) !important;
+}
+.loginPageBg.sapMFlexBox {
+  background: linear-gradient(135deg, #0a2140 0%, #0f3460 60%, #1a5276 100%) !important;
+  min-height: 100vh !important;
+}
+ 
+/* ── Header (dark blue strip) ── */
+.loginFlexBox.sapMFlexBox {
+  background-color: #0a2140 !important;
+  border-bottom: 3px solid #0070f2 !important;
+  padding: 22px 28px !important;
+}
+
+/* SAP badge pill */
+.loginSapBadge.sapMText {
+  background-color: #0070f2 !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 3px 10px !important;
+  border-radius: 3px !important;
+  letter-spacing: 1px !important;
+}
+
+/* "Fiori" subtitle next to badge */
+.loginFioriText.sapMText {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 13px !important;
+  margin-left: 8px !important;
+}
+
+/* App name below badge */
+.loginAppTitle.sapMText {
+  color: #ffffff !important;
+  font-size: 17px !important;
+  margin-top: 6px !important;
+  opacity: 0.92 !important;
+}
+
+/* ── Form Body ── */
+.loginFormBody.sapMVBox {
+  background-color: #ffffff !important;
+  padding: 32px !important;
+}
+
+/* "Sign In" heading */
+.loginSignInTitle.sapMTitle {
+  color: #1d2d3e !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  margin-bottom: 24px !important;
+}
+
+/* Sign In button */
+.loginBtn.sapMBtn {
+  border-radius: 4px !important;
+}
+
+/* ── Footer ── */
+.loginFooterBox.sapMFlexBox {
+  background-color: #ffffff !important;
+  border-top: 1px solid #e8ecef !important;
+  padding: 14px !important;
+}
+
+.loginFooterText.sapMText {
+  font-size: 12px !important;
+  color: #8696a8 !important;
+}
+
+/* Send OTP / Verify button beside input */
+.sendOtpBtn.sapMBtn {
+  margin-left: 8px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+/* OTP sent confirmation text */
+.otpSentText.sapMText {
+  color: #107e3e !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+/* OTP verified text */
+.otpVerifiedText.sapMText {
+  color: #107e3e !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+/* OTP error text */
+.otpErrorText.sapMText {
+  color: #bb0000 !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+/* Register / Sign In link */
+.loginRegisterLink.sapMLnk {
+  color: #0070f2 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* Resend OTP link */
+.resendLink.sapMLnk {
+  color: #0070f2 !important;
+  font-size: 12px !important;
+}

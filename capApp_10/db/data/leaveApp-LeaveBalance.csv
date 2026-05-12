@@ -1,0 +1,4 @@
+leaveBalanceID,employee_employeeId,leaveType_leaveTypeId,totalLeave,usedLeave,remaningLeaves
+LB1,EMP000001,leaveType1,12,0,12
+LB2,EMP000001,leaveType2,6,0,6
+LB3,EMP000001,leaveType3,12,0,12

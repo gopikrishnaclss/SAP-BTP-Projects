@@ -1,0 +1,2 @@
+employeeId,firstName,lastName,email,password,team,joiningDate,isActive,role_ID
+EMP000001,Gopi,Krishna,gopi@gmail.com,$2b$10$3QjKQL51mPewt.Y2nPUVBeq0jgtGJZAVVShAYdSkbBhZMB44fx5LG,Fiori,2026-05-11,true,1

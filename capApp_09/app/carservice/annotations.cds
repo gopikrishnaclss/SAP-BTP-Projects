@@ -1,0 +1,1 @@
+using BikeService as service from '../../srv/service';

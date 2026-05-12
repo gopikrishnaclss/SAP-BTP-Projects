@@ -1,0 +1,27 @@
+<mvc:View controllerName="carservice.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:m="sap.m"
+    xmlns="sap.ui.table">
+    <m:Page id="page" title="{i18n>title}">
+        <Table
+				rows="{/carReader}"
+				selectionMode="MultiToggle"
+				ariaLabelledBy="title">
+				<columns>
+					<Column width="11rem">
+						<m:Label text="car Name" />
+						<template>
+							<m:Text text="{car_name}" wrapping="false" />
+						</template>
+						
+					</Column>
+          <Column width="11rem">
+						<m:Label text="Brand Name" />
+						<template>
+							<m:Input value="{Brand_Name}"/>
+						</template>
+					</Column>
+				</columns>
+			</Table>
+    </m:Page>
+</mvc:View>

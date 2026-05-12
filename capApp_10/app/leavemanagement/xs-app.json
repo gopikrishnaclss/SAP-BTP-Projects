@@ -1,0 +1,25 @@
+{
+  "welcomeFile": "/leavemanagement/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/leavemanage/(.*)$",
+      "target": "/leavemanage/$1",
+      "destination": "capApp_10",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/?odata/(.*)$",
+      "target": "/odata/$1",
+      "destination": "srv-api",
+      "csrfProtection": true
+    }
+  ]
+}

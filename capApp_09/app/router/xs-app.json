@@ -1,0 +1,46 @@
+{
+ "welcomeFile": "/caplist09/index.html",
+ "authenticationMethod": "route",
+ "routes": [
+  {
+   "source": "^/BikeService/(.*)$",
+   "target": "/BikeService/$1",
+   "destination": "srv-api",
+   "authenticationType": "xsuaa",
+   "csrfProtection": false
+  },
+  {
+   "source": "^/carServiceReader/(.*)$",
+   "target": "/carServiceReader/$1",
+   "destination": "srv-api",
+   "authenticationType": "xsuaa",
+   "csrfProtection": false
+  },
+  {
+   "source": "^/caplist09/BikeService/(.*)$",
+   "target": "/BikeService/$1",
+   "destination": "srv-api",
+   "authenticationType": "xsuaa",
+   "csrfProtection": false
+  },
+  {
+   "source": "^/carservice/carServiceReader/(.*)$",
+   "target": "/carServiceReader/$1",
+   "destination": "srv-api",
+   "authenticationType": "xsuaa",
+   "csrfProtection": false
+  },
+  {
+   "source": "^/caplist09/(.*)$",
+   "target": "$1",
+   "service": "html5-apps-repo-rt",
+   "authenticationType": "xsuaa"
+  },
+  {
+   "source": "^/carservice/(.*)$",
+   "target": "$1",
+   "service": "html5-apps-repo-rt",
+   "authenticationType": "xsuaa"
+  }
+ ]
+}

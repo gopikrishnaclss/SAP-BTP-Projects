@@ -1,0 +1,49 @@
+{
+  "xsappname": "capApp_09",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.admin",
+      "description": "Administrator scope"
+    },
+    {
+      "name": "$XSAPPNAME.reader",
+      "description": "Reader scope"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "AllTemplate",
+      "description": "Template containing both admin and reader roles",
+      "scope-references": [
+        "$XSAPPNAME.admin",
+        "$XSAPPNAME.reader"
+      ]
+    },
+    {
+      "name": "ReadTemplate",
+      "description": "Template containing reader role",
+      "scope-references": [
+        "$XSAPPNAME.reader"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "capApp_09_admin",
+      "description": "Role collection for application administrators",
+      "role-template-references": [
+        "$XSAPPNAME.AllTemplate"
+      ]
+    },
+    {
+      "name": "capApp_09_reader",
+      "description": "Role collection for application administrators",
+      "role-template-references": [
+        "$XSAPPNAME.ReadTemplate"
+      ]
+    }
+  ],
+  "authorities-inheritance": false
+}

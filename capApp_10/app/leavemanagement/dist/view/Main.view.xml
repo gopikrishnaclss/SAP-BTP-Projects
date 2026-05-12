@@ -1,0 +1,147 @@
+<mvc:View controllerName="leavemanagement.controller.Main"
+  xmlns="sap.m"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:tnt="sap.tnt"
+  xmlns:core="sap.ui.core"
+  xmlns:t="sap.ui.table"
+  xmlns:m="sap.m">
+  <tnt:ToolPage id="toolPage">
+    <tnt:header>
+      <tnt:ToolHeader id="shellLikeToolHeader" class="sapUiTinyMargin">
+        <Button icon="sap-icon://menu2" type="Transparent" tooltip="Menu" press="onCollapseExpandPress">
+          <layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+        </Button>
+        <Title text="Leave Management" wrapping="false" id="productName">
+          <layoutData><OverflowToolbarLayoutData priority="Disappear"/></layoutData>
+        </Title>
+        <ToolbarSpacer/>
+        <SearchField width="25rem" id="searchField">
+          <layoutData><OverflowToolbarLayoutData priority="Low" group="1"/></layoutData>
+        </SearchField>
+        <Button visible="false" icon="sap-icon://search" type="Transparent" id="searchButton" tooltip="Search"/>
+        <Button text="Logout" type="Transparent" press="onLogout" icon="sap-icon://log">
+          <layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+        </Button>
+      </tnt:ToolHeader>
+    </tnt:header>
+    <tnt:sideContent>
+      <tnt:SideNavigation
+        expanded="true"
+        itemPress=".onItemPress"
+        selectedKey="{sideNav>/selectedKey}"
+        itemSelect=".onnavigation"
+        class="customSideitemNav"
+        id="sideNavigation">
+        <tnt:NavigationList items="{path: 'sideNav>/navigation'}">
+          <tnt:NavigationListItem
+            text="{sideNav>title}"
+            icon="{sideNav>icon}"
+            enabled="{sideNav>enabled}"
+            expanded="{sideNav>expanded}"
+            items="{sideNav>items}"
+            selectable="{= ${sideNav>items}.length > 3}"
+            key="{key}">
+            <tnt:NavigationListItem
+              text="{sideNav>title}"
+              key="{sideNav>key}"
+              icon="{sideNav>icon}"
+              enabled="{sideNav>enabled}"/>
+          </tnt:NavigationListItem>
+        </tnt:NavigationList>
+      </tnt:SideNavigation>
+    </tnt:sideContent>
+    <tnt:mainContents>
+      <NavContainer initialPage="Home" id="pageContainer">
+        <pages>
+          <!-- Home Page -->
+          <ScrollContainer id="Home">
+            <VBox class="sapUiMediumMargin">
+              <Table id="employeesTable" items="{/Employees}">
+                <headerToolbar>
+                  <Toolbar><Title text="Employees"/></Toolbar>
+                </headerToolbar>
+                <columns>
+                  <Column width="11rem"><Text text="Name"/></Column>
+                  <Column width="11rem"><Text text="Email"/></Column>
+                  <Column width="6rem"><Text text="Department"/></Column>
+                </columns>
+                <items>
+                  <ColumnListItem>
+                    <cells>
+                      <Text text="{name}"/>
+                      <Text text="{email}"/>
+                      <Text text="{department}"/>
+                    </cells>
+                  </ColumnListItem>
+                </items>
+              </Table>
+            </VBox>
+          </ScrollContainer>
+          <!-- Apply Leave Page -->
+          <ScrollContainer id="page1">
+            <VBox id="applyLeaveSection" class="sapUiMediumMargin">
+              <Panel headerText="Apply Leave">
+                <content>
+                  <t:Table
+                    id="leaveBalancesTable"
+                    rows="{/LeaveBalances}"
+                    selectionMode="None"
+                    width="auto">
+                    <t:columns>
+                      <t:Column width="11rem">
+                        <m:Label text="Leave Type"/>
+                        <t:template>
+                          <m:Text text="{leaveType_ID}" wrapping="false"/>
+                        </t:template>
+                      </t:Column>
+                      <t:Column width="6rem">
+                        <m:Label text="Year"/>
+                        <t:template>
+                          <m:Text text="{year}"/>
+                        </t:template>
+                      </t:Column>
+                      <t:Column width="9rem">
+                        <m:Label text="Total Allowed"/>
+                        <t:template>
+                          <m:Text text="{totalAllowed}"/>
+                        </t:template>
+                      </t:Column>
+                      <t:Column width="9rem">
+                        <m:Label text="Leave Used"/>
+                        <t:template>
+                          <m:Text text="{used}"/>
+                        </t:template>
+                      </t:Column>
+                      <t:Column width="12rem">
+                        <m:Label text="Remaining"/>
+                        <t:template>
+                          <m:Text text="{remaining}"/>
+                        </t:template>
+                      </t:Column>
+                      <t:Column width="12rem">
+                        <m:Label text="Apply"/>
+                        <t:template>
+                           <Button text="Apply"/>
+                        </t:template>
+                      </t:Column>
+                    </t:columns>
+                  </t:Table>
+                </content>
+              </Panel>
+            </VBox>
+          </ScrollContainer>
+          <!-- My Leaves Page -->
+          <ScrollContainer id="page2">
+            <VBox id="myLeaves" class="sapUiMediumMargin">
+              <Panel headerText="My Leaves">
+                <content>
+                  <Text text="My Leaves"/>
+                </content>
+              </Panel>
+            </VBox>
+          </ScrollContainer>
+        </pages>
+      </NavContainer>
+    </tnt:mainContents>
+  </tnt:ToolPage>
+</mvc:View>

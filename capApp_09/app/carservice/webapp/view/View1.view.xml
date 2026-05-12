@@ -1,0 +1,179 @@
+<mvc:View
+  controllerName="carservice.controller.View1"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:m="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <m:Page showHeader="false" backgroundDesign="Transparent">
+    <m:content>
+      <m:FlexBox
+        height="100vh"
+        alignItems="Center"
+        justifyContent="Center"
+        direction="Column"
+        class="loginPageBg">
+
+        <!-- ═══════════════════════════════ -->
+        <!--         LOGIN CARD             -->
+        <!-- ═══════════════════════════════ -->
+        <m:VBox width="380px" class="sapUiShadowLevel2 loginBox" id="loginCard">
+
+          <!-- Header -->
+          <m:FlexBox class="loginFlexBox">
+            <m:VBox>
+              <m:FlexBox alignItems="Center">
+                <m:Text text="SAP" class="loginSapBadge"/>
+                <m:Text text="Fiori" class="loginFioriText"/>
+              </m:FlexBox>
+              <m:Text text="Car Service Management" class="loginAppTitle"/>
+            </m:VBox>
+          </m:FlexBox>
+
+          <!-- Body -->
+          <m:VBox class="loginFormBody">
+            <m:Title text="Sign In" level="H2" class="loginSignInTitle"/>
+
+            <m:VBox class="sapUiSmallMarginBottom">
+              <m:Label text="User ID" required="true" labelFor="userId"/>
+              <m:Input id="userId" placeholder="Enter your user ID"
+                width="100%" class="sapUiTinyMarginTop"/>
+            </m:VBox>
+
+            <m:VBox class="sapUiSmallMarginBottom">
+              <m:Label text="Password" required="true" labelFor="password"/>
+              <m:Input id="password" type="Password"
+                placeholder="Enter your password"
+                width="100%" class="sapUiTinyMarginTop" submit="onLogin"/>
+            </m:VBox>
+
+            <m:MessageStrip id="loginError"
+              text="Invalid credentials. Please try again."
+              type="Error" showIcon="true" visible="false"
+              class="sapUiSmallMarginBottom"/>
+
+            <m:Button text="Sign In" type="Emphasized"
+              width="100%" press="onLogin"
+              class="sapUiSmallMarginTop loginBtn"/>
+
+            <!-- Register Link -->
+            <m:FlexBox justifyContent="Center" class="sapUiSmallMarginTop">
+              <m:Text text="Don't have an account? " class="loginFooterText"/>
+              <m:Link text="Register" press="onShowRegister" class="loginRegisterLink"/>
+            </m:FlexBox>
+
+          </m:VBox>
+
+          <!-- Footer -->
+          <m:FlexBox justifyContent="Center" class="loginFooterBox">
+            <m:Text text="SAP © 2024 · Car Service Portal v1.0" class="loginFooterText"/>
+          </m:FlexBox>
+
+        </m:VBox>
+
+        <!-- ═══════════════════════════════ -->
+        <!--        REGISTER CARD           -->
+        <!-- ═══════════════════════════════ -->
+        <m:VBox width="380px" class="sapUiShadowLevel2 loginBox" id="registerCard" visible="false">
+
+          <!-- Header -->
+          <m:FlexBox class="loginFlexBox">
+            <m:VBox>
+              <m:FlexBox alignItems="Center">
+                <m:Text text="SAP" class="loginSapBadge"/>
+                <m:Text text="Fiori" class="loginFioriText"/>
+              </m:FlexBox>
+              <m:Text text="Car Service Management" class="loginAppTitle"/>
+            </m:VBox>
+          </m:FlexBox>
+
+          <!-- Step 1: Registration Form -->
+          <m:VBox class="loginFormBody" id="registerFormStep">
+            <m:Title text="Create Account" level="H2" class="loginSignInTitle"/>
+
+            <m:VBox class="sapUiSmallMarginBottom">
+              <m:Label text="Full Name" required="true" labelFor="regName"/>
+              <m:Input id="regName" placeholder="Enter your full name"
+                width="100%" class="sapUiTinyMarginTop"/>
+            </m:VBox>
+
+            <m:VBox class="sapUiSmallMarginBottom">
+              <m:Label text="Email ID" required="true" labelFor="regEmail"/>
+              <m:FlexBox alignItems="Center" class="sapUiTinyMarginTop">
+                <m:Input id="regEmail" placeholder="Enter your email"
+                  width="100%" type="Email"/>
+                <m:Button text="Send OTP" type="Emphasized"
+                  press="onSendOtp" class="sendOtpBtn"/>
+              </m:FlexBox>
+              <m:Text id="otpSentMsg" text="✔ OTP sent to your email"
+                class="otpSentText" visible="false"/>
+            </m:VBox>
+
+            <!-- OTP Step (hidden until email submitted) -->
+            <m:VBox class="sapUiSmallMarginBottom" id="otpSection" visible="false">
+              <m:Label text="Enter OTP" required="true" labelFor="regOtp"/>
+              <m:FlexBox alignItems="Center" class="sapUiTinyMarginTop">
+                <m:Input id="regOtp" placeholder="6-digit OTP"
+                  width="100%" maxLength="6"/>
+                <m:Button text="Verify" type="Emphasized"
+                  press="onVerifyOtp" class="sendOtpBtn"/>
+              </m:FlexBox>
+              <m:Text id="otpVerifiedMsg" text="✔ Email verified!"
+                class="otpVerifiedText" visible="false"/>
+              <m:Text id="otpErrorMsg" text="✘ Invalid OTP. Try again."
+                class="otpErrorText" visible="false"/>
+              <m:FlexBox justifyContent="End" class="sapUiTinyMarginTop">
+                <m:Link text="Resend OTP" press="onSendOtp" class="resendLink"/>
+              </m:FlexBox>
+            </m:VBox>
+
+            <!-- Password fields (hidden until OTP verified) -->
+            <m:VBox id="passwordSection" visible="false">
+              <m:VBox class="sapUiSmallMarginBottom">
+                <m:Label text="Password" required="true" labelFor="regPassword"/>
+                <m:Input id="regPassword" type="Password"
+                  placeholder="Create a password"
+                  width="100%" class="sapUiTinyMarginTop"/>
+              </m:VBox>
+
+              <m:VBox class="sapUiSmallMarginBottom">
+                <m:Label text="Confirm Password" required="true" labelFor="regConfirmPassword"/>
+                <m:Input id="regConfirmPassword" type="Password"
+                  placeholder="Confirm your password"
+                  width="100%" class="sapUiTinyMarginTop"/>
+              </m:VBox>
+            </m:VBox>
+
+            <m:MessageStrip id="registerError"
+              text="Please complete all fields."
+              type="Error" showIcon="true" visible="false"
+              class="sapUiSmallMarginBottom"/>
+
+            <m:MessageStrip id="registerSuccess"
+              text="Account created successfully! Please sign in."
+              type="Success" showIcon="true" visible="false"
+              class="sapUiSmallMarginBottom"/>
+
+            <m:Button id="registerSubmitBtn" text="Register"
+              type="Emphasized" width="100%"
+              press="onRegister" class="sapUiSmallMarginTop loginBtn"
+              enabled="false"/>
+
+            <!-- Back to Login -->
+            <m:FlexBox justifyContent="Center" class="sapUiSmallMarginTop">
+              <m:Text text="Already have an account? " class="loginFooterText"/>
+              <m:Link text="Sign In" press="onShowLogin" class="loginRegisterLink"/>
+            </m:FlexBox>
+
+          </m:VBox>
+
+          <!-- Footer -->
+          <m:FlexBox justifyContent="Center" class="loginFooterBox">
+            <m:Text text="SAP © 2024 · Car Service Portal v1.0" class="loginFooterText"/>
+          </m:FlexBox>
+
+        </m:VBox>
+
+      </m:FlexBox>
+    </m:content>
+  </m:Page>
+</mvc:View>
