@@ -5,9 +5,19 @@ sap.ui.define([
   "use strict";
   return Controller.extend("leavemanagement.controller.Main", {
     onInit() {
-      // const oCurrentUser = this.getOwnerComponent().getModel("currentUser");
-      // const oname = oCurrentUser.getProperty("/name")      
-      // this.byId("employeeInput").setValue(oname)
+      const oModel = this.getOwnerComponent().getModel();
+      const oUserModel = this.getOwnerComponent().getModel("currentUser");
+      const empId = oUserModel.getProperty("employeeId")
+      const oLeaveBalanceBinding = oModel.bindList("/LeaveBalance");
+      oLeaveBalanceBinding.requestContexts().then((aContexts) => {
+        const aLeaveBalances = aContexts.map(oContext => oContext.getObject());
+        const empLeaveCount = aLeaveBalances.filter((each) => {
+        })
+        const oUserModel = new sap.ui.model.json.JSONModel(aLeaveBalances);
+        this.getOwnerComponent().setModel(oLeaveBalance, "leavebalance");
+        console.log(aLeaveBalances);
+      });
+
     },
     onnavigation(oEvent) {
       const oItem = oEvent.getParameter("item");
@@ -38,10 +48,19 @@ sap.ui.define([
     },
     onCollapseExpandPress() {
       const oSideNavigation = this.byId("sideNavigation"),
-      bExpanded = oSideNavigation.getExpanded();
+        bExpanded = oSideNavigation.getExpanded();
       oSideNavigation.setExpanded(!bExpanded);
     },
-    applyLeave() {
+    handleChange: function (oEvent) {
+      oDP = oEvent.getSource(),
+        sValue = oEvent.getParameter("value"),
+        bValid = oEvent.getParameter("valid");
+      this._iEvent++;
+      if (bValid) {
+        oDP.setValueState(ValueState.None);
+      } else {
+        oDP.setValueState(ValueState.Error);
+      }
     },
   });
 });

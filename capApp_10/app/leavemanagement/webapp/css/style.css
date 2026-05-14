@@ -111,3 +111,8 @@
   color: #0070f2 !important;
   font-size: 12px !important;
 }
+
+
+.reportPublishedTile {
+  background: linear-gradient(135deg, #f8c8f8, #4274b9);
+}

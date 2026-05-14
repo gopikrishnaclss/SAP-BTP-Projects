@@ -79,9 +79,52 @@
           </ScrollContainer>
           <!-- Apply Leave Page -->
           <ScrollContainer id="page1">
-            <VBox id="applyLeaveSection" class="sapUiMediumMargin">
-              <Panel headerText="Apply Leave">
+            <VBox id="applyLeaveSection" class="sapUiSmallMargin">
+              <Panel headerText="Apply Leave"  class="sapUiSmallMargin">
                 <content>
+                  <HBox class="sapUiSmallMargin"  >
+
+                    <VBox width="33.3%">
+                      <Label text="From Date: " labelFor="DP1"/>
+                        <DatePicker
+                          id="DP1"
+                          placeholder="Enter Date"
+                          change=".handleChange"
+                          class="sapUiSmallMarginBottom"   />
+                    
+                    </VBox>
+
+                    <VBox class="sapUiSmallMarginBegin" width="33.3%">
+                      <Label text="To Date: " labelFor="DP2"/>
+                        <DatePicker
+                          id="DP2"
+                          placeholder="Enter Date"
+                          change=".handleChange"
+                          class="sapUiSmallMarginBottom"/>
+                    
+                    </VBox>
+
+                    <VBox class="sapUiSmallMarginBegin" width="33.3%">
+                      <Label text="Leave" labelFor="Leave"/>
+                      <ComboBox
+                        id="Leave"
+                        items="{
+                          path: '/LeaveTypes',
+                          sorter: { path: 'leaveType' }
+                        }">
+                        <core:Item key="{leaveTypeId}" text="{leaveType}" />
+                      </ComboBox>
+                    
+                    </VBox>
+
+                     
+
+                  </HBox>
+                  <VBox class="sapUiSmallMarginBegin">
+                    <Label text="Reason"/>
+                    <TextArea />
+
+                  </VBox>
                   <!-- <t:Table
                     id="leaveBalancesTable"
                     rows="{/LeaveBalances}"
@@ -126,6 +169,18 @@
                       </t:Column>
                     </t:columns>
                   </t:Table> -->
+                </content>
+              </Panel>
+              <Panel headerText="Available Leave"   class="sapUiSmallMargin" >
+                <content>
+                    <HBox >
+                      <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedTile" header="Sick"
+				                frameType="OneByHalf"    >
+                          <TileContent  >
+                            <NumericContent   value="1.96"   withMargin="false" />
+                          </TileContent>
+	                    </GenericTile>  
+                    </HBox>
                 </content>
               </Panel>
             </VBox>

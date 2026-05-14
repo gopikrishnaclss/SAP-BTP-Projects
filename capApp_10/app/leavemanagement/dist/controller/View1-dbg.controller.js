@@ -3,9 +3,8 @@ sap.ui.define([
     "sap/m/MessageToast"
 ], (Controller, MessageToast) => {
     "use strict";
-
     return Controller.extend("leavemanagement.controller.View1", {
-        onInit() {
+        onInit() {     
         },
         onLogin() {
             const email = this.byId("userId").getValue();
@@ -14,21 +13,23 @@ sap.ui.define([
                 MessageToast.show("Please enter email and password");
                 return;
             }
+             
             const oModel = this.getOwnerComponent().getModel();
             const oContext = oModel.bindContext("/login(...)");
             oContext.setParameter("email", email);
             oContext.setParameter("password", password);
             oContext.execute().then(() => {
                 const result = oContext.getBoundContext().getObject();
-                if (result.success) {    
+                if (result.success) {
                     const userData = {
-                        name:result.name,
-                        email:result.email,
-                        department:result.department,
-                        managerId:result.managerId,                      
+                        firstName: result.firstName,
+                        email: result.email,
+                        Team: result.Team,
+                        employeeId:result.employeeId
+                         
                     }
                     const oUserModel = new sap.ui.model.json.JSONModel(userData);
-                    MessageToast.show("Welcome " + result.name);
+                    MessageToast.show("Welcome " + result.firstName);
                     this.getOwnerComponent().setModel(oUserModel, "currentUser");
                     this.getOwnerComponent().getRouter().navTo("RouteView2");
                 } else {

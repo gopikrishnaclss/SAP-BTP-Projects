@@ -1,17 +1,11 @@
- 
-
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast"
 ], (Controller, MessageToast) => {
     "use strict";
     return Controller.extend("leavemanagement.controller.View1", {
-        onInit() {
-              
+        onInit() {     
         },
-
-         
-         
         onLogin() {
             const email = this.byId("userId").getValue();
             const password = this.byId("password").getValue();
@@ -31,6 +25,7 @@ sap.ui.define([
                         firstName: result.firstName,
                         email: result.email,
                         Team: result.Team,
+                        employeeId:result.employeeId
                          
                     }
                     const oUserModel = new sap.ui.model.json.JSONModel(userData);

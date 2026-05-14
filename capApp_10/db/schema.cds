@@ -1,6 +1,5 @@
 namespace leaveApp;
-using {
-     
+using {   
   managed
 } from '@sap/cds/common';
 
@@ -20,14 +19,11 @@ entity Employees : managed{
   role              : Association to Roles; 
 }
 entity LeaveType {
-
   key  leaveTypeId : Integer;
   leaveType : String(100);
   totalLeaves:Integer
-  
 }
 entity LeaveBalance {
-
   key leaveBalanceID:UUID;
   employee : Association to Employees;
   leaveType : Association to LeaveType;

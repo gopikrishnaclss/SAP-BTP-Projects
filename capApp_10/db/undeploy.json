@@ -1,4 +1,7 @@
 [
+  "src/gen/data/leaveApp-employees.csv",
+  "src/gen/data/leaveApp-employees.hdbtabledata",
+  "src/gen/leaveApp.employees.hdbtable",
   "src/gen/**/*.hdbview",
   "src/gen/**/*.hdbindex",
   "src/gen/**/*.hdbconstraint",
