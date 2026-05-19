@@ -1,0 +1,1 @@
+leaveRequestId,employee_employeeId,leaveType_leaveTypeId,fromDate,toDate,totalDays,reason,status,appliedOn,approvedBy_employeeId,comments

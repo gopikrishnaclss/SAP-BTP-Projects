@@ -16,12 +16,8 @@
                         "title": "My Leaves",
                         "key": "page2",
                         "icon": "sap-icon://folder"
-                    },
-                    {
-                        "title": "Pending Approvals",
-                        "key": "page3",
-                        "icon": "sap-icon://folder"
                     }
+                   
                     
                     
                     

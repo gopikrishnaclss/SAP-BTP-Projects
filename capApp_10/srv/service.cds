@@ -2,7 +2,7 @@ using { leaveApp } from '../db/schema';
 
 service leaveManagementService @(path:'/leavemanage') {
 
-    @requires: 'manager'
+    // @requires: 'manager'
     entity Employees as projection on leaveApp.Employees;
     action login(
         email : String,
@@ -20,5 +20,5 @@ service leaveManagementService @(path:'/leavemanage') {
     entity LeaveTypes as projection on leaveApp.LeaveType;
 
     entity LeaveBalances as projection on leaveApp.LeaveBalance;
-
+    entity LeaveRequests as projection on leaveApp.LeaveRequest;
 }

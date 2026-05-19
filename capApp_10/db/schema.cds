@@ -30,7 +30,19 @@ entity LeaveBalance {
   totalLeave  : Integer;
   usedLeave: Integer;
   remaningLeaves:Integer;
-
+}
+entity LeaveRequest {
+  key leaveRequestId : UUID;
+  employee           : Association to Employees;
+  leaveType          : Association to LeaveType;
+  fromDate           : Date;
+  toDate             : Date;
+  totalDays          : Integer;
+  reason             : String(500);
+  status             : String(20) default 'PENDING';
+  appliedOn          : DateTime;
+  approvedBy         : Association to Employees;
+  comments           : String(500);
 }
 
 

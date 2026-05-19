@@ -113,6 +113,17 @@
 }
 
 
-.reportPublishedTile {
+/* Casual */
+.reportPublishedCasual {
+  background: linear-gradient(135deg, #c9f7d4, #3ba776);
+}
+
+/* Sick */
+.reportPublishedSick {
   background: linear-gradient(135deg, #f8c8f8, #4274b9);
+}
+
+/* Paid */
+.reportPublishedPaid {
+  background: linear-gradient(135deg, #ffe0b2, #ff8f00);
 }
