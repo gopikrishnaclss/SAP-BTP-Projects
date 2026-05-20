@@ -1,6 +1,7 @@
 {
   "name": "capApp_10",
   "version": "1.0.0",
+   "type": "module",
   "dependencies": {
     "@cap-js/hana": "^2",
     "@sap/approuter": "^16",

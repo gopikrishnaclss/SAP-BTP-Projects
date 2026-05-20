@@ -20,14 +20,14 @@ sap.ui.define(
       _getLeaveBalance: function () {
         const oModel = this.getOwnerComponent().getModel();
         const oUserModel = this.getOwnerComponent().getModel("currentUser");
-         
+
         if (oUserModel && oUserModel.getData().employeeId) {
           this.empId = oUserModel.getData().employeeId;
           sessionStorage.setItem("employeeId", this.empId);
         } else {
           this.empId = sessionStorage.getItem("employeeId");
         }
-        if (!this.empId) { 
+        if (!this.empId) {
           this.getOwnerComponent().getRouter().navTo("RouteView1");
           return;
         }
@@ -104,38 +104,107 @@ sap.ui.define(
       onApplyLeave() {
         const oModel = this.getOwnerComponent().getModel();
         const oUserModel = this.getOwnerComponent().getModel("currentUser");
-         
         var fromDateObj = this.getView().byId("DP1").getDateValue();
         var toDateObj = this.getView().byId("DP2").getDateValue();
-        const leaveTypeId = this.getView().byId("Leave").getSelectedItem().getText()
+        const leaveTypeId = this.getView()
+          .byId("Leave")
+          .getSelectedItem()
+          .getText();
         const reason = this.getView().byId("reason").getValue();
-
         if (!fromDateObj || !toDateObj || !leaveTypeId || !reason) {
           sap.m.MessageToast.show("Please fill all fields");
           return;
         }
-        var fromDate = fromDateObj.toISOString().split("T")[0];
-        var toDate = toDateObj.toISOString().split("T")[0];
+        const fromDate = this.formatDateLocal(fromDateObj)
+        const toDate = this.formatDateLocal(toDateObj)
         const oListBinding = oModel.bindList("/LeaveRequests");
-
-        const oContext = oListBinding.create({
+        oListBinding.create({
           employee_employeeId: this.empId,
           leaveType_leaveTypeId: parseInt(leaveTypeId),
-          fromDate: fromDate,
-          toDate: toDate,
-          reason: reason,
+          fromDate,
+          toDate,
+          reason,
         });
 
-        oContext
-          .created()
-          .then(() => {
-            sap.m.MessageToast.show("Leave applied successfully");
-            this._resetApplyLeaveForm();
-          })
-          .catch((err) => {
-            console.error("Error:", err);
-            sap.m.MessageBox.error(err.message || "Failed to apply leave");
-          });
+        // Submit batch manually
+        oModel.submitBatch("$auto").then(() => {
+          const aMessages = sap.ui
+            .getCore()
+            .getMessageManager()
+            .getMessageModel()
+            .getData();
+
+          // Backend validation error exists
+          if (aMessages.length > 0) {
+            const msg = aMessages[0].message;
+            MessageToast.show(msg);
+
+            return;
+          }
+
+          // Success
+          MessageToast.show("Leave applied successfully");
+
+          this._resetApplyLeaveForm();
+
+          oModel.refresh();
+        });
+        // const oListBinding = oModel.bindList(
+        //   "/LeaveRequests",
+        //   undefined,
+        //   undefined,
+        //   undefined,
+        //   {
+        //     $$updateGroupId: "$direct",
+        //   },
+        // );
+
+        // const oContext = oListBinding.create(
+        //   {
+        //     employee_employeeId: this.empId,
+        //     leaveType_leaveTypeId: parseInt(leaveTypeId),
+        //     fromDate: fromDate,
+        //     toDate: toDate,
+        //     reason: reason,
+        //   },
+        //   true,
+        //   false,
+        //   false,
+        // );
+
+        // oContext
+        //   .created()
+        //   .then(() => {
+        //     sap.m.MessageToast.show("Leave applied successfully");
+        //     this._resetApplyLeaveForm();
+        //     oModel.refresh();
+        //   })
+        //   .catch((err) => {
+        //     // err.message contains the req.reject() message from CAP
+        //     sap.m.MessageBox.error(err.message || "Failed to apply leave");
+        //   });
+      },
+      formatDateLocal(oDate) {
+        // Accept native Date, UI5Date or objects that expose a Date value
+        let d;
+        if (!oDate) {
+          return "";
+        }
+        // If it's a UI5 control (DatePicker) it may provide getDateValue()
+        if (typeof oDate.getDateValue === "function") {
+          d = oDate.getDateValue();
+        } else if (oDate instanceof Date) {
+          d = oDate;
+        } else {
+          // Fallback: try to construct a Date
+          d = new Date(oDate);
+        }
+
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
       },
 
       _resetApplyLeaveForm() {
