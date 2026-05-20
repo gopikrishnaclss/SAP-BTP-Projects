@@ -11,16 +11,7 @@
                         "title": "Apply Leave",
                         "key": "page1",
                         "icon": "sap-icon://folder"
-                    },
-                    {
-                        "title": "My Leaves",
-                        "key": "page2",
-                        "icon": "sap-icon://folder"
-                    }
-                   
-                    
-                    
-                    
+                    }    
 
                 ]
             }

@@ -1,0 +1,47 @@
+<c:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:c="sap.ui.core">
+
+    <Popover
+        id="idPopover"
+        title="User"
+        titleAlignment="Center"
+        placement="Bottom">
+
+        <List>
+
+            <StandardListItem
+                title="Gopi"
+                icon="sap-icon://physical-activity"
+                type="Active"
+                press="onListItemPress" />
+
+            <StandardListItem
+                title="Settings"
+                icon="sap-icon://action-settings"
+                type="Active"
+                press="onListItemPress" />
+
+            <StandardListItem
+                title="About"
+                icon="sap-icon://hint"
+                type="Active"
+                press="onListItemPress" />
+
+            <StandardListItem
+                title="Change Password"
+                icon="sap-icon://key"
+                type="Active"
+                press="onListItemPress" />
+
+            <StandardListItem
+                title="Sign Out"
+                icon="sap-icon://log"
+                type="Active"
+                press="onListItemPress" />
+
+        </List>
+
+    </Popover>
+
+</c:FragmentDefinition>
