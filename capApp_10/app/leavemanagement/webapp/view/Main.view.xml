@@ -75,8 +75,8 @@
                 <content>
                   <!-- Welcome Section -->
                   <VBox class="sapUiSmallMarginBottom">
-                    <Title text="Welcome Back, Gopi" level="H6" />
-                    <Text text="Manage your leaves efficiently" />
+                    <Title text="Welcome Back, {currentUser>/firstName}" level="H6"/>
+                    <Text text="Manage your leaves efficiently"/>
                   </VBox>
                   <!-- Summary Cards -->
                   <HBox wrap="Wrap">
@@ -160,6 +160,7 @@
                       <DatePicker
                         id="DP1"
                         placeholder="Enter Date"
+                        displayFormat="dd-MM-yyyy"
                         change=".handleChange"
                         class="sapUiSmallMarginBottom" />
                     </VBox>
@@ -233,9 +234,6 @@
               </Panel>
             </VBox>
           </ScrollContainer>
-          <!-- My Leaves Page -->
-          <!-- <ScrollContainer id="page2">
-          </ScrollContainer> -->
         </pages>
       </NavContainer>
     </tnt:mainContents>
