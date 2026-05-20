@@ -1,27 +1,34 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/m/MessageToast",
+  "sap/m/MessageBox",
   "sap/ui/core/Fragment",
   "sap/ui/model/json/JSONModel",
   "sap/ui/core/ValueState"
-], function (Controller, MessageToast, Fragment, JSONModel, ValueState) {
+], function (Controller, MessageToast,MessageBox, Fragment, JSONModel, ValueState) {
 
   "use strict";
 
   return Controller.extend("leavemanagement.controller.Main", {
     onInit() {
-      this._getLeaveBalance();
       this.empId;
-      //clear the web history for don't allow user to go back to previous page without logout
-      // var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-      // sap.ui.core.routing.HashChanger.getInstance().attachEvent("hashChanged", function(oEvent) {
-      //     var sNewHash = oEvent.getParameter("newHash");
-
-      //     // Force the current view to stay (you can change route name if needed)
-      //     if (sNewHash === "" && this.getOwnerComponent().getModel('coreGlobal').getProperty('/_allowNavigation') == false) {
-      //     }
-      //   }.bind(this));
-      //   oRouter.navTo("RouteView2", {}, true); // true = replace history
+      // Restore User Model After Refresh
+      const oStoredUser = sessionStorage.getItem("currentUser");
+      if (oStoredUser) {
+        const oUserData = JSON.parse(oStoredUser);
+        const oUserModel = new JSONModel(oUserData);
+        this.getOwnerComponent().setModel(oUserModel, "currentUser");
+      } else {
+        // If no session redirect login
+        this.getOwnerComponent().getRouter().navTo("RouteView1");
+        return;
+      }
+      // prevent this back button go to login screen
+      history.pushState(null, null, location.href);
+      window.onpopstate = function () {
+        history.go(1);
+      };
+      this._getLeaveBalance();
     },
     onAfterRendering: function () {
       const oTitle = this.byId("idTitle");
@@ -118,7 +125,7 @@ sap.ui.define([
         case "Sign Out":
           sessionStorage.clear();
           MessageToast.show("Logged out successfully");
-          this.getOwnerComponent().getRouter().navTo("RouteView1");
+          this.getOwnerComponent().getRouter().navTo("RouteView1", {}, true);
           break;
         case "About":
           MessageToast.show("About clicked");
@@ -127,12 +134,77 @@ sap.ui.define([
           MessageToast.show("Settings clicked");
           break;
         case "Change Password":
-          MessageToast.show("Change Password clicked");
+          this.onChangePasswordFragmentOpen();
           break;
         default:
           MessageToast.show(sTitle + " clicked");
           break;
       }
+    },
+    onChangePasswordFragmentOpen: function () {
+      if (!this.oChangePasswordDialog) {
+        this.oChangePasswordDialog = sap.ui.xmlfragment(
+          "leavemanagement.fragments.ChangePassword", this);
+        this.getView().addDependent(this.oChangePasswordDialog);
+      }
+      this.oChangePasswordDialog.open();
+    },
+    onUpdatePassword: function () {
+      const sUserId = sap.ui.getCore().byId("userId").getValue();
+      const sOldPassword = sap.ui.getCore().byId("idOldPassword").getValue();
+      const sNewPassword = sap.ui.getCore().byId("idNewPassword").getValue();
+      const sConfirmPassword = sap.ui.getCore().byId("idConformPassword").getValue();
+      if (!sOldPassword || !sNewPassword || !sConfirmPassword) {
+        MessageBox.information("Please fill all fields");
+        return;
+      }
+      if (sNewPassword !== sConfirmPassword) {
+        MessageBox.information("New Password and Confirm Password do not match");
+        return;
+      }
+      MessageBox.information("Password updated successfully");
+    },
+    onChangePasswordFragmentClose: function () {
+      this.oChangePasswordDialog.close();
+    },
+    onHolidayListButtonPress: async function () {
+      const aHolidays = [
+        {
+          date: "01-01-2026",
+          day: "Thursday",
+          name: "New Year"
+        },
+        {
+          date: "26-01-2026",
+          day: "Monday",
+          name: "Republic Day"
+        },
+        {
+          date: "15-08-2026",
+          day: "Saturday",
+          name: "Independence Day"
+        },
+        {
+          date: "02-10-2026",
+          day: "Friday",
+          name: "Gandhi Jayanti"
+        }
+      ];
+      const oHolidayModel = new sap.ui.model.json.JSONModel({
+        holidays: aHolidays
+      });
+      if (!this.oHolidayDialog) {
+        this.oHolidayDialog = await sap.ui.core.Fragment.load({
+          name: "leavemanagement.fragments.HolidayList",
+          controller: this
+        });
+        this.getView().addDependent(this.oHolidayDialog);
+      }
+      this.oHolidayDialog.setModel(oHolidayModel, "holiday");
+      this.oHolidayDialog.open();
+    },
+    onCloseHolidayDialog: function () {
+      this.oHolidayDialog.close();
     },
     onCollapseExpandPress() {
       const oSideNavigation = this.byId("sideNavigation"),

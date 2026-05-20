@@ -11,7 +11,7 @@
         <List>
 
             <StandardListItem
-                title="Gopi"
+                title="{currentUser>/firstName}"
                 icon="sap-icon://physical-activity"
                 type="Active"
                 press="onListItemPress" />

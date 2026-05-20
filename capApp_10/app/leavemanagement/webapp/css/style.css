@@ -1,4 +1,12 @@
 /* ── Page Background ── */
+
+.mainPage {
+    background: rgba(209, 206, 206, 0.35);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    color: white;
+}
 .sapMPage > .sapMPageBg {
   background: linear-gradient(135deg, #0a2140 0%, #0f3460 60%, #1a5276 100%) !important;
 }

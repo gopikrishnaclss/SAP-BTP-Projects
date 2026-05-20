@@ -24,7 +24,11 @@
           </layoutData>
         </Title>
         <ToolbarSpacer />
-        <Button text="Holiday List" icon="sap-icon://time-off" class="sapUiTinyMarginEnd"/>
+        <Button text="Holiday List"
+            type="Emphasized"
+            icon="sap-icon://time-off"
+            class="sapUiTinyMarginEnd"
+            press="onHolidayListButtonPress"/>
         <Button icon="sap-icon://person-placeholder" type="Transparent" press="pressUserIcon" >
           <layoutData>
             <OverflowToolbarLayoutData priority="NeverOverflow" />
@@ -59,123 +63,88 @@
       </tnt:SideNavigation>
     </tnt:sideContent>
     <tnt:mainContents>
-      <NavContainer initialPage="Home" id="pageContainer">
+      <NavContainer initialPage="Home" id="pageContainer" class="mainPage">
         <pages>
           <!-- Home Page -->
-          <!-- <ScrollContainer id="Home">
-            <VBox class="sapUiMediumMargin">
-              <Table id="employeesTable" items="{/Employees}">
-                <headerToolbar>
-                  <Toolbar>
-                    <Title text="Employees" />
-                  </Toolbar>
-                </headerToolbar>
-                <columns>
-                  <Column width="11rem">
-                    <Text text="Name" />
-                  </Column>
-                  <Column width="11rem">
-                    <Text text="Email" />
-                  </Column>
-                  <Column width="6rem">
-                    <Text text="Team" />
-                  </Column>
-                </columns>
-                <items>
-                  <ColumnListItem>
-                    <cells>
-                      <Text text="{firstName}" />
-                      <Text text="{email}" />
-                      <Text text="{Team}" />
-                    </cells>
-                  </ColumnListItem>
-                </items>
-              </Table>
-            </VBox>
-          </ScrollContainer> -->
           <ScrollContainer id="Home" height="100%" vertical="true" >
-            <VBox class="sapUiMediumMargin">
-              <!-- Welcome Section -->
-              <VBox class="sapUiSmallMarginBottom">
-                <Title text="Welcome Back, Gopi" level="H6"/>
-                <Text text="Manage your leaves efficiently"/>
-              </VBox>
-              <!-- Summary Cards -->
-              <HBox wrap="Wrap">
-                <GenericTile
-                  class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedCasual"
-                  header="Casual Leave"
-                  frameType="OneByHalf">
-                  <TileContent>
-                    <NumericContent value="{leavebalance>/Casual}" />
-                  </TileContent>
-                </GenericTile>
-                <GenericTile
-                  class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedSick"
-                  header="Sick Leave"
-                  frameType="OneByHalf">
-                  <TileContent>
-                    <NumericContent value="{leavebalance>/Sick}" />
-                  </TileContent>
-                </GenericTile>
-                <GenericTile
-                  class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPaid"
-                  header="Paid Leave"
-                  frameType="OneByHalf">
-                  <TileContent>
-                    <NumericContent value="{leavebalance>/Paid}" />
-                  </TileContent>
-                </GenericTile>
-                <GenericTile
-                  class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPending"
-                  header="Pending Requests"
-                  frameType="OneByHalf">
-                  <TileContent>
-                    <NumericContent value="1" />
-                  </TileContent>
-                </GenericTile>
-              </HBox>
-              <!-- Quick Actions -->
+            <VBox class="sapUiSmallMargin">
+              <!-- Dashboard -->
               <Panel
-                  headerText="Quick Actions"
-                  class="sapUiMediumMarginTop">
+                headerText="Dashboard"
+                class="sapUiMediumMarginTop homePanel">
+                <content>
+                  <!-- Welcome Section -->
+                  <VBox class="sapUiSmallMarginBottom">
+                    <Title text="Welcome Back, Gopi" level="H6"/>
+                    <Text text="Manage your leaves efficiently"/>
+                  </VBox>
+                  <!-- Summary Cards -->
                   <HBox wrap="Wrap">
-                    <Button
-                      text="Holiday List"
-                      icon="sap-icon://time-off"
-                      class="sapUiTinyMarginEnd"/>
+                    <GenericTile
+                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedCasual"
+                      header="Casual Leave"
+                      frameType="OneByHalf">
+                      <TileContent>
+                        <NumericContent value="{leavebalance>/Casual}" />
+                      </TileContent>
+                    </GenericTile>
+                    <GenericTile
+                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedSick"
+                      header="Sick Leave"
+                      frameType="OneByHalf">
+                      <TileContent>
+                        <NumericContent value="{leavebalance>/Sick}" />
+                      </TileContent>
+                    </GenericTile>
+                    <GenericTile
+                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPaid"
+                      header="Paid Leave"
+                      frameType="OneByHalf">
+                      <TileContent>
+                        <NumericContent value="{leavebalance>/Paid}" />
+                      </TileContent>
+                    </GenericTile>
+                    <GenericTile
+                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPending"
+                      header="Pending Requests"
+                      frameType="OneByHalf">
+                      <TileContent>
+                        <NumericContent value="1" />
+                      </TileContent>
+                    </GenericTile>
                   </HBox>
+                </content>
               </Panel>
               <!-- Recent Requests -->
               <Panel
                   headerText="Recent Leave Requests"
                   class="sapUiMediumMarginTop">
-                  <Table items="{/LeaveRequests}">
-                    <columns>
-                      <Column>
-                        <Text text="Leave Type"/>
-                      </Column>
-                      <Column>
-                        <Text text="From"/>
-                      </Column>
-                      <Column>
-                        <Text text="To"/>
-                      </Column>
-                      <Column>
-                        <Text text="Status"/>
-                      </Column>
-                    </columns>
-                    <items>
-                      <ColumnListItem>
-                        <cells>
-                          <Text text="{leaveType}"/>
-                          <Text text="{fromDate}"/>
-                          <Text text="{toDate}"/>
-                          <ObjectStatus text="Approved" state="Success"/>
-                        </cells>
-                      </ColumnListItem>
-                    </items>
-                  </Table>
+                <Table items="{/LeaveRequests}">
+                  <columns>
+                    <Column>
+                      <Text text="Leave Type"/>
+                    </Column>
+                    <Column>
+                      <Text text="From"/>
+                    </Column>
+                    <Column>
+                      <Text text="To"/>
+                    </Column>
+                    <Column>
+                      <Text text="Status"/>
+                    </Column>
+                  </columns>
+                  <items>
+                    <ColumnListItem>
+                      <cells>
+                        <Text text="{leaveType}"/>
+                        <Text text="{fromDate}"/>
+                        <Text text="{toDate}"/>
+                        <ObjectStatus text="Approved" state="Success"/>
+                      </cells>
+                    </ColumnListItem>
+                  </items>
+                </Table>
               </Panel>
             </VBox>
           </ScrollContainer>
@@ -250,6 +219,14 @@
                         <NumericContent value="{leavebalance>/Paid}" withMargin="false" />
                       </TileContent>
                     </GenericTile>
+                    <GenericTile
+                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPending"
+                      header="Pending Requests"
+                      frameType="OneByHalf">
+                      <TileContent>
+                        <NumericContent value="1" />
+                      </TileContent>
+                    </GenericTile>
                   </HBox>
                 </content>
               </Panel>
@@ -257,26 +234,6 @@
           </ScrollContainer>
           <!-- My Leaves Page -->
           <!-- <ScrollContainer id="page2">
-            <VBox id="myLeaves" class="sapUiMediumMargin">
-              <Panel headerText="My Leaves">
-                <content>
-                  <t:Table
-                    rows="{/LeaveRequests}"
-                    selectionMode="MultiToggle"
-                     
-                     >
-                    <t:columns>
-                      <t:Column width="11rem">
-                        <m:Label text="Leave Type" />
-                        <t:template>
-                          <m:Text text="{leaveType}"  />
-                        </t:template>
-                      </t:Column>
-                    </t:columns>
-                  </t:Table>
-                </content>
-              </Panel>
-            </VBox>
           </ScrollContainer> -->
         </pages>
       </NavContainer>
