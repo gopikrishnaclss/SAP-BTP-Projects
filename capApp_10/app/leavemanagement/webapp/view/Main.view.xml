@@ -15,21 +15,21 @@
           </layoutData>
         </Button>
         <Title
-            id="idTitle"
-            text="Leave Management"
-            level="H3"
-            class="clickableTitle sapUiTinyMarginBegin">
+          id="idTitle"
+          text="Leave Management"
+          level="H3"
+          class="clickableTitle sapUiTinyMarginBegin">
           <layoutData>
             <OverflowToolbarLayoutData priority="Disappear" />
           </layoutData>
         </Title>
         <ToolbarSpacer />
         <Button text="Holiday List"
-            type="Emphasized"
-            icon="sap-icon://time-off"
-            class="sapUiTinyMarginEnd"
-            press="onHolidayListButtonPress"/>
-        <Button icon="sap-icon://person-placeholder" type="Transparent" press="pressUserIcon" >
+          type="Emphasized"
+          icon="sap-icon://time-off"
+          class="sapUiTinyMarginEnd"
+          press="onHolidayListButtonPress" />
+        <Button icon="sap-icon://person-placeholder" type="Transparent" press="pressUserIcon">
           <layoutData>
             <OverflowToolbarLayoutData priority="NeverOverflow" />
           </layoutData>
@@ -66,7 +66,7 @@
       <NavContainer initialPage="Home" id="pageContainer" class="mainPage">
         <pages>
           <!-- Home Page -->
-          <ScrollContainer id="Home" height="100%" vertical="true" >
+          <ScrollContainer id="Home" height="100%" vertical="true">
             <VBox class="sapUiSmallMargin">
               <!-- Dashboard -->
               <Panel
@@ -75,8 +75,8 @@
                 <content>
                   <!-- Welcome Section -->
                   <VBox class="sapUiSmallMarginBottom">
-                    <Title text="Welcome Back, Gopi" level="H6"/>
-                    <Text text="Manage your leaves efficiently"/>
+                    <Title text="Welcome Back, Gopi" level="H6" />
+                    <Text text="Manage your leaves efficiently" />
                   </VBox>
                   <!-- Summary Cards -->
                   <HBox wrap="Wrap">
@@ -117,30 +117,31 @@
               </Panel>
               <!-- Recent Requests -->
               <Panel
-                  headerText="Recent Leave Requests"
-                  class="sapUiMediumMarginTop">
-                <Table items="{/LeaveRequests}">
+                headerText="Recent Leave Requests"
+                class="sapUiMediumMarginTop">
+                <Table items="{leaveRequest>/}">
                   <columns>
                     <Column>
-                      <Text text="Leave Type"/>
+                      <Text text="Leave Type" />
                     </Column>
                     <Column>
-                      <Text text="From"/>
+                      <Text text="From" />
                     </Column>
                     <Column>
-                      <Text text="To"/>
+                      <Text text="To" />
                     </Column>
                     <Column>
-                      <Text text="Status"/>
+                      <Text text="Status" />
                     </Column>
                   </columns>
+
                   <items>
                     <ColumnListItem>
                       <cells>
-                        <Text text="{leaveType}"/>
-                        <Text text="{fromDate}"/>
-                        <Text text="{toDate}"/>
-                        <ObjectStatus text="Approved" state="Success"/>
+                        <Text text="{leaveRequest>leaveType}" />
+                        <Text text="{leaveRequest>fromDate}" />
+                        <Text text="{leaveRequest>toDate}" />
+                        <Text text="{leaveRequest>status}" />
                       </cells>
                     </ColumnListItem>
                   </items>
