@@ -127,3 +127,11 @@
 .reportPublishedPaid {
   background: linear-gradient(135deg, #ffe0b2, #ff8f00);
 }
+
+.reportPublishedPending{
+  background: linear-gradient(135deg, #fcd2d2, #922b2b);
+}
+
+.clickableTitle {
+    cursor: pointer;
+}

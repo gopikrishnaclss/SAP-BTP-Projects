@@ -14,20 +14,18 @@
             <OverflowToolbarLayoutData priority="NeverOverflow" />
           </layoutData>
         </Button>
-        <Title text="Leave Management" wrapping="false" id="productName">
+        <Title
+            id="idTitle"
+            text="Leave Management"
+            level="H3"
+            class="clickableTitle sapUiTinyMarginBegin">
           <layoutData>
             <OverflowToolbarLayoutData priority="Disappear" />
           </layoutData>
         </Title>
         <ToolbarSpacer />
-        <SearchField width="25rem" id="searchField">
-          <layoutData>
-            <OverflowToolbarLayoutData priority="Low" group="1" />
-          </layoutData>
-        </SearchField>
-        <Button visible="false" icon="sap-icon://search" type="Transparent" id="searchButton"
-          tooltip="Search" />
-        <Button text="Logout" type="Transparent" press="onLogout" icon="sap-icon://log">
+        <Button text="Holiday List" icon="sap-icon://time-off" class="sapUiTinyMarginEnd"/>
+        <Button icon="sap-icon://person-placeholder" type="Transparent" press="pressUserIcon" >
           <layoutData>
             <OverflowToolbarLayoutData priority="NeverOverflow" />
           </layoutData>
@@ -64,7 +62,7 @@
       <NavContainer initialPage="Home" id="pageContainer">
         <pages>
           <!-- Home Page -->
-          <ScrollContainer id="Home">
+          <!-- <ScrollContainer id="Home">
             <VBox class="sapUiMediumMargin">
               <Table id="employeesTable" items="{/Employees}">
                 <headerToolbar>
@@ -94,6 +92,92 @@
                 </items>
               </Table>
             </VBox>
+          </ScrollContainer> -->
+          <ScrollContainer id="Home" height="100%" vertical="true" >
+            <VBox class="sapUiMediumMargin">
+              <!-- Welcome Section -->
+              <VBox class="sapUiSmallMarginBottom">
+                <Title text="Welcome Back, Gopi" level="H6"/>
+                <Text text="Manage your leaves efficiently"/>
+              </VBox>
+              <!-- Summary Cards -->
+              <HBox wrap="Wrap">
+                <GenericTile
+                  class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedCasual"
+                  header="Casual Leave"
+                  frameType="OneByHalf">
+                  <TileContent>
+                    <NumericContent value="{leavebalance>/Casual}" />
+                  </TileContent>
+                </GenericTile>
+                <GenericTile
+                  class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedSick"
+                  header="Sick Leave"
+                  frameType="OneByHalf">
+                  <TileContent>
+                    <NumericContent value="{leavebalance>/Sick}" />
+                  </TileContent>
+                </GenericTile>
+                <GenericTile
+                  class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPaid"
+                  header="Paid Leave"
+                  frameType="OneByHalf">
+                  <TileContent>
+                    <NumericContent value="{leavebalance>/Paid}" />
+                  </TileContent>
+                </GenericTile>
+                <GenericTile
+                  class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPending"
+                  header="Pending Requests"
+                  frameType="OneByHalf">
+                  <TileContent>
+                    <NumericContent value="1" />
+                  </TileContent>
+                </GenericTile>
+              </HBox>
+              <!-- Quick Actions -->
+              <Panel
+                  headerText="Quick Actions"
+                  class="sapUiMediumMarginTop">
+                  <HBox wrap="Wrap">
+                    <Button
+                      text="Holiday List"
+                      icon="sap-icon://time-off"
+                      class="sapUiTinyMarginEnd"/>
+                  </HBox>
+              </Panel>
+              <!-- Recent Requests -->
+              <Panel
+                  headerText="Recent Leave Requests"
+                  class="sapUiMediumMarginTop">
+                  <Table items="{/LeaveRequests}">
+                    <columns>
+                      <Column>
+                        <Text text="Leave Type"/>
+                      </Column>
+                      <Column>
+                        <Text text="From"/>
+                      </Column>
+                      <Column>
+                        <Text text="To"/>
+                      </Column>
+                      <Column>
+                        <Text text="Status"/>
+                      </Column>
+                    </columns>
+                    <items>
+                      <ColumnListItem>
+                        <cells>
+                          <Text text="{leaveType}"/>
+                          <Text text="{fromDate}"/>
+                          <Text text="{toDate}"/>
+                          <ObjectStatus text="Approved" state="Success"/>
+                        </cells>
+                      </ColumnListItem>
+                    </items>
+                  </Table>
+              </Panel>
+            </VBox>
           </ScrollContainer>
           <!-- Apply Leave Page -->
           <ScrollContainer id="page1">
@@ -101,7 +185,6 @@
               <Panel headerText="Apply Leave" class="sapUiSmallMargin">
                 <content>
                   <HBox class="sapUiSmallMargin">
-
                     <VBox width="33.3%">
                       <Label text="From Date: " labelFor="DP1" />
                       <DatePicker
@@ -109,9 +192,7 @@
                         placeholder="Enter Date"
                         change=".handleChange"
                         class="sapUiSmallMarginBottom" />
-
                     </VBox>
-
                     <VBox class="sapUiSmallMarginBegin" width="33.3%">
                       <Label text="To Date: " labelFor="DP2" />
                       <DatePicker
@@ -119,9 +200,7 @@
                         placeholder="Enter Date"
                         change=".handleChange"
                         class="sapUiSmallMarginBottom" />
-
                     </VBox>
-
                     <VBox class="sapUiSmallMarginBegin" width="33.3%">
                       <Label text="Leave" labelFor="Leave" />
                       <HBox>
@@ -136,58 +215,12 @@
                         <Button class="sapUiSmallMarginBegin" type="Emphasized" text="Apply"
                           press="onApplyLeave" />
                       </HBox>
-
                     </VBox>
                   </HBox>
                   <VBox class="sapUiSmallMarginBegin">
                     <Label text="Reason" />
                     <TextArea id="reason" />
-
                   </VBox>
-                  <!-- <t:Table
-                    id="leaveBalancesTable"
-                    rows="{/LeaveBalances}"
-                    selectionMode="None"
-                    width="auto">
-                    <t:columns>
-                      <t:Column width="11rem">
-                        <m:Label text="Leave Type"/>
-                        <t:template>
-                          <m:Text text="{leaveType_ID}" wrapping="false"/>
-                        </t:template>
-                      </t:Column>
-                      <t:Column width="6rem">
-                        <m:Label text="Year"/>
-                        <t:template>
-                          <m:Text text="{year}"/>
-                        </t:template>
-                      </t:Column>
-                      <t:Column width="9rem">
-                        <m:Label text="Total Allowed"/>
-                        <t:template>
-                          <m:Text text="{totalAllowed}"/>
-                        </t:template>
-                      </t:Column>
-                      <t:Column width="9rem">
-                        <m:Label text="Leave Used"/>
-                        <t:template>
-                          <m:Text text="{used}"/>
-                        </t:template>
-                      </t:Column>
-                      <t:Column width="12rem">
-                        <m:Label text="Remaining"/>
-                        <t:template>
-                          <m:Text text="{remaining}"/>
-                        </t:template>
-                      </t:Column>
-                      <t:Column width="12rem">
-                        <m:Label text="Apply"/>
-                        <t:template>
-                           <Button text="Apply"/>
-                        </t:template>
-                      </t:Column>
-                    </t:columns>
-                  </t:Table> -->
                 </content>
               </Panel>
               <Panel headerText="Available Leave" class="sapUiSmallMargin">
@@ -209,7 +242,6 @@
                         <NumericContent value="{leavebalance>/Sick}" withMargin="false" />
                       </TileContent>
                     </GenericTile>
-
                     <GenericTile
                       class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPaid"
                       header="Paid"
@@ -224,7 +256,7 @@
             </VBox>
           </ScrollContainer>
           <!-- My Leaves Page -->
-          <ScrollContainer id="page2">
+          <!-- <ScrollContainer id="page2">
             <VBox id="myLeaves" class="sapUiMediumMargin">
               <Panel headerText="My Leaves">
                 <content>
@@ -240,13 +272,12 @@
                           <m:Text text="{leaveType}"  />
                         </t:template>
                       </t:Column>
-
                     </t:columns>
                   </t:Table>
                 </content>
               </Panel>
             </VBox>
-          </ScrollContainer>
+          </ScrollContainer> -->
         </pages>
       </NavContainer>
     </tnt:mainContents>
