@@ -135,7 +135,7 @@ sap.ui.define(
         const leaveTypeId = this.getView()
           .byId("Leave")
           .getSelectedItem()
-          .getText();
+          .getKey();
         const reason = this.getView().byId("reason").getValue();
         if (!fromDateObj || !toDateObj || !leaveTypeId || !reason) {
           sap.m.MessageToast.show("Please fill all fields");
@@ -167,9 +167,9 @@ sap.ui.define(
 
             return;
           }
-
-          const oUserModel = new sap.ui.model.json.JSONModel(leaveTypes);
-          this.getOwnerComponent().setModel(oUserModel, "leavebalance");
+          MessageToast.show("Leave applied successfully");
+          this._resetApplyLeaveForm();
+          oModel.refresh();
         });
       },
       onnavigation(oEvent) {
@@ -404,6 +404,8 @@ sap.ui.define(
 
         return `${year}-${month}-${day}`;
       },
+
+         
       _resetApplyLeaveForm() {
         this.getView().byId("DP1").setValue("");
         this.getView().byId("DP2").setValue("");
