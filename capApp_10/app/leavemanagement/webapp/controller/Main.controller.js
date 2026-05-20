@@ -69,6 +69,21 @@ sap.ui.define([
         var empLeaveCount = aLeaveBalances.filter(
           (each) => each.employee_employeeId == this.empId,
         );
+        var leaveTypes = {};
+
+        empLeaveCount.forEach((each) => {
+            if (each.leaveType_leaveTypeId === 1) {
+              leaveTypes.Casual = each.remaningLeaves;
+            } else if (each.leaveType_leaveTypeId === 2) {
+              leaveTypes.Sick = each.remaningLeaves;
+            } else if (each.leaveType_leaveTypeId === 3) {
+              leaveTypes.Paid = each.remaningLeaves;
+            }
+          });
+
+        const oUserModel = new sap.ui.model.json.JSONModel(leaveTypes);
+        this.getOwnerComponent().setModel(oUserModel, "leavebalance");
+         
       });
     },
 
