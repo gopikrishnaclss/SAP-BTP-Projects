@@ -387,7 +387,7 @@
                       </content>
                   </Panel>
               </VBox>
-          </ScrollContainer>
+                    </ScrollContainer>
         </pages>
       </NavContainer>
     </tnt:mainContents>
