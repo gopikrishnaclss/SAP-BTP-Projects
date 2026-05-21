@@ -39,6 +39,8 @@ export default class leaveManagementService extends cds.ApplicationService {
         role: user.role,
         success: true,
         message: "Login successful",
+        location:user.location,
+        phNo:user.phNumber
       };
     });
     this.before("CREATE", "LeaveRequests", async (req) => {

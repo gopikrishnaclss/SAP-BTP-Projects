@@ -17,6 +17,8 @@ entity Employees : managed{
   joiningDate       : Date;
   isActive          : Boolean default true;
   role              : Association to Roles; 
+  location:String(100);
+  phNumber:Integer
 }
 entity LeaveType {
   key  leaveTypeId : Integer;
@@ -35,7 +37,6 @@ entity LeaveRequest {
   key leaveRequestId : UUID;
   employee           : Association to Employees;
   leaveType          : Association to LeaveType;
-
   fromDate           : Date;
   toDate             : Date;
   totalDays          : Integer;
@@ -44,6 +45,13 @@ entity LeaveRequest {
   appliedOn          : DateTime;
   approvedBy         : Association to Employees;
   comments           : String(500);
+}
+
+entity Holiday {
+  key holidayId : String(10);
+  date:Date;
+  day:String;
+  holiday:String
 }
 
 
