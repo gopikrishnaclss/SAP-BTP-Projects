@@ -35,6 +35,7 @@ entity LeaveRequest {
   key leaveRequestId : UUID;
   employee           : Association to Employees;
   leaveType          : Association to LeaveType;
+
   fromDate           : Date;
   toDate             : Date;
   totalDays          : Integer;

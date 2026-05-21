@@ -81,31 +81,28 @@ sap.ui.define(
           undefined,
           {
             $filter: `employee_employeeId eq '${this.empId}'`,
+            $expand: "leaveType",
           },
         );
         oLeaveBalanceBinding.requestContexts().then((aContexts) => {
           const aLeaveBalances = aContexts.map((oContext) =>
             oContext.getObject(),
           );
-          // var empLeaveCount = aLeaveBalances.filter(
-          //   (each) => each.employee_employeeId == this.empId,
-          // );
-          var leaveTypes = {};
 
-          aLeaveBalances.forEach((each) => {
-            if (each.leaveType_leaveTypeId === 1) {
-              leaveTypes.Casual = each.remaningLeaves;
-            } else if (each.leaveType_leaveTypeId === 2) {
-              leaveTypes.Sick = each.remaningLeaves;
-            } else if (each.leaveType_leaveTypeId === 3) {
-              leaveTypes.Paid = each.remaningLeaves;
-            }
+          // Transform array -> object
+          const oFormattedData = {};
+
+          aLeaveBalances.forEach((item) => {
+            const sLeaveType = item.leaveType.leaveType;
+
+            oFormattedData[sLeaveType] = item;
           });
 
-          const oleavebalanceModel = new sap.ui.model.json.JSONModel(
-            leaveTypes,
+          const oLeaveBalanceModel = new sap.ui.model.json.JSONModel(
+            oFormattedData,
           );
-          this.getOwnerComponent().setModel(oleavebalanceModel, "leavebalance");
+
+          this.getOwnerComponent().setModel(oLeaveBalanceModel, "leavebalance");
         });
       },
       _getLeaveRequests: function () {
@@ -117,13 +114,20 @@ sap.ui.define(
           undefined,
           {
             $filter: `employee_employeeId eq '${this.empId}'`,
-          },);
+            $expand: "leaveType",
+          },
+        );
         oLeaveRequestsBinding.requestContexts().then((aContexts) => {
           const aLeaveRequestsBalances = aContexts.map((oContext) =>
             oContext.getObject(),
           );
-          const oLeaveRequestsModel = new sap.ui.model.json.JSONModel(aLeaveRequestsBalances);
-          this.getOwnerComponent().setModel(oLeaveRequestsModel, "leaveRequest");
+          const oLeaveRequestsModel = new sap.ui.model.json.JSONModel(
+            aLeaveRequestsBalances,
+          );
+          this.getOwnerComponent().setModel(
+            oLeaveRequestsModel,
+            "leaveRequest",
+          );
         });
       },
       onApplyLeave() {

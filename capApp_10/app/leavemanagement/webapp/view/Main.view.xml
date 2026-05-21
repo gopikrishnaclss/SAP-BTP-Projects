@@ -76,8 +76,8 @@
                 <content>
                   <!-- Welcome Section -->
                   <VBox class="sapUiSmallMarginBottom">
-                    <Title text="Welcome Back, {currentUser>/firstName}" level="H6"/>
-                    <Text text="Manage your leaves efficiently"/>
+                    <Title text="Welcome Back, {currentUser>/firstName}" level="H6" />
+                    <Text text="Manage your leaves efficiently" />
                   </VBox>
                   <!-- Summary Cards -->
                   <HBox wrap="Wrap">
@@ -86,7 +86,8 @@
                       header="Casual Leave"
                       frameType="OneByHalf">
                       <TileContent>
-                        <NumericContent value="{leavebalance>/Casual}" />
+                        <NumericContent
+                          value="{leavebalance>/Casual/remaningLeaves}" />
                       </TileContent>
                     </GenericTile>
                     <GenericTile
@@ -94,7 +95,8 @@
                       header="Sick Leave"
                       frameType="OneByHalf">
                       <TileContent>
-                        <NumericContent value="{leavebalance>/Sick}" />
+                        <NumericContent
+                          value="{leavebalance>/Sick/remaningLeaves}" />
                       </TileContent>
                     </GenericTile>
                     <GenericTile
@@ -102,7 +104,8 @@
                       header="Paid Leave"
                       frameType="OneByHalf">
                       <TileContent>
-                        <NumericContent value="{leavebalance>/Paid}" />
+                        <NumericContent
+                          value="{leavebalance>/Paid/remaningLeaves}" />
                       </TileContent>
                     </GenericTile>
                     <GenericTile
@@ -139,7 +142,7 @@
                   <items>
                     <ColumnListItem>
                       <cells>
-                        <Text text="{leaveRequest>leaveType}" />
+                        <Text text="{leaveRequest>leaveType/leaveType}" />
                         <Text text="{leaveRequest>fromDate}" />
                         <Text text="{leaveRequest>toDate}" />
                         <Text text="{leaveRequest>status}" />
@@ -211,7 +214,8 @@
                       header="Casual"
                       frameType="OneByHalf">
                       <TileContent>
-                        <NumericContent value="{leavebalance>/Casual}" withMargin="false" />
+                        <NumericContent
+                          value="{leavebalance>/Casual/remaningLeaves}" />
                       </TileContent>
                     </GenericTile>
                     <GenericTile
@@ -219,7 +223,8 @@
                       header="Sick"
                       frameType="OneByHalf">
                       <TileContent>
-                        <NumericContent value="{leavebalance>/Sick}" withMargin="false" />
+                        <NumericContent
+                          value="{leavebalance>/Sick/remaningLeaves}" />
                       </TileContent>
                     </GenericTile>
                     <GenericTile
@@ -227,7 +232,8 @@
                       header="Paid"
                       frameType="OneByHalf">
                       <TileContent>
-                        <NumericContent value="{leavebalance>/Paid}" withMargin="false" />
+                        <NumericContent
+                          value="{leavebalance>/Paid/remaningLeaves}" />
                       </TileContent>
                     </GenericTile>
                     <GenericTile
