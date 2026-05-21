@@ -1,3 +1,5 @@
+import { second } from "@cap-js/hana/lib/cql-functions";
+
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast"
@@ -40,9 +42,12 @@ sap.ui.define([
                 if (result.success) {
                     const userData = {
                         firstName: result.firstName,
+                        lastName:result.lastName,
                         email: result.email,
                         Team: result.Team,
-                        employeeId: result.employeeId
+                        employeeId: result.employeeId,
+                        isActive:result.isActive,
+                        
                     };
                     // STORE SESSION
                     sessionStorage.setItem("isLoggedIn", "true");

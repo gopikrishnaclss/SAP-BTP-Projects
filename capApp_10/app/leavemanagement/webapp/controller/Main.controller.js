@@ -175,13 +175,13 @@ sap.ui.define(
         });
       },
       onnavigation: function (oEvent) {
-          const sKey = oEvent.getParameter("item").getKey();
-          const oNavContainer = this.byId("pageContainer");
-          switch (sKey) {
-              case "page1":
-                  oNavContainer.to(this.byId("page1"));
-                  break;
-          }
+        const sKey = oEvent.getParameter("item").getKey();
+        const oNavContainer = this.byId("pageContainer");
+        switch (sKey) {
+          case "page1":
+            oNavContainer.to(this.byId("page1"));
+            break;
+        }
       },
       pressUserIcon: async function (oEvent) {
         if (!this._oPopover) {
@@ -253,31 +253,9 @@ sap.ui.define(
         this.oChangePasswordDialog.close();
       },
       onHolidayListButtonPress: async function () {
-        const aHolidays = [
-          {
-            date: "01-01-2026",
-            day: "Thursday",
-            name: "New Year",
-          },
-          {
-            date: "26-01-2026",
-            day: "Monday",
-            name: "Republic Day",
-          },
-          {
-            date: "15-08-2026",
-            day: "Saturday",
-            name: "Independence Day",
-          },
-          {
-            date: "02-10-2026",
-            day: "Friday",
-            name: "Gandhi Jayanti",
-          },
-        ];
-        const oHolidayModel = new sap.ui.model.json.JSONModel({
-          holidays: aHolidays,
-        });
+        // const oHolidayModel = new sap.ui.model.json.JSONModel({
+        //   holidays: aHolidays,
+        // });
         if (!this.oHolidayDialog) {
           this.oHolidayDialog = await sap.ui.core.Fragment.load({
             name: "leavemanagement.fragments.HolidayList",
@@ -285,7 +263,7 @@ sap.ui.define(
           });
           this.getView().addDependent(this.oHolidayDialog);
         }
-        this.oHolidayDialog.setModel(oHolidayModel, "holiday");
+        // this.oHolidayDialog.setModel(oHolidayModel, "holiday");
         this.oHolidayDialog.open();
       },
       onCloseHolidayDialog: function () {
@@ -296,15 +274,28 @@ sap.ui.define(
           bExpanded = oSideNavigation.getExpanded();
         oSideNavigation.setExpanded(!bExpanded);
       },
-      handleChange: function (oEvent) {
-        ((oDP = oEvent.getSource()),
-          (sValue = oEvent.getParameter("value")),
-          (bValid = oEvent.getParameter("valid")));
-        this._iEvent++;
-        if (bValid) {
-          oDP.setValueState(ValueState.None);
-        } else {
-          oDP.setValueState(ValueState.Error);
+      handleChange: function () {
+        var oDP1 = this.byId("DP1");
+        var oDP2 = this.byId("DP2");
+        var oNoOfDays = this.byId("noOfDays");
+        var dFrom = oDP1.getDateValue();
+        var dTo = oDP2.getDateValue();
+        if (dFrom && dTo && dTo >= dFrom) {
+          var iDays = 0;
+          var dCur = new Date(dFrom);
+          while (dCur <= dTo) {
+            var iDay = dCur.getDay();
+            if (iDay !== 0 && iDay !== 6) { // skip Saturday & Sunday
+              iDays++;
+            }
+            dCur.setDate(dCur.getDate() + 1);
+          }
+          oNoOfDays.setValue(iDays);
+          oDP2.setValueState("None");
+        } else if (dFrom && dTo && dTo < dFrom) {
+          oNoOfDays.setValue("");
+          oDP2.setValueState("Error");
+          oDP2.setValueStateText("End date must be after start date");
         }
       },
       formatDateLocal(oDate) {
