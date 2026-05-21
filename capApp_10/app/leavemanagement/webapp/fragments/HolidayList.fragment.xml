@@ -9,24 +9,27 @@
         draggable="true"
         resizable="true">
         <content>
-            <Table items="{holiday>/holidays}">
+            <Table items="{/Holidays}">
                 <columns>
                     <Column>
                         <Text text="Date"/>
                     </Column>
+
                     <Column>
                         <Text text="Day"/>
                     </Column>
+
                     <Column>
                         <Text text="Holiday"/>
                     </Column>
                 </columns>
+
                 <items>
                     <ColumnListItem>
                         <cells>
-                            <Text text="{holiday>date}"/>
-                            <Text text="{holiday>day}"/>
-                            <Text text="{holiday>name}"/>
+                            <Text text="{date}"/>
+                            <Text text="{day}"/>
+                            <Text text="{holiday}"/>
                         </cells>
                     </ColumnListItem>
                 </items>
