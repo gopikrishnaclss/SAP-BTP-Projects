@@ -1,7 +1,7 @@
 <mvc:View controllerName="leavemanagement.controller.View1"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:m="sap.m"
-    xmlns:core="sap.ui.core">
+   >
   <m:Page showHeader="false" backgroundDesign="Transparent">
     <m:content>
         <m:FlexBox

@@ -125,22 +125,24 @@ sap.ui.define(
           );
         });
       },
+
       onApplyLeave() {
         const oModel = this.getOwnerComponent().getModel();
         const oUserModel = this.getOwnerComponent().getModel("currentUser");
-        var fromDateObj = this.getView().byId("DP1").getDateValue();
-        var toDateObj = this.getView().byId("DP2").getDateValue();
-        const leaveTypeId = this.getView()
-          .byId("Leave")
-          .getSelectedItem()
-          .getKey();
+        const empId = this.empId
+        const fromDateObj = this.getView().byId("DP1").getDateValue();
+        const toDateObj = this.getView().byId("DP2").getDateValue();
+        const leaveTypeId = this.getView().byId("Leave").getSelectedKey(); // ← fixed
         const reason = this.getView().byId("reason").getValue();
+
         if (!fromDateObj || !toDateObj || !leaveTypeId || !reason) {
           sap.m.MessageToast.show("Please fill all fields");
           return;
         }
-        const fromDate = this.formatDateLocal(fromDateObj);
-        const toDate = this.formatDateLocal(toDateObj);
+
+        const fromDate = fromDateObj.toISOString().split("T")[0];
+        const toDate = toDateObj.toISOString().split("T")[0];
+
         const oListBinding = oModel.bindList("/LeaveRequests");
         oListBinding.create({
           employee_employeeId: this.empId,
@@ -160,7 +162,7 @@ sap.ui.define(
 
           // Backend validation error exists
           if (aMessages.length > 0) {
-            const msg = aMessages[0].message;
+            const msg = aMessages[2].message;
             MessageToast.show(msg);
             return;
           }
@@ -269,13 +271,20 @@ sap.ui.define(
         var oNoOfDays = this.byId("noOfDays");
         var dFrom = oDP1.getDateValue();
         var dTo = oDP2.getDateValue();
-        // Wait until both dates are selected
-        if (!dFrom || !dTo) {
-          oNoOfDays.setValue("");
-          return;
-        }
-        // Validate: To Date must be after From Date
-        if (dTo < dFrom) {
+        if (dFrom && dTo && dTo >= dFrom) {
+          var iDays = 0;
+          var dCur = new Date(dFrom);
+          while (dCur <= dTo) {
+            var iDay = dCur.getDay();
+            if (iDay !== 0 && iDay !== 6) {
+              // skip Saturday & Sunday
+              iDays++;
+            }
+            dCur.setDate(dCur.getDate() + 1);
+          }
+          oNoOfDays.setValue(iDays);
+          oDP2.setValueState("None");
+        } else if (dFrom && dTo && dTo < dFrom) {
           oNoOfDays.setValue("");
           oDP2.setValueState("Error");
           oDP2.setValueStateText("End date must be after start date");
@@ -298,13 +307,13 @@ sap.ui.define(
         oNoOfDays.setValue(String(iDays));
       },
       onCancelLeave: function () {
-          this.byId("DP1").setValue("");
-          this.byId("DP1").setValueState("None");
-          this.byId("DP2").setValue("");
-          this.byId("DP2").setValueState("None");
-          this.byId("noOfDays").setValue("");
-          this.byId("Leave").setValue("");
-          this.byId("reason").setValue("");
+        this.byId("DP1").setValue("");
+        this.byId("DP1").setValueState("None");
+        this.byId("DP2").setValue("");
+        this.byId("DP2").setValueState("None");
+        this.byId("noOfDays").setValue("");
+        this.byId("Leave").setValue("");
+        this.byId("reason").setValue("");
       },
       formatDateLocal(oDate) {
         // Accept native Date, UI5Date or objects that expose a Date value
@@ -329,12 +338,13 @@ sap.ui.define(
         return `${year}-${month}-${day}`;
       },
       _resetApplyLeaveForm() {
-        this.getView().byId("DP1").setValue("");
-        this.getView().byId("DP2").setValue("");
+        this.getView().byId("DP1").setDateValue(null);
+        this.getView().byId("DP2").setDateValue(null);
         this.getView().byId("Leave").setSelectedKey("");
         this.getView().byId("reason").setValue("");
+        this.getView().byId("noOfDays").setValue("");
         this._getLeaveBalance();
-      }
+      },
     });
-  },
+  }
 );
