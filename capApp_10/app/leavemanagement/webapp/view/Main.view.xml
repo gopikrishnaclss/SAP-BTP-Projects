@@ -145,7 +145,14 @@
                         <Text text="{leaveRequest>leaveType/leaveType}" />
                         <Text text="{leaveRequest>fromDate}" />
                         <Text text="{leaveRequest>toDate}" />
-                        <Text text="{leaveRequest>status}" />
+                        <ObjectStatus
+                          text="{leaveRequest>status}"
+                          state="{
+                              = ${leaveRequest>status} === 'APPROVED' ? 'Success' :
+                                ${leaveRequest>status} === 'PENDING' ? 'Warning' :
+                                ${leaveRequest>status} === 'REJECTED' ? 'Error' :
+                                'None'
+                          }"/>
                       </cells>
                     </ColumnListItem>
                   </items>
@@ -155,239 +162,211 @@
           </ScrollContainer>
           <!-- Apply Leave Page -->
           <ScrollContainer id="page1" height="100%" vertical="true">
-    <VBox id="applyLeaveSection" class="sapUiSmallMargin">
-
-        <!-- Main Layout: Sidebar + Form using HBox -->
-        <Panel headerText="Apply Leave">
-            <content>
-                <HBox>
-
-                    <!-- LEFT SIDEBAR: Leave Balance -->
-                    <VBox
-                        width="20%"
-                        class="sapUiSmallMargin">
-
-                        <Title text="Leave Balance" level="H6" class="sapUiTinyMarginBottom" />
-
-                        <!-- Casual -->
-                        <HBox
-                            justifyContent="SpaceBetween"
-                            alignItems="Center"
-                            class="sapUiTinyMarginBottom balanceSidebarItem balanceSidebarActive">
-                            <HBox alignItems="Center">
-                                <core:Icon src="sap-icon://sun" class="sapUiTinyMarginEnd casualIcon" />
-                                <VBox>
-                                    <Text text="Casual" class="balanceSidebarLabel" />
-                                    <Text text="Selected" class="balanceSidebarSub" />
-                                </VBox>
-                            </HBox>
-                            <ObjectNumber
-                                number="{leavebalance>/Casual/remaningLeaves}"
-                                state="Success" />
-                        </HBox>
-
-                        <!-- Sick -->
-                        <HBox
-                            justifyContent="SpaceBetween"
-                            alignItems="Center"
-                            class="sapUiTinyMarginBottom balanceSidebarItem">
-                            <HBox alignItems="Center">
-                                <core:Icon src="sap-icon://stethoscope" class="sapUiTinyMarginEnd sickIcon" />
-                                <Text text="Sick" class="balanceSidebarLabel" />
-                            </HBox>
-                            <ObjectNumber
-                                number="{leavebalance>/Sick/remaningLeaves}"
-                                state="Error" />
-                        </HBox>
-
-                        <!-- Paid -->
-                        <HBox
-                            justifyContent="SpaceBetween"
-                            alignItems="Center"
-                            class="sapUiTinyMarginBottom balanceSidebarItem">
-                            <HBox alignItems="Center">
-                                <core:Icon src="sap-icon://time-off" class="sapUiTinyMarginEnd paidIcon" />
-                                <Text text="Paid" class="balanceSidebarLabel" />
-                            </HBox>
-                            <ObjectNumber
-                                number="{leavebalance>/Paid/remaningLeaves}"
-                                state="Warning" />
-                        </HBox>
-
-                        <!-- Divider -->
-                        <HBox class="sapUiTinyMarginTop sapUiTinyMarginBottom">
-                            <core:HTML content="&lt;hr style='width:100%;border:none;border-top:1px solid #e5e5e5;'/&gt;" />
-                        </HBox>
-
-                        <!-- Pending -->
-                        <HBox
-                            justifyContent="SpaceBetween"
-                            alignItems="Center"
-                            class="sapUiTinyMarginBottom">
-                            <HBox alignItems="Center">
-                                <core:Icon src="sap-icon://pending" class="sapUiTinyMarginEnd pendingIcon" />
-                                <Text text="Pending" class="balanceSidebarLabel" />
-                            </HBox>
-                            <ObjectStatus
-                                text="1"
-                                state="Warning" />
-                        </HBox>
-
-                    </VBox>
-
-                    <!-- VERTICAL DIVIDER -->
-                    <core:HTML content="&lt;div style='width:1px;background:#e5e5e5;margin:8px 12px;'&gt;&lt;/div&gt;" />
-
-                    <!-- RIGHT SIDE: Apply Leave Form -->
-                    <VBox width="78%" class="sapUiSmallMargin">
-
-                        <!-- Row 1: From Date | To Date | No. of Days | Leave Type -->
-                        <HBox>
-                            <VBox width="25%">
-                                <Label text="From Date:" labelFor="DP1" design="Bold" />
-                                <DatePicker
-                                    id="DP1"
-                                    placeholder="DD-MM-YYYY"
-                                    change="handleChange"
-                                    width="95%"
-                                    class="sapUiSmallMarginBottom" />
-                            </VBox>
-                            <VBox class="sapUiSmallMarginBegin" width="25%">
-                                <Label text="To Date:" labelFor="DP2" design="Bold" />
-                                <DatePicker
-                                    id="DP2"
-                                    placeholder="DD-MM-YYYY"
-                                    change="handleChange"
-                                    width="95%"
-                                    valueState="{/toDateState}"
-                                    valueStateText="End date must be after start date"
-                                    class="sapUiSmallMarginBottom" />
-                            </VBox>
-                            <VBox class="sapUiSmallMarginBegin" width="25%">
-                                <Label text="No. of Days:" labelFor="noOfDays" design="Bold" />
-                                <Input
-                                    id="noOfDays"
-                                    value="{/noOfDays}"
-                                    editable="false"
-                                    width="95%"
-                                    class="sapUiSmallMarginBottom" />
-                            </VBox>
-                            <VBox class="sapUiSmallMarginBegin" width="25%">
-                                <Label text="Leave Type:" labelFor="Leave" design="Bold" />
-                                <ComboBox
-                                    id="Leave"
-                                    width="95%"
-                                    class="sapUiSmallMarginBottom"
-                                    items="{
-                                        path: '/LeaveTypes',
-                                        sorter: { path: 'leaveType' }
-                                    }">
-                                    <core:Item key="{leaveTypeId}" text="{leaveType}" />
-                                </ComboBox>
-                            </VBox>
-                        </HBox>
-
-                        <!-- Row 2: Reason -->
-                        <VBox class="sapUiSmallMarginTop">
-                            <Label text="Reason:" labelFor="reason" design="Bold" />
-                            <TextArea
-                                id="reason"
-                                rows="3"
-                                placeholder="Briefly describe the reason for your leave..."
-                                width="100%" />
-                        </VBox>
-
-                        <!-- Row 3: Buttons -->
-                        <HBox justifyContent="End" class="sapUiSmallMarginTop">
-                            <Button
-                                text="Cancel"
-                                type="Default"
-                                press="onCancelLeave"
-                                class="sapUiSmallMarginEnd" />
-                            <Button
-                                text="Submit Request"
-                                type="Emphasized"
-                                icon="sap-icon://send"
-                                press="onApplyLeave" />
-                        </HBox>
-
-                    </VBox>
-                </HBox>
-            </content>
-        </Panel>
-
-    </VBox>
-</ScrollContainer>
-          <!-- Employee Profile Page -->
-          <ScrollContainer id="page2" height="100%" vertical="true">
-              <VBox class="sapUiMediumMargin">
-                  <!-- Profile Header -->
-                  <Panel headerText="Employee Profile">
+              <VBox id="applyLeaveSection" class="sapUiSmallMargin">
+                  <Panel headerText="Apply Leave">
                       <content>
-                          <HBox alignItems="Center" class="sapUiMediumMarginBottom">
-                              <!-- Profile Avatar -->
-                              <Avatar
-                                  displaySize="XL"
-                                  initials="{= ${currentUser>/firstName}.substring(0,1) }"
-                                  class="sapUiMediumMarginEnd" />
-                              <!-- Basic Details -->
-                              <VBox>
-                                  <Title
-                                      text="{currentUser>/firstName}"
-                                      level="H3" />
-                                  <Text
-                                      text="{currentUser>/email}" />
-                                  <ObjectStatus
-                                      text="Active Employee"
-                                      state="Success"
-                                      class="sapUiTinyMarginTop" />
+                          <HBox alignItems="Start" class="sapUiSmallMargin">
+                              <!-- ── LEFT SIDEBAR ── -->
+                              <VBox width="220px" class="sidebarBox">
+                                  <Title text="Leave Balance" level="H6" class="sapUiTinyMarginBottom" />
+                                  <!-- Casual -->
+                                  <HBox alignItems="Center" class="accentItem sapUiTinyMarginBottom">
+                                      <core:HTML content="&lt;div class='accentBar accentGreen'&gt;&lt;/div&gt;" />
+                                      <VBox class="accentInfo sapUiTinyMarginBegin">
+                                          <Text text="Casual" class="accentName" />
+                                          <Text text="{leavebalance>/Casual/remaningLeaves}" class="accentNum accentNumGreen" />
+                                      </VBox>
+                                      <VBox>
+                                          <Text text="days left" class="accentUnit" />
+                                          <Text text="{= 'of ' + ${leavebalance>/Casual/totalLeaves}}" class="accentOf accentOfGreen" />
+                                      </VBox>
+                                  </HBox>
+                                  <!-- Sick -->
+                                  <HBox alignItems="Center" class="accentItem sapUiTinyMarginBottom">
+                                      <core:HTML content="&lt;div class='accentBar accentPurple'&gt;&lt;/div&gt;" />
+                                      <VBox class="accentInfo sapUiTinyMarginBegin">
+                                          <Text text="Sick" class="accentName" />
+                                          <Text text="{leavebalance>/Sick/remaningLeaves}" class="accentNum accentNumPurple" />
+                                      </VBox>
+                                      <VBox>
+                                          <Text text="days left" class="accentUnit" />
+                                          <Text text="{= 'of ' + ${leavebalance>/Sick/totalLeaves}}" class="accentOf accentOfPurple" />
+                                      </VBox>
+                                  </HBox>
+                                  <!-- Paid -->
+                                  <HBox alignItems="Center" class="accentItem sapUiTinyMarginBottom">
+                                      <core:HTML content="&lt;div class='accentBar accentAmber'&gt;&lt;/div&gt;" />
+                                      <VBox class="accentInfo sapUiTinyMarginBegin">
+                                          <Text text="Paid" class="accentName" />
+                                          <Text text="{leavebalance>/Paid/remaningLeaves}" class="accentNum accentNumAmber" />
+                                      </VBox>
+                                      <VBox>
+                                          <Text text="days left" class="accentUnit" />
+                                          <Text text="{= 'of ' + ${leavebalance>/Paid/totalLeaves}}" class="accentOf accentOfAmber" />
+                                      </VBox>
+                                  </HBox>
+                                  <!-- Divider -->
+                                  <core:HTML content="&lt;hr style='border:none;border-top:1px solid #e5e5e5;margin:4px 0 8px 0;'/&gt;" />
+                                  <!-- Pending -->
+                                  <HBox alignItems="Center" class="accentItemPending">
+                                      <core:HTML content="&lt;div class='accentBar accentCoral'&gt;&lt;/div&gt;" />
+                                      <VBox class="accentInfo sapUiTinyMarginBegin">
+                                          <Text text="Pending" class="accentName" />
+                                      </VBox>
+                                      <Text text="1 request" class="pendingBadge" />
+                                  </HBox>
+
+                              </VBox>
+                              <!-- ── VERTICAL DIVIDER ── -->
+                              <core:HTML content="&lt;div style='width:1px;background-color:#e5e5e5;align-self:stretch;margin:0 16px;'&gt;&lt;/div&gt;" />
+                              <!-- ── RIGHT FORM ── -->
+                              <VBox width="100%">
+                                  <!-- Row 1: 4 fields -->
+                                  <HBox width="100%" class="sapUiTinyMarginBottom">
+                                      <VBox width="25%">
+                                          <Label text="From Date:" labelFor="DP1" design="Bold" />
+                                          <DatePicker
+                                              id="DP1"
+                                              placeholder="DD-MM-YYYY"
+                                              change="handleChange"
+                                              width="95%" />
+                                      </VBox>
+                                      <VBox width="25%">
+                                          <Label text="To Date:" labelFor="DP2" design="Bold" />
+                                          <DatePicker
+                                              id="DP2"
+                                              placeholder="DD-MM-YYYY"
+                                              change="handleChange"
+                                              valueState="{/toDateState}"
+                                              valueStateText="End date must be after start date"
+                                              width="95%" />
+                                      </VBox>
+                                      <VBox width="25%">
+                                          <Label text="No. of Days:" labelFor="noOfDays" design="Bold" />
+                                          <Input
+                                              id="noOfDays"
+                                              editable="false"
+                                              width="95%" />
+                                      </VBox>
+                                      <VBox width="25%">
+                                          <Label text="Leave Type:" labelFor="Leave" design="Bold" />
+                                          <ComboBox
+                                              id="Leave"
+                                              width="95%"
+                                              items="{
+                                                  path: '/LeaveTypes',
+                                                  sorter: { path: 'leaveType' }
+                                              }">
+                                              <core:Item key="{leaveTypeId}" text="{leaveType}" />
+                                          </ComboBox>
+                                      </VBox>
+                                  </HBox>
+                                  <!-- Row 2: Reason -->
+                                  <VBox class="sapUiSmallMarginTop">
+                                      <Label text="Reason:" labelFor="reason" design="Bold" />
+                                      <TextArea
+                                          id="reason"
+                                          rows="3"
+                                          placeholder="Reason for your leave..."
+                                          width="100%" />
+                                  </VBox>
+                                  <!-- Row 3: Buttons -->
+                                  <HBox justifyContent="End" class="sapUiSmallMarginTop">
+                                      <Button
+                                          text="Clear"
+                                          type="Default"
+                                          press="onCancelLeave"
+                                          class="sapUiSmallMarginEnd" />
+                                      <Button
+                                          text="Apply"
+                                          type="Emphasized"
+                                          press="onApplyLeave" />
+                                  </HBox>
                               </VBox>
                           </HBox>
-                          <!-- Employee Information -->
-                          <f:SimpleForm
-                              editable="false"
-                              layout="ResponsiveGridLayout"
-                              columnsXL="2"
-                              columnsL="2"
-                              columnsM="1">
-                              <Label text="Employee ID" />
-                              <Text text="{currentUser>/employeeId}" />
-                              <Label text="Team" />
-                              <Text text="{currentUser>/Team}" />
-                              <Label text="Email" />
-                              <Text text="{currentUser>/email}" />
-                              <Label text="Designation" />
-                              <Text text="SAP Fiori Developer" />
-                              <Label text="Location" />
-                              <Text text="Chennai" />
-                              <Label text="Joining Date" />
-                              <Text text="10-Jan-2025" />
-                          </f:SimpleForm>
-                      </content>
-                  </Panel>
-                  <!-- Contact Information -->
-                  <Panel
-                      headerText="Contact Information"
-                      class="sapUiMediumMarginTop">
-                      <content>
-                          <List>
-                              <StandardListItem
-                                  title="Phone"
-                                  description="+91 9876543210"
-                                  icon="sap-icon://phone" />
-                              <StandardListItem
-                                  title="Email"
-                                  description="{currentUser>/email}"
-                                  icon="sap-icon://email" />
-                              <StandardListItem
-                                  title="Location"
-                                  description="Chennai"
-                                  icon="sap-icon://map" />
-                          </List>
                       </content>
                   </Panel>
               </VBox>
-                    </ScrollContainer>
+          </ScrollContainer>
+          <!-- Employee Profile Page -->
+          <ScrollContainer id="page2" height="100%" vertical="true">
+            <VBox class="sapUiMediumMargin">
+                <!-- Profile Header -->
+                <Panel headerText="Employee Profile" class="">
+                    <content>
+                        <!-- Top Profile Section -->
+                        <HBox
+                            alignItems="Center"
+                            class="sapUiMediumMarginBottom">
+                            <!-- Avatar -->
+                            <Avatar
+                                displaySize="XL"
+                                initials="{= ${currentUser>/firstName}.substring(0,1) + ${currentUser>/lastName}.substring(0,1) }"
+                                class="sapUiLargeMarginEnd profileAvatar" />
+                            <!-- User Details -->
+                            <VBox>
+                                <Title
+                                    text="{= ${currentUser>/firstName} + ' ' + ${currentUser>/lastName} }"
+                                    level="H2" />
+                                <Text
+                                    text="{currentUser>/email}"
+                                    class="sapUiTinyMarginTop" />
+                                <ObjectStatus
+                                    text="{= ${currentUser>/isActive} ? 'Active Employee' : 'Inactive Employee' }"
+                                    state="{= ${currentUser>/isActive} ? 'Success' : 'Error' }"
+                                    class="sapUiSmallMarginTop" />
+                            </VBox>
+                        </HBox>
+                        <!-- Details Section -->
+                        <VBox class="profileDetailsContainer">
+                          <HBox class="profileRow" alignItems="Center">
+                              <Label text="Employee ID" width="180px" class="profileLabel"/>
+                              <Text text="{currentUser>/employeeId}" class="profileValue"/>
+                          </HBox>
+                          <HBox class="profileRow" alignItems="Center">
+                              <Label text="First Name" width="180px" class="profileLabel"/>
+                              <Text text="{currentUser>/firstName}" class="profileValue"/>
+                          </HBox>
+                          <HBox class="profileRow" alignItems="Center">
+                              <Label text="Last Name" width="180px" class="profileLabel"/>
+                              <Text text="{currentUser>/lastName}" class="profileValue"/>
+                          </HBox>
+                          <HBox class="profileRow" alignItems="Center">
+                              <Label text="Team" width="180px" class="profileLabel"/>
+                              <Text text="{currentUser>/Team}" class="profileValue"/>
+                          </HBox>
+                          <HBox class="profileRow" alignItems="Center">
+                              <Label text="Designation" width="180px" class="profileLabel"/>
+                              <Text text="SAP Fiori Developer" class="profileValue"/>
+                          </HBox>
+                          <HBox class="profileRow" alignItems="Center">
+                              <Label text="Joining Date" width="180px" class="profileLabel"/>
+                              <Text text="10-Jan-2025" class="profileValue"/>
+                          </HBox>
+                      </VBox>
+                    </content>
+                </Panel>
+                <!-- Contact Information -->
+                <Panel headerText="Contact Information" class="sapUiMediumMarginTop">
+                    <content>
+                        <List>
+                            <StandardListItem
+                                title="Email"
+                                description="{currentUser>/email}"
+                                icon="sap-icon://email" />
+                            <StandardListItem
+                                title="Location"
+                                description="{currentUser>/location}"
+                                icon="sap-icon://map" />
+                            <StandardListItem
+                                title="Phone"
+                                description="+91 9876543210"
+                                icon="sap-icon://phone" />
+                        </List>
+                    </content>
+                </Panel>
+            </VBox>
+          </ScrollContainer>
         </pages>
       </NavContainer>
     </tnt:mainContents>

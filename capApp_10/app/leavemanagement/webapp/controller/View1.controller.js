@@ -1,4 +1,3 @@
-import { second } from "@cap-js/hana/lib/cql-functions";
 
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
@@ -47,7 +46,9 @@ sap.ui.define([
                         Team: result.Team,
                         employeeId: result.employeeId,
                         isActive:result.isActive,
-                        
+                        role:result.role,
+                        location:result.location,
+                        phNo:result.phNumber
                     };
                     // STORE SESSION
                     sessionStorage.setItem("isLoggedIn", "true");

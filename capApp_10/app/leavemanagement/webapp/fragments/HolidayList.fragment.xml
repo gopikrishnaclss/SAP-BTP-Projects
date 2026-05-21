@@ -14,16 +14,13 @@
                     <Column>
                         <Text text="Date"/>
                     </Column>
-
                     <Column>
                         <Text text="Day"/>
                     </Column>
-
                     <Column>
                         <Text text="Holiday"/>
                     </Column>
                 </columns>
-
                 <items>
                     <ColumnListItem>
                         <cells>

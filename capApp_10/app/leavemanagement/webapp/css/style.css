@@ -143,3 +143,120 @@
 .clickableTitle {
     cursor: pointer;
 }
+
+/* SIDEBAR — Leave Balance (Option C) */
+
+/* Container */
+.sidebarBox {
+    padding: 0 8px 12px 0;
+    min-width: 200px;
+    box-sizing: border-box;
+}
+
+/* ── Accent item rows ── */
+.accentItem {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 8px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+.accentItemPending {
+    background-color: transparent;
+    border: 1px solid #FAC775;
+    border-radius: 8px;
+    padding: 8px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+/* ── Colored left accent bars ── */
+.accentBar {
+    width: 3px;
+    height: 36px;
+    border-radius: 99px;
+    flex-shrink: 0;
+}
+
+.accentGreen  { background-color: #639922; }
+.accentPurple { background-color: #7F77DD; }
+.accentAmber  { background-color: #BA7517; }
+.accentCoral  { background-color: #D85A30; }
+
+/* ── Label & number inside each row ── */
+.accentInfo {
+    flex: 1;
+}
+
+.accentName {
+    font-size: 12px !important;
+    color: #6a6d70 !important;
+    margin-bottom: 1px;
+}
+
+.accentNum {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    line-height: 1.1 !important;
+}
+
+.accentNumGreen  { color: #27500A !important; }
+.accentNumPurple { color: #3C3489 !important; }
+.accentNumAmber  { color: #633806 !important; }
+
+/* ── Right-side quota ("days left / of N") ── */
+.accentUnit {
+    font-size: 11px !important;
+    color: #6a6d70 !important;
+    text-align: right !important;
+    line-height: 1.4 !important;
+}
+
+.accentOf {
+    font-size: 11px !important;
+    text-align: right !important;
+    line-height: 1.4 !important;
+}
+
+.accentOfGreen  { color: #639922 !important; }
+.accentOfPurple { color: #7F77DD !important; }
+.accentOfAmber  { color: #BA7517 !important; }
+
+/* ── Pending badge pill ── */
+.pendingBadge {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    background-color: #FAEEDA;
+    color: #633806 !important;
+    padding: 2px 8px;
+    border-radius: 99px;
+    white-space: nowrap;
+}
+
+
+.profileDetailsContainer {
+    background: rgba(255,255,255,0.65);
+    border-radius: 14px;
+    padding: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.profileRow {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.profileLabel {
+    font-weight: 600;
+    color: #64748b;
+}
+
+.profileValue {
+    font-weight: 500;
+    color: #1e293b;
+}

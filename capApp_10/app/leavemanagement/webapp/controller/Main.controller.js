@@ -88,20 +88,15 @@ sap.ui.define(
           const aLeaveBalances = aContexts.map((oContext) =>
             oContext.getObject(),
           );
-
           // Transform array -> object
           const oFormattedData = {};
-
           aLeaveBalances.forEach((item) => {
             const sLeaveType = item.leaveType.leaveType;
-
             oFormattedData[sLeaveType] = item;
           });
-
           const oLeaveBalanceModel = new sap.ui.model.json.JSONModel(
             oFormattedData,
           );
-
           this.getOwnerComponent().setModel(oLeaveBalanceModel, "leavebalance");
         });
       },
@@ -194,8 +189,8 @@ sap.ui.define(
         this._oPopover.openBy(oEvent.getSource());
       },
       onListItemPress: function (oEvent) {
-        const sId = oEvent.getSource().getId();
         const oNavContainer = this.byId("pageContainer");
+        const sId = oEvent.getSource().getId();
         switch (sId) {
           case "Profile":
             oNavContainer.to(this.byId("page2"));
@@ -205,17 +200,11 @@ sap.ui.define(
             MessageToast.show("Logged out successfully");
             this.getOwnerComponent().getRouter().navTo("RouteView1", {}, true);
             break;
-          case "About":
-            MessageToast.show("About clicked");
-            break;
-          case "Settings":
-            MessageToast.show("Settings clicked");
-            break;
           case "ChangePassword":
             this.onChangePasswordFragmentOpen();
             break;
           default:
-            MessageToast.show(sTitle + " clicked");
+            MessageToast.show(sId + " clicked");
             break;
         }
       },
@@ -280,23 +269,42 @@ sap.ui.define(
         var oNoOfDays = this.byId("noOfDays");
         var dFrom = oDP1.getDateValue();
         var dTo = oDP2.getDateValue();
-        if (dFrom && dTo && dTo >= dFrom) {
-          var iDays = 0;
-          var dCur = new Date(dFrom);
-          while (dCur <= dTo) {
-            var iDay = dCur.getDay();
-            if (iDay !== 0 && iDay !== 6) { // skip Saturday & Sunday
-              iDays++;
-            }
-            dCur.setDate(dCur.getDate() + 1);
-          }
-          oNoOfDays.setValue(iDays);
-          oDP2.setValueState("None");
-        } else if (dFrom && dTo && dTo < dFrom) {
+        // Wait until both dates are selected
+        if (!dFrom || !dTo) {
+          oNoOfDays.setValue("");
+          return;
+        }
+        // Validate: To Date must be after From Date
+        if (dTo < dFrom) {
           oNoOfDays.setValue("");
           oDP2.setValueState("Error");
           oDP2.setValueStateText("End date must be after start date");
+          return;
         }
+        // Clear error state if valid
+        oDP2.setValueState("None");
+        oDP2.setValueStateText("");
+        // Count working days (Mon–Fri only, skip weekends)
+        var iDays = 0;
+        var dCur = new Date(dFrom.getTime()); // clone to avoid mutation
+        while (dCur <= dTo) {
+          var iDay = dCur.getDay();
+          if (iDay !== 0 && iDay !== 6) {
+            iDays++;
+          }
+          dCur.setDate(dCur.getDate() + 1);
+        }
+        // Set value directly on the Input control
+        oNoOfDays.setValue(String(iDays));
+      },
+      onCancelLeave: function () {
+          this.byId("DP1").setValue("");
+          this.byId("DP1").setValueState("None");
+          this.byId("DP2").setValue("");
+          this.byId("DP2").setValueState("None");
+          this.byId("noOfDays").setValue("");
+          this.byId("Leave").setValue("");
+          this.byId("reason").setValue("");
       },
       formatDateLocal(oDate) {
         // Accept native Date, UI5Date or objects that expose a Date value
@@ -326,7 +334,7 @@ sap.ui.define(
         this.getView().byId("Leave").setSelectedKey("");
         this.getView().byId("reason").setValue("");
         this._getLeaveBalance();
-      },
+      }
     });
   },
 );
