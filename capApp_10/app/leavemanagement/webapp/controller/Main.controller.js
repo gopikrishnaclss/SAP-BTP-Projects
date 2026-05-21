@@ -130,22 +130,24 @@ sap.ui.define(
           );
         });
       },
+      
       onApplyLeave() {
         const oModel = this.getOwnerComponent().getModel();
         const oUserModel = this.getOwnerComponent().getModel("currentUser");
-        var fromDateObj = this.getView().byId("DP1").getDateValue();
-        var toDateObj = this.getView().byId("DP2").getDateValue();
-        const leaveTypeId = this.getView()
-          .byId("Leave")
-          .getSelectedItem()
-          .getKey();
+        const empId =this.empId
+        const fromDateObj = this.getView().byId("DP1").getDateValue();
+        const toDateObj = this.getView().byId("DP2").getDateValue();
+        const leaveTypeId = this.getView().byId("Leave").getSelectedKey(); // ← fixed
         const reason = this.getView().byId("reason").getValue();
+
         if (!fromDateObj || !toDateObj || !leaveTypeId || !reason) {
           sap.m.MessageToast.show("Please fill all fields");
           return;
         }
-        const fromDate = this.formatDateLocal(fromDateObj);
-        const toDate = this.formatDateLocal(toDateObj);
+
+        const fromDate = fromDateObj.toISOString().split("T")[0];
+        const toDate = toDateObj.toISOString().split("T")[0];
+
         const oListBinding = oModel.bindList("/LeaveRequests");
         oListBinding.create({
           employee_employeeId: this.empId,
@@ -165,7 +167,7 @@ sap.ui.define(
 
           // Backend validation error exists
           if (aMessages.length > 0) {
-            const msg = aMessages[0].message;
+            const msg = aMessages[2].message;
             MessageToast.show(msg);
             return;
           }
@@ -285,7 +287,8 @@ sap.ui.define(
           var dCur = new Date(dFrom);
           while (dCur <= dTo) {
             var iDay = dCur.getDay();
-            if (iDay !== 0 && iDay !== 6) { // skip Saturday & Sunday
+            if (iDay !== 0 && iDay !== 6) {
+              // skip Saturday & Sunday
               iDays++;
             }
             dCur.setDate(dCur.getDate() + 1);
@@ -320,13 +323,14 @@ sap.ui.define(
 
         return `${year}-${month}-${day}`;
       },
-      _resetApplyLeaveForm() {
-        this.getView().byId("DP1").setValue("");
-        this.getView().byId("DP2").setValue("");
-        this.getView().byId("Leave").setSelectedKey("");
-        this.getView().byId("reason").setValue("");
-        this._getLeaveBalance();
-      },
+     _resetApplyLeaveForm() {
+  this.getView().byId("DP1").setDateValue(null);
+  this.getView().byId("DP2").setDateValue(null);
+  this.getView().byId("Leave").setSelectedKey("");
+  this.getView().byId("reason").setValue("");
+  this.getView().byId("noOfDays").setValue("");
+  this._getLeaveBalance();
+},
     });
   },
 );

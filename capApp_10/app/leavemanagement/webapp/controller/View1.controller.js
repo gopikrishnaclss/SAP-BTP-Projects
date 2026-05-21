@@ -1,5 +1,3 @@
-import { second } from "@cap-js/hana/lib/cql-functions";
-
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast"

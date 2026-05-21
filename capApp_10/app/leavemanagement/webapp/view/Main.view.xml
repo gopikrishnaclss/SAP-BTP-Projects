@@ -247,6 +247,7 @@
                                 <Label text="From Date:" labelFor="DP1" design="Bold" />
                                 <DatePicker
                                     id="DP1"
+                                    
                                     placeholder="DD-MM-YYYY"
                                     change="handleChange"
                                     width="95%"
