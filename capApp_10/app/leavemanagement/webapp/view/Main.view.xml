@@ -3,6 +3,7 @@
   xmlns:mvc="sap.ui.core.mvc"
   xmlns:tnt="sap.tnt"
   xmlns:core="sap.ui.core"
+  xmlns:f="sap.ui.layout.form"
   xmlns:t="sap.ui.table"
   xmlns:m="sap.m">
   <tnt:ToolPage id="toolPage">
@@ -51,8 +52,8 @@
             enabled="{sideNav>enabled}"
             expanded="{sideNav>expanded}"
             items="{sideNav>items}"
-            selectable="{= ${sideNav>items}.length > 3}"
-            key="{key}">
+            selectable="{= ${sideNav>items}.length > 0}"
+            key="{sideNav>key}">
             <tnt:NavigationListItem
               text="{sideNav>title}"
               key="{sideNav>key}"
@@ -152,49 +153,57 @@
           <!-- Apply Leave Page -->
           <ScrollContainer id="page1">
             <VBox id="applyLeaveSection" class="sapUiSmallMargin">
-              <Panel headerText="Apply Leave" class="sapUiSmallMargin">
-                <content>
-                  <HBox class="sapUiSmallMargin">
-                    <VBox width="33.3%">
-                      <Label text="From Date: " labelFor="DP1" />
-                      <DatePicker
-                        id="DP1"
-                        placeholder="Enter Date"
-                        displayFormat="dd-MM-yyyy"
-                        change=".handleChange"
-                        class="sapUiSmallMarginBottom" />
-                    </VBox>
-                    <VBox class="sapUiSmallMarginBegin" width="33.3%">
-                      <Label text="To Date: " labelFor="DP2" />
-                      <DatePicker
-                        id="DP2"
-                        placeholder="Enter Date"
-                        change=".handleChange"
-                        class="sapUiSmallMarginBottom" />
-                    </VBox>
-                    <VBox class="sapUiSmallMarginBegin" width="33.3%">
-                      <Label text="Leave" labelFor="Leave" />
-                      <HBox>
-                        <ComboBox
-                          id="Leave"
-                          items="{
-                          path: '/LeaveTypes',
-                          sorter: { path: 'leaveType' }
-                        }">
-                          <core:Item key="{leaveTypeId}" text="{leaveType}" />
-                        </ComboBox>
-                        <Button class="sapUiSmallMarginBegin" type="Emphasized" text="Apply"
-                          press="onApplyLeave" />
+              <Panel headerText="Apply Leave" class="">
+                  <content>
+                      <HBox class="sapUiSmallMargin">
+                          <VBox width="33.3%">
+                              <Label text="From Date: " labelFor="DP1" />
+                              <DatePicker
+                                  id="DP1"
+                                  placeholder="Enter Date"
+                                  change="handleChange"
+                                  class="sapUiSmallMarginBottom" />
+                          </VBox>
+                          <VBox class="sapUiSmallMarginBegin" width="33.3%">
+                              <Label text="To Date: " labelFor="DP2" />
+                              <DatePicker
+                                  id="DP2"
+                                  placeholder="Enter Date"
+                                  change="handleChange"
+                                  class="sapUiSmallMarginBottom" />
+                          </VBox>
+                          <VBox class="sapUiSmallMarginBegin" width="33.3%">
+                              <Label text="Leave" labelFor="Leave" />
+                              <ComboBox
+                                  id="Leave"
+                                  width="100%"
+                                  items="{
+                                      path: '/LeaveTypes',
+                                      sorter: { path: 'leaveType' }
+                                  }">
+                                  <core:Item
+                                      key="{leaveTypeId}"
+                                      text="{leaveType}" />
+                              </ComboBox>
+                          </VBox>
                       </HBox>
-                    </VBox>
-                  </HBox>
-                  <VBox class="sapUiSmallMarginBegin">
-                    <Label text="Reason" />
-                    <TextArea id="reason" />
-                  </VBox>
-                </content>
+                      <VBox class="sapUiSmallMargin">
+                          <Label text="Reason" />
+                          <TextArea
+                              id="reason"
+                              rows="2"
+                              width="100%" />
+                      </VBox>
+                      <!-- Apply Button After Reason -->
+                      <HBox justifyContent="End" class="sapUiSmallMarginTop">
+                          <Button
+                              text="Apply"
+                              type="Emphasized"
+                              press="onApplyLeave" />
+                      </HBox>
+                  </content>
               </Panel>
-              <Panel headerText="Available Leave" class="sapUiSmallMargin">
+              <Panel headerText="Available Leave" class="sapUiSmallMarginTop">
                 <content>
                   <HBox>
                     <GenericTile
@@ -233,6 +242,76 @@
                 </content>
               </Panel>
             </VBox>
+          </ScrollContainer>
+          <!-- Employee Profile Page -->
+          <ScrollContainer id="page2" height="100%" vertical="true">
+              <VBox class="sapUiMediumMargin">
+                  <!-- Profile Header -->
+                  <Panel headerText="Employee Profile">
+                      <content>
+                          <HBox alignItems="Center" class="sapUiMediumMarginBottom">
+                              <!-- Profile Avatar -->
+                              <Avatar
+                                  displaySize="XL"
+                                  initials="{= ${currentUser>/firstName}.substring(0,1) }"
+                                  class="sapUiMediumMarginEnd" />
+                              <!-- Basic Details -->
+                              <VBox>
+                                  <Title
+                                      text="{currentUser>/firstName}"
+                                      level="H3" />
+                                  <Text
+                                      text="{currentUser>/email}" />
+                                  <ObjectStatus
+                                      text="Active Employee"
+                                      state="Success"
+                                      class="sapUiTinyMarginTop" />
+                              </VBox>
+                          </HBox>
+                          <!-- Employee Information -->
+                          <f:SimpleForm
+                              editable="false"
+                              layout="ResponsiveGridLayout"
+                              columnsXL="2"
+                              columnsL="2"
+                              columnsM="1">
+                              <Label text="Employee ID" />
+                              <Text text="{currentUser>/employeeId}" />
+                              <Label text="Team" />
+                              <Text text="{currentUser>/Team}" />
+                              <Label text="Email" />
+                              <Text text="{currentUser>/email}" />
+                              <Label text="Designation" />
+                              <Text text="SAP Fiori Developer" />
+                              <Label text="Location" />
+                              <Text text="Chennai" />
+                              <Label text="Joining Date" />
+                              <Text text="10-Jan-2025" />
+                          </f:SimpleForm>
+                      </content>
+                  </Panel>
+                  <!-- Contact Information -->
+                  <Panel
+                      headerText="Contact Information"
+                      class="sapUiMediumMarginTop">
+                      <content>
+                          <List>
+                              <StandardListItem
+                                  title="Phone"
+                                  description="+91 9876543210"
+                                  icon="sap-icon://phone" />
+                              <StandardListItem
+                                  title="Email"
+                                  description="{currentUser>/email}"
+                                  icon="sap-icon://email" />
+                              <StandardListItem
+                                  title="Location"
+                                  description="Chennai"
+                                  icon="sap-icon://map" />
+                          </List>
+                      </content>
+                  </Panel>
+              </VBox>
           </ScrollContainer>
         </pages>
       </NavContainer>

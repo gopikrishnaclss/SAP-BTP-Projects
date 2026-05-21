@@ -7,35 +7,38 @@
         title="User"
         titleAlignment="Center"
         placement="Bottom">
-
         <List>
-
             <StandardListItem
                 title="{currentUser>/firstName}"
+                id="Profile"
                 icon="sap-icon://physical-activity"
                 type="Active"
                 press="onListItemPress" />
 
             <StandardListItem
                 title="Settings"
+                id="Settings"
                 icon="sap-icon://action-settings"
                 type="Active"
                 press="onListItemPress" />
 
             <StandardListItem
                 title="About"
+                id="About"
                 icon="sap-icon://hint"
                 type="Active"
                 press="onListItemPress" />
 
             <StandardListItem
                 title="Change Password"
+                id="ChangePassword"
                 icon="sap-icon://key"
                 type="Active"
                 press="onListItemPress" />
 
             <StandardListItem
                 title="Sign Out"
+                id="SignOut"
                 icon="sap-icon://log"
                 type="Active"
                 press="onListItemPress" />

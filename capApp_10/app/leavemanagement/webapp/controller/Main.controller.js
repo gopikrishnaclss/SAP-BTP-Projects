@@ -126,7 +126,6 @@ sap.ui.define(
           this.getOwnerComponent().setModel(oLeaveRequestsModel, "leaveRequest");
         });
       },
-
       onApplyLeave() {
         const oModel = this.getOwnerComponent().getModel();
         const oUserModel = this.getOwnerComponent().getModel("currentUser");
@@ -164,36 +163,21 @@ sap.ui.define(
           if (aMessages.length > 0) {
             const msg = aMessages[0].message;
             MessageToast.show(msg);
-
             return;
           }
-          MessageToast.show("Leave applied successfully");
+          MessageBox.success("Leave applied successfully");
           this._resetApplyLeaveForm();
           oModel.refresh();
         });
       },
-      onnavigation(oEvent) {
-        const oItem = oEvent.getParameter("item");
-        this.byId("pageContainer").to(this.getView().createId(oItem.getKey()));
-        const sKey = oEvent.getParameter("item").getKey();
-        //  Load the appropriate view
-        switch (sKey) {
-          case "page1":
-            this.byId("pageContainer").to(this.createId("page1"));
-            break;
-          case "page2":
-            this.byId("pageContainer").to(this.createId("page2"));
-            break;
-          case "ThresholdBase":
-            this.byId("pageContainer").to(this.createId("page3"));
-            break;
-          case "ExceptionTypeMaster":
-            this.byId("pageContainer").to(this.createId("page4"));
-            break;
-          case "EscalationMaster":
-            this.byId("pageContainer").to(this.createId("page5"));
-            break;
-        }
+      onnavigation: function (oEvent) {
+          const sKey = oEvent.getParameter("item").getKey();
+          const oNavContainer = this.byId("pageContainer");
+          switch (sKey) {
+              case "page1":
+                  oNavContainer.to(this.byId("page1"));
+                  break;
+          }
       },
       pressUserIcon: async function (oEvent) {
         if (!this._oPopover) {
@@ -206,9 +190,13 @@ sap.ui.define(
         this._oPopover.openBy(oEvent.getSource());
       },
       onListItemPress: function (oEvent) {
-        const sTitle = oEvent.getSource().getTitle();
-        switch (sTitle) {
-          case "Sign Out":
+        const sId = oEvent.getSource().getId();
+        const oNavContainer = this.byId("pageContainer");
+        switch (sId) {
+          case "Profile":
+            oNavContainer.to(this.byId("page2"));
+            break;
+          case "SignOut":
             sessionStorage.clear();
             MessageToast.show("Logged out successfully");
             this.getOwnerComponent().getRouter().navTo("RouteView1", {}, true);
@@ -219,7 +207,7 @@ sap.ui.define(
           case "Settings":
             MessageToast.show("Settings clicked");
             break;
-          case "Change Password":
+          case "ChangePassword":
             this.onChangePasswordFragmentOpen();
             break;
           default:
@@ -315,73 +303,6 @@ sap.ui.define(
           oDP.setValueState(ValueState.Error);
         }
       },
-      // onApplyLeave() {
-      //   const oModel = this.getOwnerComponent().getModel();
-      //   const oUserModel = this.getOwnerComponent().getModel("currentUser");
-
-      //   var fromDateObj = this.getView().byId("DP1").getDateValue();
-      //   var toDateObj = this.getView().byId("DP2").getDateValue();
-      //   const leaveTypeId = this.getView().byId("Leave").getSelectedKey();
-      //   const reason = this.getView().byId("reason").getValue();
-
-      //   if (!fromDateObj || !toDateObj || !leaveTypeId || !reason) {
-      //     MessageToast.show("Please fill all fields");
-      //     return;
-      //   }
-      //   var fromDate = fromDateObj.toISOString().split("T")[0];
-      //   var toDate = toDateObj.toISOString().split("T")[0];
-      //   const oListBinding = oModel.bindList("/LeaveRequests");
-
-      //   const oContext = oListBinding.create({
-      //     employee_employeeId: this.empId,
-      //     leaveType_leaveTypeId: parseInt(leaveTypeId),
-      //     fromDate: fromDate,
-      //     toDate: toDate,
-      //     reason: reason,
-      //   });
-      //   oContext.created().then(() => {
-      //     // Success
-      //     MessageToast.show("Leave applied successfully");
-
-      //     this._resetApplyLeaveForm();
-
-      //     oModel.refresh();
-      //   });
-      //   // const oListBinding = oModel.bindList(
-      //   //   "/LeaveRequests",
-      //   //   undefined,
-      //   //   undefined,
-      //   //   undefined,
-      //   //   {
-      //   //     $$updateGroupId: "$direct",
-      //   //   },
-      //   // );
-
-      //   // const oContext = oListBinding.create(
-      //   //   {
-      //   //     employee_employeeId: this.empId,
-      //   //     leaveType_leaveTypeId: parseInt(leaveTypeId),
-      //   //     fromDate: fromDate,
-      //   //     toDate: toDate,
-      //   //     reason: reason,
-      //   //   },
-      //   //   true,
-      //   //   false,
-      //   //   false,
-      //   // );
-
-      //   // oContext
-      //   //   .created()
-      //   //   .then(() => {
-      //   //     sap.m.MessageToast.show("Leave applied successfully");
-      //   //     this._resetApplyLeaveForm();
-      //   //     oModel.refresh();
-      //   //   })
-      //   //   .catch((err) => {
-      //   //     // err.message contains the req.reject() message from CAP
-      //   //     sap.m.MessageBox.error(err.message || "Failed to apply leave");
-      //   //   });
-      // },
       formatDateLocal(oDate) {
         // Accept native Date, UI5Date or objects that expose a Date value
         let d;
@@ -404,8 +325,6 @@ sap.ui.define(
 
         return `${year}-${month}-${day}`;
       },
-
-         
       _resetApplyLeaveForm() {
         this.getView().byId("DP1").setValue("");
         this.getView().byId("DP2").setValue("");
