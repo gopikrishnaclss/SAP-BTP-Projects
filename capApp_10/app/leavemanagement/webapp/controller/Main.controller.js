@@ -137,42 +137,63 @@ sap.ui.define(
           this.getOwnerComponent().setModel(oDashboardModel,"dashboard");
         });
       },
-      onApplyLeave() {
+      onApplyLeave: function () {
           const oModel = this.getOwnerComponent().getModel();
-          const fromDateObj = this.getView().byId("DP1").getDateValue();
-          const toDateObj = this.getView().byId("DP2").getDateValue();
-          const leaveTypeId = this.getView().byId("Leave").getSelectedKey();
-          const reason = this.getView().byId("reason").getValue();
+          const fromDateObj = this.byId("DP1").getDateValue();
+          const toDateObj = this.byId("DP2").getDateValue();
+          const leaveTypeId = this.byId("Leave").getSelectedKey();
+          const reason = this.byId("reason").getValue();
+          // Validation
           if (!fromDateObj || !toDateObj || !leaveTypeId || !reason) {
               sap.m.MessageToast.show("Please fill all fields");
               return;
           }
-          const fromDate = fromDateObj.toISOString().split("T")[0];
-          const toDate = toDateObj.toISOString().split("T")[0];
-          const oListBinding = oModel.bindList("/LeaveRequests");
+          // Invalid date range
+          if (toDateObj < fromDateObj) {
+              sap.m.MessageBox.error("End date must be after start date");
+              return;
+          }
+          // Clear old messages
+          sap.ui.getCore().getMessageManager().removeAllMessages();
+          const formatDate = (oDate) => {
+              const year = oDate.getFullYear();
+              const month = String(oDate.getMonth() + 1).padStart(2, "0");
+              const day = String(oDate.getDate()).padStart(2, "0");
+              return `${year}-${month}-${day}`;
+          };
+          const fromDate = formatDate(fromDateObj);
+          const toDate = formatDate(toDateObj);
+          const oListBinding =oModel.bindList("/LeaveRequests");
           oListBinding.create({
               employee_employeeId: this.empId,
               leaveType_leaveTypeId: parseInt(leaveTypeId),
               fromDate,
               toDate,
-              reason,
+              reason
           });
           oModel.submitBatch("$auto")
               .then(() => {
-                  const aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData();
-                  // Check if error messages exist
+                  const aMessages =
+                      sap.ui.getCore()
+                          .getMessageManager()
+                          .getMessageModel()
+                          .getData();
                   if (aMessages.length > 0) {
-                      const sMsg = aMessages[0]?.message || "Something went wrong";
-                      sap.m.MessageBox.error(sMsg);
+                      sap.m.MessageBox.error(
+                          aMessages[0].message
+                      );
                       return;
                   }
-                  sap.m.MessageBox.success("Leave applied successfully");
+                  sap.m.MessageBox.success(
+                      "Leave applied successfully"
+                  );
                   this._resetApplyLeaveForm();
                   oModel.refresh();
+
               })
               .catch((oError) => {
-                  sap.m.MessageBox.error("Failed to apply leave");
                   console.error(oError);
+                  sap.m.MessageBox.error("Failed to apply leave");
               });
       },
       onnavigation: function (oEvent) {
@@ -270,45 +291,68 @@ sap.ui.define(
         oSideNavigation.setExpanded(!bExpanded);
       },
       handleChange: function () {
-        var oDP1 = this.byId("DP1");
-        var oDP2 = this.byId("DP2");
-        var oNoOfDays = this.byId("noOfDays");
-        var dFrom = oDP1.getDateValue();
-        var dTo = oDP2.getDateValue();
-        if (dFrom && dTo && dTo >= dFrom) {
+          var oDP1 = this.byId("DP1");
+          var oDP2 = this.byId("DP2");
+          var oNoOfDays = this.byId("noOfDays");
+          var dFrom = oDP1.getDateValue();
+          var dTo = oDP2.getDateValue();
+          if (!dFrom || !dTo) {
+              oNoOfDays.setValue("");
+              return;
+          }
+          // Weekend validation
+          if (dTo.getDay() === 0 || dTo.getDay() === 6) {
+              oDP2.setValue("");
+              oDP2.setValueState("Error");
+              oDP2.setValueStateText("Weekend selection not allowed");
+              return;
+          }
+          // Invalid range
+          if (dTo < dFrom) {
+              oNoOfDays.setValue("");
+              oDP2.setValueState("Error");
+              oDP2.setValueStateText(
+                  "End date must be after start date"
+              );
+              return;
+          }
+          oDP2.setValueState("None");
+          // Working days count
           var iDays = 0;
           var dCur = new Date(dFrom);
           while (dCur <= dTo) {
-            var iDay = dCur.getDay();
-            if (iDay !== 0 && iDay !== 6) {
-              // skip Saturday & Sunday
-              iDays++;
-            }
-            dCur.setDate(dCur.getDate() + 1);
+              var iDay = dCur.getDay();
+              if (iDay !== 0 && iDay !== 6) {
+                  iDays++;
+              }
+              dCur.setDate(dCur.getDate() + 1);
           }
-          oNoOfDays.setValue(iDays);
-          oDP2.setValueState("None");
-        } else if (dFrom && dTo && dTo < dFrom) {
-          oNoOfDays.setValue("");
-          oDP2.setValueState("Error");
-          oDP2.setValueStateText("End date must be after start date");
-          return;
-        }
-        // Clear error state if valid
-        oDP2.setValueState("None");
-        oDP2.setValueStateText("");
-        // Count working days (Mon–Fri only, skip weekends)
-        var iDays = 0;
-        var dCur = new Date(dFrom.getTime()); // clone to avoid mutation
-        while (dCur <= dTo) {
-          var iDay = dCur.getDay();
-          if (iDay !== 0 && iDay !== 6) {
-            iDays++;
+          oNoOfDays.setValue(iDays.toString());
+      },
+      onFromDateChange: function () {
+          var oDP1 = this.byId("DP1");
+          var oDP2 = this.byId("DP2");
+          var dFrom = oDP1.getDateValue();
+          if (!dFrom) {
+              return;
           }
-          dCur.setDate(dCur.getDate() + 1);
-        }
-        // Set value directly on the Input control
-        oNoOfDays.setValue(String(iDays));
+          // Prevent weekends
+          var iDay = dFrom.getDay();
+          if (iDay === 0 || iDay === 6) {
+              oDP1.setValue("");
+              oDP1.setDateValue(null);
+              oDP1.setValueState("Error");
+              oDP1.setValueStateText("Weekend selection not allowed");
+              return;
+          }
+          oDP1.setValueState("None");
+          // Hide previous dates in To Date
+          oDP2.setMinDate(dFrom);
+          var dTo = oDP2.getDateValue();
+          if (dTo && dTo < dFrom) {
+              oDP2.setDateValue(null);
+          }
+          this.handleChange();
       },
       onCancelLeave: function () {
         this.byId("DP1").setValue("");
