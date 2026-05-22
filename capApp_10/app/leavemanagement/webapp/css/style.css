@@ -291,3 +291,20 @@
 .leaveTypeText {
     font-weight: 500;
 }
+
+/* Holiday Master */
+/* Odd rows */
+.customHolidayTable .sapMListTblRow:nth-child(odd) {
+    background-color: #9cb7d3;
+}
+
+/* Even rows */
+.customHolidayTable .sapMListTblRow:nth-child(even) {
+    background-color: #c0c5cf;
+}
+
+/* Hover effect */
+.customHolidayTable .sapMListTblRow:hover {
+    background-color: #dbeafe !important;
+    transition: 0.2s;
+}
