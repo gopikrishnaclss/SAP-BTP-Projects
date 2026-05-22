@@ -166,8 +166,9 @@ sap.ui.define(
             return;
           }
           MessageBox.success("Leave applied successfully");
+           
           this._resetApplyLeaveForm();
-          oModel.refresh();
+           
         });
       },
       onnavigation: function (oEvent) {
@@ -343,6 +344,7 @@ sap.ui.define(
         this.getView().byId("reason").setValue("");
         this.getView().byId("noOfDays").setValue("");
         this._getLeaveBalance();
+        this._getLeaveRequests();
       },
     });
   }
