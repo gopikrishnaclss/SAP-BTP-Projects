@@ -125,7 +125,6 @@ sap.ui.define(
           );
         });
       },
-
       onApplyLeave() {
         const oModel = this.getOwnerComponent().getModel();
         const oUserModel = this.getOwnerComponent().getModel("currentUser");
