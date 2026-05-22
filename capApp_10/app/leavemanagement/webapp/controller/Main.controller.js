@@ -162,7 +162,7 @@ sap.ui.define(
 
           // Backend validation error exists
           if (aMessages.length > 0) {
-            const msg = aMessages[2].message;
+            const msg = aMessages[0].message;
             MessageToast.show(msg);
             return;
           }

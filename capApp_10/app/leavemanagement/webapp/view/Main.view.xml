@@ -224,32 +224,32 @@
                                   <!-- Row 1: 4 fields -->
                                   <HBox width="100%" class="sapUiTinyMarginBottom">
                                       <VBox width="25%">
-                                          <Label text="From Date:" labelFor="DP1" design="Bold" />
+                                          <Label text="From Date:" labelFor="DP1"  />
                                           <DatePicker
                                               id="DP1"
                                               placeholder="DD-MM-YYYY"
-                                              change="handleChange"
+                                               
                                               width="95%" />
                                       </VBox>
                                       <VBox width="25%">
-                                          <Label text="To Date:" labelFor="DP2" design="Bold" />
+                                          <Label text="To Date:" labelFor="DP2" />
                                           <DatePicker
                                               id="DP2"
                                               placeholder="DD-MM-YYYY"
                                               change="handleChange"
-                                              valueState="{/toDateState}"
-                                              valueStateText="End date must be after start date"
+                    
+                                  
                                               width="95%" />
                                       </VBox>
                                       <VBox width="25%">
-                                          <Label text="No. of Days:" labelFor="noOfDays" design="Bold" />
+                                          <Label text="No. of Days:" labelFor="noOfDays"  />
                                           <Input
                                               id="noOfDays"
                                               editable="false"
                                               width="95%" />
                                       </VBox>
                                       <VBox width="25%">
-                                          <Label text="Leave Type:" labelFor="Leave" design="Bold" />
+                                          <Label text="Leave Type:" labelFor="Leave"  />
                                           <ComboBox
                                               id="Leave"
                                               width="95%"
@@ -257,7 +257,7 @@
                                                   path: '/LeaveTypes',
                                                   sorter: { path: 'leaveType' }
                                               }">
-                                              <core:Item key="{leaveTypeId}" text="{leaveType}" />
+                                              <core:Item id="LeaveTypeItem" key="{leaveTypeId}" text="{leaveType}" />
                                           </ComboBox>
                                       </VBox>
                                   </HBox>
