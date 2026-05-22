@@ -60,6 +60,10 @@ sap.ui.define(
         const oHomePage = sap.ui.getCore().byId(this.createId("Home"));
         oNavContainer.to(oHomePage);
       },
+      onRefreshLeaveRequests: function () {
+          this._getLeaveRequests();
+          sap.m.MessageToast.show("Leave requests refreshed");
+      },
       _getLeaveBalance: function () {
         const oModel = this.getOwnerComponent().getModel();
         const oUserModel = this.getOwnerComponent().getModel("currentUser");
@@ -123,52 +127,53 @@ sap.ui.define(
             oLeaveRequestsModel,
             "leaveRequest",
           );
+          // Calculate Pending Count
+          const iPendingCount = aLeaveRequestsBalances.filter(
+            (oRequest) => oRequest.status === "PENDING"
+          ).length;
+          const oDashboardModel = new sap.ui.model.json.JSONModel({
+            pendingCount: iPendingCount
+          });
+          this.getOwnerComponent().setModel(oDashboardModel,"dashboard");
         });
       },
       onApplyLeave() {
-        const oModel = this.getOwnerComponent().getModel();
-        const oUserModel = this.getOwnerComponent().getModel("currentUser");
-        const empId = this.empId
-        const fromDateObj = this.getView().byId("DP1").getDateValue();
-        const toDateObj = this.getView().byId("DP2").getDateValue();
-        const leaveTypeId = this.getView().byId("Leave").getSelectedKey(); // ← fixed
-        const reason = this.getView().byId("reason").getValue();
-
-        if (!fromDateObj || !toDateObj || !leaveTypeId || !reason) {
-          sap.m.MessageToast.show("Please fill all fields");
-          return;
-        }
-
-        const fromDate = fromDateObj.toISOString().split("T")[0];
-        const toDate = toDateObj.toISOString().split("T")[0];
-
-        const oListBinding = oModel.bindList("/LeaveRequests");
-        oListBinding.create({
-          employee_employeeId: this.empId,
-          leaveType_leaveTypeId: parseInt(leaveTypeId),
-          fromDate,
-          toDate,
-          reason,
-        });
-
-        // Submit batch manually
-        oModel.submitBatch("$auto").then(() => {
-          const aMessages = sap.ui
-            .getCore()
-            .getMessageManager()
-            .getMessageModel()
-            .getData();
-
-          // Backend validation error exists
-          if (aMessages.length > 0) {
-            const msg = aMessages[2].message;
-            MessageToast.show(msg);
-            return;
+          const oModel = this.getOwnerComponent().getModel();
+          const fromDateObj = this.getView().byId("DP1").getDateValue();
+          const toDateObj = this.getView().byId("DP2").getDateValue();
+          const leaveTypeId = this.getView().byId("Leave").getSelectedKey();
+          const reason = this.getView().byId("reason").getValue();
+          if (!fromDateObj || !toDateObj || !leaveTypeId || !reason) {
+              sap.m.MessageToast.show("Please fill all fields");
+              return;
           }
-          MessageBox.success("Leave applied successfully");
-          this._resetApplyLeaveForm();
-          oModel.refresh();
-        });
+          const fromDate = fromDateObj.toISOString().split("T")[0];
+          const toDate = toDateObj.toISOString().split("T")[0];
+          const oListBinding = oModel.bindList("/LeaveRequests");
+          oListBinding.create({
+              employee_employeeId: this.empId,
+              leaveType_leaveTypeId: parseInt(leaveTypeId),
+              fromDate,
+              toDate,
+              reason,
+          });
+          oModel.submitBatch("$auto")
+              .then(() => {
+                  const aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+                  // Check if error messages exist
+                  if (aMessages.length > 0) {
+                      const sMsg = aMessages[0]?.message || "Something went wrong";
+                      sap.m.MessageBox.error(sMsg);
+                      return;
+                  }
+                  sap.m.MessageBox.success("Leave applied successfully");
+                  this._resetApplyLeaveForm();
+                  oModel.refresh();
+              })
+              .catch((oError) => {
+                  sap.m.MessageBox.error("Failed to apply leave");
+                  console.error(oError);
+              });
       },
       onnavigation: function (oEvent) {
         const sKey = oEvent.getParameter("item").getKey();

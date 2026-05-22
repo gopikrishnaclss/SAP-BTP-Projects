@@ -259,3 +259,35 @@
     font-weight: 500;
     color: #1e293b;
 }
+
+/* Panel */
+.recentLeavePanel {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+/* Table */
+.recentLeaveTable .sapMListTblHeaderCell {
+    background: #f8fafc !important;
+}
+
+.recentLeaveTable .sapMColumnHeader {
+    font-weight: 600;
+    color: #334155 !important;
+}
+
+/* Alternate rows */
+.recentLeaveTable .sapMListTblRow:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* Hover effect */
+.recentLeaveTable .sapMListTblRow:hover {
+    background-color: #eef4ff !important;
+    transition: 0.2s;
+}
+
+/* Leave type text */
+.leaveTypeText {
+    font-weight: 500;
+}

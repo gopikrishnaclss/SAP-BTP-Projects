@@ -26,7 +26,7 @@
         </Title>
         <ToolbarSpacer />
         <Button text="Holiday List"
-          type="Emphasized"
+          type="Reject"
           icon="sap-icon://time-off"
           class="sapUiTinyMarginEnd"
           press="onHolidayListButtonPress" />
@@ -113,7 +113,7 @@
                       header="Pending Requests"
                       frameType="OneByHalf">
                       <TileContent>
-                        <NumericContent value="1" />
+                        <NumericContent value="{dashboard>/pendingCount}" />
                       </TileContent>
                     </GenericTile>
                   </HBox>
@@ -121,42 +121,83 @@
               </Panel>
               <!-- Recent Requests -->
               <Panel
-                headerText="Recent Leave Requests"
-                class="sapUiMediumMarginTop">
-                <Table items="{leaveRequest>/}">
-                  <columns>
-                    <Column>
-                      <Text text="Leave Type" />
-                    </Column>
-                    <Column>
-                      <Text text="From" />
-                    </Column>
-                    <Column>
-                      <Text text="To" />
-                    </Column>
-                    <Column>
-                      <Text text="Status" />
-                    </Column>
-                  </columns>
-
-                  <items>
-                    <ColumnListItem>
-                      <cells>
-                        <Text text="{leaveRequest>leaveType/leaveType}" />
-                        <Text text="{leaveRequest>fromDate}" />
-                        <Text text="{leaveRequest>toDate}" />
-                        <ObjectStatus
-                          text="{leaveRequest>status}"
-                          state="{
-                              = ${leaveRequest>status} === 'APPROVED' ? 'Success' :
-                                ${leaveRequest>status} === 'PENDING' ? 'Warning' :
-                                ${leaveRequest>status} === 'REJECTED' ? 'Error' :
-                                'None'
-                          }"/>
-                      </cells>
-                    </ColumnListItem>
-                  </items>
-                </Table>
+                  class="sapUiMediumMarginTop recentLeavePanel">
+                  <Table
+                      items="{leaveRequest>/}"
+                      growing="true"
+                      growingScrollToLoad="true"
+                      inset="false"
+                      class="recentLeaveTable">
+                      <!-- Header Toolbar -->
+                      <headerToolbar>
+                          <Toolbar>
+                              <Title text="Recent Leave Requests" level="H5"/>
+                              <ToolbarSpacer/>
+                              <Button
+                                  icon="sap-icon://refresh"
+                                  text="Refresh"
+                                  type="Success"
+                                  tooltip="Refresh"
+                                  press="onRefreshLeaveRequests"/>
+                          </Toolbar>
+                      </headerToolbar>
+                      <!-- Columns -->
+                      <columns>
+                          <Column width="12rem">
+                              <Text text="Leave Type"/>
+                          </Column>
+                          <Column width="10rem" hAlign="Center">
+                              <Text text="From"/>
+                          </Column>
+                          <Column width="10rem" hAlign="Center">
+                              <Text text="To"/>
+                          </Column>
+                          <Column width="10rem" hAlign="Center">
+                              <Text text="No Of Days"/>
+                          </Column>
+                          <Column width="10rem" hAlign="Center">
+                              <Text text="Status"/>
+                          </Column>
+                      </columns>
+                      <!-- Items -->
+                      <items>
+                          <ColumnListItem type="Active">
+                              <cells>
+                                  <!-- Leave Type -->
+                                  <HBox alignItems="Center">
+                                      <core:Icon
+                                          src="sap-icon://calendar"
+                                          class="sapUiTinyMarginEnd"/>
+                                      <Text
+                                          text="{leaveRequest>leaveType/leaveType}"
+                                          class="leaveTypeText"/>
+                                  </HBox>
+                                  <!-- From -->
+                                  <Text
+                                      text="{leaveRequest>fromDate}"
+                                      textAlign="Center"/>
+                                  <!-- To -->
+                                  <Text
+                                      text="{leaveRequest>toDate}"
+                                      textAlign="Center"/>
+                                  <!-- No Of Days -->
+                                  <Text
+                                      text="{leaveRequest>totalDays}"
+                                      textAlign="Center"/>
+                                  <!-- Status -->
+                                  <ObjectStatus
+                                      text="{leaveRequest>status}"
+                                      inverted="true"
+                                      state="{=
+                                          ${leaveRequest>status} === 'APPROVED' ? 'Success' :
+                                          ${leaveRequest>status} === 'PENDING' ? 'Warning' :
+                                          ${leaveRequest>status} === 'REJECTED' ? 'Error' :
+                                          'None'
+                                      }"/>
+                              </cells>
+                          </ColumnListItem>
+                      </items>
+                  </Table>
               </Panel>
             </VBox>
           </ScrollContainer>
@@ -178,7 +219,7 @@
                                       </VBox>
                                       <VBox>
                                           <Text text="days left" class="accentUnit" />
-                                          <Text text="{= 'of ' + ${leavebalance>/Casual/totalLeaves}}" class="accentOf accentOfGreen" />
+                                          <Text text="{= 'of ' + (${leavebalance>/Casual/totalLeave} || '0') }" class="accentOf accentOfGreen" />
                                       </VBox>
                                   </HBox>
                                   <!-- Sick -->
@@ -190,7 +231,7 @@
                                       </VBox>
                                       <VBox>
                                           <Text text="days left" class="accentUnit" />
-                                          <Text text="{= 'of ' + ${leavebalance>/Sick/totalLeaves}}" class="accentOf accentOfPurple" />
+                                          <Text text="{= 'of ' + (${leavebalance>/Sick/totalLeave} || '0') }" class="accentOf accentOfPurple" />
                                       </VBox>
                                   </HBox>
                                   <!-- Paid -->
@@ -202,7 +243,7 @@
                                       </VBox>
                                       <VBox>
                                           <Text text="days left" class="accentUnit" />
-                                          <Text text="{= 'of ' + ${leavebalance>/Paid/totalLeaves}}" class="accentOf accentOfAmber" />
+                                          <Text text="{= 'of ' + (${leavebalance>/Paid/totalLeave} || '0')}" class="accentOf accentOfAmber" />
                                       </VBox>
                                   </HBox>
                                   <!-- Divider -->
@@ -211,9 +252,9 @@
                                   <HBox alignItems="Center" class="accentItemPending">
                                       <core:HTML content="&lt;div class='accentBar accentCoral'&gt;&lt;/div&gt;" />
                                       <VBox class="accentInfo sapUiTinyMarginBegin">
-                                          <Text text="Pending" class="accentName" />
+                                          <Text text="Pending Requests" class="accentName" />
                                       </VBox>
-                                      <Text text="1 request" class="pendingBadge" />
+                                      <Text text="{dashboard>/pendingCount}" class="pendingBadge" />
                                   </HBox>
 
                               </VBox>
