@@ -278,7 +278,6 @@
                                               id="DP2"
                                               placeholder="DD-MM-YYYY"
                                               change="handleChange"
-                                              valueState="{/toDateState}"
                                               valueStateText="End date must be after start date"
                                               width="95%" />
                                       </VBox>
@@ -308,7 +307,7 @@
                                       <TextArea
                                           id="reason"
                                           rows="3"
-                                          placeholder="Reason for your leave..."
+                                          placeholder="Reason for your leave"
                                           width="100%" />
                                   </VBox>
                                   <!-- Row 3: Buttons -->

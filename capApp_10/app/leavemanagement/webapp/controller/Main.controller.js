@@ -348,7 +348,7 @@ sap.ui.define(
         this.getView().byId("reason").setValue("");
         this.getView().byId("noOfDays").setValue("");
         this._getLeaveBalance();
-      },
+      }
     });
   }
 );
