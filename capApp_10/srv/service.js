@@ -5,9 +5,18 @@ export default class leaveManagementService extends cds.ApplicationService {
   async init() {
     this.on("login", async (req) => {
       const { email, password } = req.data;
+      // const plainPassword = "54321";
 
-      const user = await SELECT.one.from("leaveApp.Employees").where({ email });
+      // const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
+     const user = await SELECT.one
+  .from("leaveApp.Employees")
+  .columns(
+    "*",
+    "role.ID",
+    "role.roleName"
+  )
+  .where({ email });
       if (!user) {
         return {
           success: false,
@@ -36,11 +45,11 @@ export default class leaveManagementService extends cds.ApplicationService {
         Team: user.Team,
         joiningDate: user.joiningDate,
         isActive: user.isActive,
-        role: user.role,
+        role: user.role_roleName ,
         success: true,
         message: "Login successful",
-        location:user.location,
-        phNo:user.phNumber
+        location: user.location,
+        phNo: user.phNumber
       };
     });
     this.before("CREATE", "LeaveRequests", async (req) => {

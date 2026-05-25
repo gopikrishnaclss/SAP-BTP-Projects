@@ -1,2 +1,3 @@
 employeeId,firstName,lastName,email,password,team,joiningDate,isActive,role_ID,location,phNumber
-EMP000001,Gopi,Krishna,gopi@gmail.com,$2b$10$3QjKQL51mPewt.Y2nPUVBeq0jgtGJZAVVShAYdSkbBhZMB44fx5LG,Fiori,2026-05-11,true,1,chennai,+91 9876543210
+EMP000001,Gopi,Krishna,gopi@gmail.com,$2b$10$3QjKQL51mPewt.Y2nPUVBeq0jgtGJZAVVShAYdSkbBhZMB44fx5LG,Fiori,2026-05-11,true,RO1,chennai,+91 9876543210
+EMP000002,ARUL,P,arul@gmail.com,$2b$10$j7Pesv/adwPvJs8G7cUVj.r.J319JSpwrwZVLg3AgZ6sYwKcey3Sy,Management,2026-05-11,true,RO2,chennai,+91 7027987650

@@ -4,7 +4,7 @@ using {
 } from '@sap/cds/common';
 
 entity Roles {
-    key ID        : Integer;
+    key ID        : String(10);
     roleName      : String(50);
 }
 entity Employees : managed{
@@ -18,7 +18,7 @@ entity Employees : managed{
   isActive          : Boolean default true;
   role              : Association to Roles; 
   location:String(100);
-  phNumber:Integer
+  phNumber:String(20)
 }
 entity LeaveType {
   key  leaveTypeId : Integer;

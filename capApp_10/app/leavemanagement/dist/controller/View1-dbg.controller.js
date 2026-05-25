@@ -4,7 +4,25 @@ sap.ui.define([
 ], (Controller, MessageToast) => {
     "use strict";
     return Controller.extend("leavemanagement.controller.View1", {
-        onInit() {     
+        onInit: function () {
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.getRoute("RouteView1").attachPatternMatched( this._onRouteMatched,this);
+            // Prevent browser back after login
+            window.addEventListener( "popstate",this._preventBack.bind(this));
+        },
+        _preventBack: function () {
+            const bLoggedIn = sessionStorage.getItem("isLoggedIn");
+            if (bLoggedIn) {
+                history.pushState(null, null, location.href);
+                this.getOwnerComponent().getRouter().navTo("RouteView2",{},true);
+            }
+        },
+        __onRouteMatched: function () {
+            const bLoggedIn = sessionStorage.getItem("isLoggedIn");
+            if (bLoggedIn) {
+                history.pushState(null, null, location.href);
+                this.getOwnerComponent().getRouter().navTo("RouteView2", {}, true);
+            }
         },
         onLogin() {
             const email = this.byId("userId").getValue();
@@ -13,7 +31,6 @@ sap.ui.define([
                 MessageToast.show("Please enter email and password");
                 return;
             }
-             
             const oModel = this.getOwnerComponent().getModel();
             const oContext = oModel.bindContext("/login(...)");
             oContext.setParameter("email", email);
@@ -23,11 +40,21 @@ sap.ui.define([
                 if (result.success) {
                     const userData = {
                         firstName: result.firstName,
+                        lastName:result.lastName,
                         email: result.email,
                         Team: result.Team,
-                        employeeId:result.employeeId
-                         
-                    }
+                        employeeId: result.employeeId,
+                        isActive:result.isActive,
+                        role:result.role,
+                        location:result.location,
+                        phNo:result.phNumber
+                    };
+                    // STORE SESSION
+                    sessionStorage.setItem("isLoggedIn", "true");
+                    sessionStorage.setItem(
+                        "currentUser",
+                        JSON.stringify(userData)
+                    );
                     const oUserModel = new sap.ui.model.json.JSONModel(userData);
                     MessageToast.show("Welcome " + result.firstName);
                     this.getOwnerComponent().setModel(oUserModel, "currentUser");

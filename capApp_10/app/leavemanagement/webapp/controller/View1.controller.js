@@ -47,7 +47,7 @@ sap.ui.define([
                         isActive:result.isActive,
                         role:result.role,
                         location:result.location,
-                        phNo:result.phNumber
+                        phNo:result.phNo
                     };
                     // STORE SESSION
                     sessionStorage.setItem("isLoggedIn", "true");

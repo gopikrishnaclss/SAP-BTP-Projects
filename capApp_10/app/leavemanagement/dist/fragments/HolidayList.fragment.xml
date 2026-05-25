@@ -1,0 +1,41 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Dialog
+        id="holidayDialog"
+        title="Holiday List"
+        contentWidth="600px"
+        contentHeight="400px"
+        draggable="true"
+        resizable="true">
+        <content>
+            <Table items="{/Holidays}">
+                <columns>
+                    <Column>
+                        <Text text="Date"/>
+                    </Column>
+                    <Column>
+                        <Text text="Day"/>
+                    </Column>
+                    <Column>
+                        <Text text="Holiday"/>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{date}"/>
+                            <Text text="{day}"/>
+                            <Text text="{holiday}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+        <endButton>
+            <Button
+                text="Close"
+                press="onCloseHolidayDialog"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

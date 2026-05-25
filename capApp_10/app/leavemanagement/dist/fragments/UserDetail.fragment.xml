@@ -1,0 +1,30 @@
+<c:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:c="sap.ui.core">
+    <Popover
+        id="idPopover"
+        title="{currentUser>/firstName}({currentUser>/employeeId})"
+        titleAlignment="Center"
+        placement="Bottom">
+        <List>
+            <StandardListItem
+                title="Profile"
+                id="Profile"
+                icon="sap-icon://physical-activity"
+                type="Active"
+                press="onListItemPress" />
+            <StandardListItem
+                title="Change Password"
+                id="ChangePassword"
+                icon="sap-icon://key"
+                type="Active"
+                press="onListItemPress" />
+            <StandardListItem
+                title="Sign Out"
+                id="SignOut"
+                icon="sap-icon://log"
+                type="Active"
+                press="onListItemPress" />
+        </List>
+    </Popover>
+</c:FragmentDefinition>
