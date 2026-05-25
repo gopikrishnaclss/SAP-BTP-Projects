@@ -4,34 +4,39 @@ sap.ui.define([
 ], (Controller, MessageToast) => {
     "use strict";
     return Controller.extend("leavemanagement.controller.View1", {
+
         onInit: function () {
             const oRouter = this.getOwnerComponent().getRouter();
-            oRouter.getRoute("RouteView1").attachPatternMatched( this._onRouteMatched,this);
-            // Prevent browser back after login
-            window.addEventListener( "popstate",this._preventBack.bind(this));
+            oRouter.getRoute("RouteView1").attachPatternMatched(this._onRouteMatched, this);
+            window.addEventListener("popstate", this._preventBack.bind(this));
         },
         _preventBack: function () {
             const bLoggedIn = sessionStorage.getItem("isLoggedIn");
             if (bLoggedIn) {
                 history.pushState(null, null, location.href);
-                this.getOwnerComponent().getRouter().navTo("RouteView2",{},true);
+                // ✅ Respect role when preventing back navigation
+                const userData = JSON.parse(sessionStorage.getItem("currentUser"));
+                const sRoute = userData?.role === "ADMIN" ? "RouteAdmin" : "RouteView2";
+                this.getOwnerComponent().getRouter().navTo(sRoute, {}, true);
             }
         },
-        __onRouteMatched: function () {
+        _onRouteMatched: function () {
             const bLoggedIn = sessionStorage.getItem("isLoggedIn");
             if (bLoggedIn) {
                 history.pushState(null, null, location.href);
-                this.getOwnerComponent().getRouter().navTo("RouteView2", {}, true);
+                const userData = JSON.parse(sessionStorage.getItem("currentUser"));
+                const sRoute = userData?.role === "ADMIN" ? "RouteAdmin" : "RouteView2";
+                this.getOwnerComponent().getRouter().navTo(sRoute, {}, true);
             }
         },
-        onLogin() {
-            const email = this.byId("userId").getValue();
+        onLogin: function () {
+            const email    = this.byId("userId").getValue();
             const password = this.byId("password").getValue();
             if (!email || !password) {
                 MessageToast.show("Please enter email and password");
                 return;
             }
-            const oModel = this.getOwnerComponent().getModel();
+            const oModel   = this.getOwnerComponent().getModel();
             const oContext = oModel.bindContext("/login(...)");
             oContext.setParameter("email", email);
             oContext.setParameter("password", password);
@@ -39,31 +44,35 @@ sap.ui.define([
                 const result = oContext.getBoundContext().getObject();
                 if (result.success) {
                     const userData = {
-                        firstName: result.firstName,
-                        lastName:result.lastName,
-                        email: result.email,
-                        Team: result.Team,
+                        firstName:  result.firstName,
+                        lastName:   result.lastName,
+                        email:      result.email,
+                        Team:       result.Team,
                         employeeId: result.employeeId,
-                        isActive:result.isActive,
-                        role:result.role,
-                        location:result.location,
-                        phNo:result.phNumber
+                        isActive:   result.isActive,
+                        role:       result.role,       
+                        location:   result.location,
+                        phNo:       result.phNumber
                     };
-                    // STORE SESSION
                     sessionStorage.setItem("isLoggedIn", "true");
-                    sessionStorage.setItem(
-                        "currentUser",
-                        JSON.stringify(userData)
-                    );
+                    sessionStorage.setItem("currentUser", JSON.stringify(userData));
                     const oUserModel = new sap.ui.model.json.JSONModel(userData);
-                    MessageToast.show("Welcome " + result.firstName);
                     this.getOwnerComponent().setModel(oUserModel, "currentUser");
-                    this.getOwnerComponent().getRouter().navTo("RouteView2");
+                    MessageToast.show("Welcome " + result.firstName);
+                    if (role === "Admin") {
+                        this.getOwnerComponent().getRouter().navTo("RouteAdmin");
+                    } else {
+                        this.getOwnerComponent().getRouter().navTo("RouteView2");
+                    }
+
                 } else {
-                    MessageToast.show(result.message);
+                    this.byId("loginError").setVisible(true);
+                    this.byId("loginError").setText(result.message || "Invalid credentials.");
                 }
+
             }).catch(() => {
-                MessageToast.show("Error during login");
+                this.byId("loginError").setVisible(true);
+                this.byId("loginError").setText("Something went wrong. Please try again.");
             });
         }
     });

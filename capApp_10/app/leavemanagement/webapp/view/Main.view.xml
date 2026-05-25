@@ -129,7 +129,12 @@
                       growingScrollToLoad="true"
                       inset="false"
                       class="recentLeaveTable">
-                      <!-- Header Toolbar -->
+                        <noData>
+                            <IllustratedMessage
+                                illustrationType="sapIllus-NoData"
+                                title="No Data Found"
+                                description="There are no requests available." />
+                        </noData>
                       <headerToolbar>
                           <Toolbar>
                               <Title text="Recent Leave Requests" level="H5"/>

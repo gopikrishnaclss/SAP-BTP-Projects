@@ -1,0 +1,196 @@
+<mvc:View
+    controllerName="leavemanagement.controller.Admin"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:tnt="sap.tnt"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <tnt:ToolPage id="adminToolPage">
+
+        <!-- ── HEADER ── -->
+        <tnt:header>
+            <tnt:ToolHeader class="sapUiTinyMargin">
+                <Button
+                    icon="sap-icon://menu2"
+                    type="Transparent"
+                    press="onCollapseExpandPress" />
+                <Title
+                    text="Leave Management — Admin"
+                    level="H3"
+                    class="sapUiTinyMarginBegin" />
+                <ToolbarSpacer />
+                <Text
+                    text="{= 'Welcome, ' + ${currentUser>/firstName} }"
+                    class="sapUiTinyMarginEnd" />
+                <Button
+                    icon="sap-icon://log"
+                    type="Reject"
+                    tooltip="Logout"
+                    press="onLogout" />
+            </tnt:ToolHeader>
+        </tnt:header>
+
+        <!-- ── SIDE NAV ── -->
+        <tnt:sideContent>
+            <tnt:SideNavigation
+                id="adminSideNav"
+                expanded="true"
+                itemSelect="onNavItemSelect">
+                <tnt:NavigationList>
+                    <tnt:NavigationListItem
+                        text="Dashboard"
+                        icon="sap-icon://home"
+                        key="dashboard" />
+                    <tnt:NavigationListItem
+                        text="Create User"
+                        icon="sap-icon://add-employee"
+                        key="createUser" />
+                </tnt:NavigationList>
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+        <!-- ── MAIN CONTENT ── -->
+        <tnt:mainContents>
+            <NavContainer id="adminNavContainer" initialPage="adminDashboard">
+                <pages>
+                    <!-- ══ PAGE 1: DASHBOARD ══ -->
+                    <ScrollContainer id="adminDashboard" height="100%" vertical="true">
+                        <VBox class="sapUiSmallMargin">
+                            <!-- Summary Tiles -->
+                            <Panel headerText="Admin Dashboard" class="sapUiMediumMarginTop">
+                                <content>
+                                    <VBox class="sapUiSmallMarginBottom">
+                                        <Title
+                                            text="Hello, {currentUser>/firstName}!"
+                                            level="H5" />
+                                        <Text text="Here's a quick overview of the system." />
+                                    </VBox>
+                                    <HBox wrap="Wrap">
+                                        <GenericTile
+                                            class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                                            header="Total Employees"
+                                            frameType="OneByHalf">
+                                            <TileContent>
+                                                <NumericContent
+                                                    value="{adminModel>/totalEmployees}"
+                                                    icon="sap-icon://group" />
+                                            </TileContent>
+                                        </GenericTile>
+                                        <GenericTile
+                                            class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                                            header="Pending Approvals"
+                                            frameType="OneByHalf">
+                                            <TileContent>
+                                                <NumericContent
+                                                    value="{adminModel>/pendingApprovals}"
+                                                    icon="sap-icon://pending" />
+                                            </TileContent>
+                                        </GenericTile>
+                                        <GenericTile
+                                            class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                                            header="Approved Leaves"
+                                            frameType="OneByHalf">
+                                            <TileContent>
+                                                <NumericContent
+                                                    value="{adminModel>/approvedLeaves}"
+                                                    icon="sap-icon://accept" />
+                                            </TileContent>
+                                        </GenericTile>
+                                        <GenericTile
+                                            class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                                            header="Rejected Leaves"
+                                            frameType="OneByHalf">
+                                            <TileContent>
+                                                <NumericContent
+                                                    value="{adminModel>/rejectedLeaves}"
+                                                    icon="sap-icon://decline" />
+                                            </TileContent>
+                                        </GenericTile>
+                                    </HBox>
+                                </content>
+                            </Panel>
+                        </VBox>
+                    </ScrollContainer>
+
+                    <!-- ══ PAGE 2: CREATE USER ══ -->
+                    <ScrollContainer id="adminCreateUser" height="100%" vertical="true">
+                        <VBox class="sapUiSmallMargin">
+                            <Panel headerText="Create New User">
+                                <content>
+                                    <HBox wrap="Wrap" class="sapUiSmallMargin">
+
+                                        <!-- First Name -->
+                                        <VBox width="25%" class="sapUiSmallMarginBottom">
+                                            <Label text="First Name" labelFor="newFirstName" design="Bold" />
+                                            <Input id="newFirstName" placeholder="First Name" width="95%" />
+                                        </VBox>
+
+                                        <!-- Last Name -->
+                                        <VBox width="25%" class="sapUiSmallMarginBottom">
+                                            <Label text="Last Name" labelFor="newLastName" design="Bold" />
+                                            <Input id="newLastName" placeholder="Last Name" width="95%" />
+                                        </VBox>
+
+                                        <!-- Email -->
+                                        <VBox width="25%" class="sapUiSmallMarginBottom">
+                                            <Label text="Email" labelFor="newEmail" design="Bold" />
+                                            <Input id="newEmail" placeholder="Email" width="95%" />
+                                        </VBox>
+
+                                        <!-- Password -->
+                                        <VBox width="25%" class="sapUiSmallMarginBottom">
+                                            <Label text="Password" labelFor="newPassword" design="Bold" />
+                                            <Input id="newPassword" type="Password" placeholder="Password" width="95%" />
+                                        </VBox>
+
+                                        <!-- Team -->
+                                        <VBox width="25%" class="sapUiSmallMarginBottom">
+                                            <Label text="Team" labelFor="newTeam" design="Bold" />
+                                            <Input id="newTeam" placeholder="Team Name" width="95%" />
+                                        </VBox>
+
+                                        <!-- Location -->
+                                        <VBox width="25%" class="sapUiSmallMarginBottom">
+                                            <Label text="Location" labelFor="newLocation" design="Bold" />
+                                            <Input id="newLocation" placeholder="Location" width="95%" />
+                                        </VBox>
+
+                                        <!-- Phone -->
+                                        <VBox width="25%" class="sapUiSmallMarginBottom">
+                                            <Label text="Phone Number" labelFor="newPhone" design="Bold" />
+                                            <Input id="newPhone" placeholder="+91 XXXXXXXXXX" width="95%" />
+                                        </VBox>
+
+                                        <!-- Role -->
+                                        <VBox width="25%" class="sapUiSmallMarginBottom">
+                                            <Label text="Role" labelFor="newRole" design="Bold" />
+                                            <Select id="newRole" width="95%">
+                                                <core:Item key="EMPLOYEE" text="Employee" />
+                                                <core:Item key="ADMIN" text="Admin" />
+                                            </Select>
+                                        </VBox>
+
+                                    </HBox>
+
+                                    <!-- Buttons -->
+                                    <HBox justifyContent="End" class="sapUiSmallMargin">
+                                        <Button
+                                            text="Clear"
+                                            type="Default"
+                                            press="onClearCreateUser"
+                                            class="sapUiSmallMarginEnd" />
+                                        <Button
+                                            text="Create User"
+                                            type="Emphasized"
+                                            press="onCreateUser" />
+                                    </HBox>
+
+                                </content>
+                            </Panel>
+                        </VBox>
+                    </ScrollContainer>
+                </pages>
+            </NavContainer>
+        </tnt:mainContents>
+    </tnt:ToolPage>
+</mvc:View>
