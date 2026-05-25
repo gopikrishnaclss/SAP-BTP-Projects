@@ -4,7 +4,6 @@ sap.ui.define([
 ], (Controller, MessageToast) => {
     "use strict";
     return Controller.extend("leavemanagement.controller.View1", {
-
         onInit: function () {
             const oRouter = this.getOwnerComponent().getRouter();
             oRouter.getRoute("RouteView1").attachPatternMatched(this._onRouteMatched, this);
@@ -25,7 +24,7 @@ sap.ui.define([
             if (bLoggedIn) {
                 history.pushState(null, null, location.href);
                 const userData = JSON.parse(sessionStorage.getItem("currentUser"));
-                const sRoute = userData?.role === "ADMIN" ? "RouteAdmin" : "RouteView2";
+                const sRoute = "RouteView2";
                 this.getOwnerComponent().getRouter().navTo(sRoute, {}, true);
             }
         },
@@ -51,6 +50,7 @@ sap.ui.define([
                         employeeId: result.employeeId,
                         isActive:result.isActive,
                         role:result.role,
+                        joiningDate:result.joiningDate,
                         location:result.location,
                         phNo:result.phNo
                     };
@@ -59,11 +59,7 @@ sap.ui.define([
                     const oUserModel = new sap.ui.model.json.JSONModel(userData);
                     this.getOwnerComponent().setModel(oUserModel, "currentUser");
                     MessageToast.show("Welcome " + result.firstName);
-                    if (role === "Admin") {
-                        this.getOwnerComponent().getRouter().navTo("RouteAdmin");
-                    } else {
-                        this.getOwnerComponent().getRouter().navTo("RouteView2");
-                    }
+                    this.getOwnerComponent().getRouter().navTo("RouteView2");
 
                 } else {
                     this.byId("loginError").setVisible(true);
