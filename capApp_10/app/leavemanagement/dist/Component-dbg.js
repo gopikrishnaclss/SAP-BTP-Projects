@@ -21,6 +21,11 @@ sap.ui.define([
 
             // enable routing
             this.getRouter().initialize();
+
+            var oCoreGlobal = new sap.ui.model.json.JSONModel({
+                _allowNavigation : false
+            })
+            this.setModel(oCoreGlobal, "coreGlobal");
         }
     });
 });

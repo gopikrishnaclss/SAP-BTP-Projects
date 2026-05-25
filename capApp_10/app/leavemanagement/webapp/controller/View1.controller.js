@@ -49,10 +49,10 @@ sap.ui.define([
                         email:      result.email,
                         Team:       result.Team,
                         employeeId: result.employeeId,
-                        isActive:   result.isActive,
-                        role:       result.role,       
-                        location:   result.location,
-                        phNo:       result.phNumber
+                        isActive:result.isActive,
+                        role:result.role,
+                        location:result.location,
+                        phNo:result.phNo
                     };
                     sessionStorage.setItem("isLoggedIn", "true");
                     sessionStorage.setItem("currentUser", JSON.stringify(userData));

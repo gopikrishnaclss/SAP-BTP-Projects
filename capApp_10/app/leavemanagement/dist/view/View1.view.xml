@@ -1,59 +1,53 @@
 <mvc:View controllerName="leavemanagement.controller.View1"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns:m="sap.m"
-    xmlns:core="sap.ui.core">
-  <m:Page showHeader="false" backgroundDesign="Transparent">
-    <m:content>
-        <m:FlexBox
-            height="100vh"
-            alignItems="Center"
-            justifyContent="Center"
-            direction="Column"
-            class="loginPageBg">
-            <m:VBox width="380px" class="sapUiShadowLevel2 loginBox" id="loginCard">
-                <!-- Header -->
-                <m:FlexBox class="loginFlexBox">
-                    <m:VBox>
-                        <m:FlexBox alignItems="Center">
-                            <m:Text text="SAP" class="loginSapBadge"/>
-                            <m:Text text="Fiori" class="loginFioriText"/>
-                        </m:FlexBox>
-                        <m:Text text="Leave Management" class="loginAppTitle"/>
+    xmlns:m="sap.m">
+    <m:Page showHeader="false" backgroundDesign="Transparent">
+        <m:content>
+            <m:FlexBox
+                height="100vh"
+                alignItems="Center"
+                justifyContent="Center"
+                direction="Column"
+                class="loginPageBg">
+                <m:VBox width="380px" class="sapUiShadowLevel2 loginBox" id="loginCard">
+                    <!-- Header -->
+                    <m:FlexBox class="loginFlexBox">
+                        <m:VBox>
+                            <m:FlexBox alignItems="Center">
+                                <m:Text text="SAP" class="loginSapBadge"/>
+                                <m:Text text="Fiori" class="loginFioriText"/>
+                            </m:FlexBox>
+                            <m:Text text="Leave Management" class="loginAppTitle"/>
+                        </m:VBox>
+                    </m:FlexBox>
+                    <!-- Body -->
+                    <m:VBox class="loginFormBody">
+                        <m:Title text="Sign In" level="H2" class="loginSignInTitle"/>
+                        <m:VBox class="sapUiSmallMarginBottom">
+                            <m:Label text="User ID" required="true" labelFor="userId"/>
+                            <m:Input id="userId" placeholder="Enter your user ID"
+                            width="100%" class="sapUiTinyMarginTop"/>
+                        </m:VBox>
+                        <m:VBox class="sapUiSmallMarginBottom">
+                            <m:Label text="Password" required="true" labelFor="password"/>
+                            <m:Input id="password" type="Password"
+                            placeholder="Enter your password"
+                            width="100%" class="sapUiTinyMarginTop" submit="onLogin"/>
+                        </m:VBox>
+                        <m:MessageStrip id="loginError"
+                        text="Invalid credentials. Please try again."
+                        type="Error" showIcon="true" visible="false"
+                        class="sapUiSmallMarginBottom"/>
+                        <m:Button text="Sign In" type="Emphasized"
+                        width="100%" press="onLogin"
+                        class="sapUiSmallMarginTop loginBtn"/>
                     </m:VBox>
-                </m:FlexBox>
-                <!-- Body -->
-                <m:VBox class="loginFormBody">
-                    <m:Title text="Sign In" level="H2" class="loginSignInTitle"/>
-                    <m:VBox class="sapUiSmallMarginBottom">
-                        <m:Label text="User ID" required="true" labelFor="userId"/>
-                        <m:Input id="userId" placeholder="Enter your user ID"
-                        width="100%" class="sapUiTinyMarginTop"/>
-                    </m:VBox>
-
-                    <m:VBox class="sapUiSmallMarginBottom">
-                        <m:Label text="Password" required="true" labelFor="password"/>
-                        <m:Input id="password" type="Password"
-                        placeholder="Enter your password"
-                        width="100%" class="sapUiTinyMarginTop" submit="onLogin"/>
-                    </m:VBox>
-
-                    <m:MessageStrip id="loginError"
-                    text="Invalid credentials. Please try again."
-                    type="Error" showIcon="true" visible="false"
-                    class="sapUiSmallMarginBottom"/>
-
-                    <m:Button text="Sign In" type="Emphasized"
-                    width="100%" press="onLogin"
-                    class="sapUiSmallMarginTop loginBtn"/>
-
-                   
+                    <!-- Footer -->
+                    <m:FlexBox justifyContent="Center" class="loginFooterBox">
+                        <m:Text text="SAP © 2024 · Car Service Portal v1.0" class="loginFooterText"/>
+                    </m:FlexBox>
                 </m:VBox>
-                <!-- Footer -->
-                <m:FlexBox justifyContent="Center" class="loginFooterBox">
-                    <m:Text text="SAP © 2024 · Car Service Portal v1.0" class="loginFooterText"/>
-                </m:FlexBox>
-            </m:VBox>
-        </m:FlexBox>
-    </m:content>
-  </m:Page>
+            </m:FlexBox>
+        </m:content>
+    </m:Page>
 </mvc:View>
