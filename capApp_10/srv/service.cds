@@ -1,12 +1,11 @@
 using { leaveApp } from '../db/schema';
-
 service leaveManagementService @(path:'/leavemanage') {
     // @requires: 'manager'
     entity Employees as projection on leaveApp.Employees;
     action login(
         email : String,
         password : String
-    ) returns LoginResponse;
+    ) returns LoginResponse;              
     type LoginResponse {
         employeeId : String;
         firstName  : String;
@@ -16,6 +15,7 @@ service leaveManagementService @(path:'/leavemanage') {
         success    : Boolean;
         message    : String;
     }
+    action totalEmp() returns Integer;
     entity LeaveTypes as projection on leaveApp.LeaveType;
     entity LeaveBalances as projection on leaveApp.LeaveBalance;
     entity LeaveRequests as projection on leaveApp.LeaveRequest;

@@ -63,7 +63,8 @@ sap.ui.define(
         }
         // EMPLOYEE
         else {
-          this.empId = oUserData.employeeId || sessionStorage.getItem("employeeId");
+          this.empId =
+            oUserData.employeeId || sessionStorage.getItem("employeeId");
           if (!this.empId) {
             this.getOwnerComponent().getRouter().navTo("RouteView1");
             return;
@@ -103,15 +104,24 @@ sap.ui.define(
         const oNavContainer = this.byId("pageContainer");
         const oTargetPage = this.byId(sKey);
         if (oTargetPage) {
-          if (sKey === "adminCreateUser") {
-            
-          }
           oNavContainer.to(oTargetPage);
         }
         // Clear create user form
         if (sKey === "adminCreateUser") {
+          this._getTotalEmp();
           this.onClearCreateUser();
         }
+      },
+      _getTotalEmp: async function () {
+        const oModel = this.getOwnerComponent().getModel();
+
+        const oAction = oModel.bindContext("/totalEmp(...)");
+
+        const iTotal = await oAction.execute().then(() => {
+          const total = oAction.getBoundContext().getObject().value + 1;
+          const empID = "EMP" + String(total).padStart(5, "0");
+          this.byId("newEmployeeId").setValue(empID);
+        });
       },
       onCollapseExpandPress: function () {
         const oSideNavigation = this.byId("sideNavigation");
@@ -288,7 +298,7 @@ sap.ui.define(
         const oModel = this.getOwnerComponent().getModel();
         const sFirstName = this.byId("newFirstName").getValue().trim();
         const sLastName = this.byId("newLastName").getValue().trim();
-        const sEmployeeId = this.byId("newEmployeeid").getValue().trim();
+        const sEmployeeId = this.byId("newEmployeeId").getValue().trim();
         const sEmail = this.byId("newEmail").getValue().trim();
         const sPhone = this.byId("newPhone").getValue().trim();
         const sLocation = this.byId("newLocation").getValue().trim();
@@ -323,10 +333,10 @@ sap.ui.define(
           firstName: sFirstName,
           lastName: sLastName,
           email: sEmail,
-          phNo: sPhone,
+          phNumber: sPhone,
           location: sLocation,
           Team: sTeam,
-          role: sRole,
+          role_ID: parseInt(sRole),
           password: sPassword,
           isActive: true,
         });
@@ -367,7 +377,7 @@ sap.ui.define(
         [
           "newFirstName",
           "newLastName",
-          "newEmployeeId",
+
           "newEmail",
           "newPhone",
           "newLocation",
