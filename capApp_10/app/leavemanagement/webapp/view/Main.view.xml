@@ -41,13 +41,11 @@
         </Button>
       </tnt:ToolHeader>
     </tnt:header>
-
     <tnt:sideContent>
       <tnt:SideNavigation
         expanded="true"
-        itemPress=".onItemPress"
         selectedKey="{sideNav>/selectedKey}"
-        itemSelect=".onnavigation"
+        itemSelect="onnavigation"
         class="customSideitemNav"
         id="sideNavigation">
         <tnt:NavigationList items="{path: 'sideNav>/navigation'}">
@@ -57,7 +55,6 @@
             enabled="{sideNav>enabled}"
             expanded="{sideNav>expanded}"
             items="{sideNav>items}"
-            selectable="{= ${sideNav>items}.length > 0}"
             key="{sideNav>key}">
             <tnt:NavigationListItem
               text="{sideNav>title}"
@@ -318,7 +315,6 @@
                     <StandardListItem title="Phone" description="{currentUser>/phNo}" icon="sap-icon://phone" />
                   </List>
                 </content>
-              </List>
               </Panel>
             </VBox>
           </ScrollContainer>
@@ -376,86 +372,115 @@
                   </HBox>
                 </content>
               </Panel>
-
               <!-- All Leave Requests table for admin -->
               <Panel class="sapUiMediumMarginTop recentLeavePanel">
-                <Table
-                  id="adminLeaveTable"
-                  items="{adminLeaveRequests>/}"
-                  growing="true"
-                  growingScrollToLoad="true"
-                  inset="false"
-                  class="recentLeaveTable">
-                  <noData>
-                    <IllustratedMessage
-                      illustrationType="sapIllus-NoData"
-                      title="No Requests Found"
-                      description="There are no leave requests to display." />
-                  </noData>
-                  <headerToolbar>
-                    <Toolbar>
-                      <Title text="All Leave Requests" level="H5"/>
-                      <ToolbarSpacer/>
-                      <SearchField
-                        width="200px"
-                        placeholder="Search employee..."
-                        search="onAdminSearchLeave"
-                        class="sapUiTinyMarginEnd"/>
-                      <Button
-                        icon="sap-icon://refresh"
-                        text="Refresh"
-                        type="Success"
-                        press="onAdminRefreshLeaveRequests"/>
-                    </Toolbar>
-                  </headerToolbar>
-                  <columns>
-                    <Column width="10rem"><Text text="Employee ID"/></Column>
-                    <Column width="14rem"><Text text="Employee Name"/></Column>
-                    <Column width="12rem"><Text text="Leave Type"/></Column>
-                    <Column width="10rem" hAlign="Center"><Text text="From"/></Column>
-                    <Column width="10rem" hAlign="Center"><Text text="To"/></Column>
-                    <Column width="8rem" hAlign="Center"><Text text="Days"/></Column>
-                    <Column width="12rem" hAlign="Center"><Text text="Status"/></Column>
-                    <Column width="12rem" hAlign="Center"><Text text="Actions"/></Column>
-                  </columns>
-                  <items>
-                    <ColumnListItem type="Inactive">
-                      <cells>
-                        <Text text="{adminLeaveRequests>employee_employeeId}"/>
-                        <Text text="{adminLeaveRequests>employeeName}"/>
-                        <HBox alignItems="Center">
-                          <core:Icon src="sap-icon://calendar" class="sapUiTinyMarginEnd"/>
-                          <Text text="{adminLeaveRequests>leaveType/leaveType}"/>
-                        </HBox>
-                        <Text text="{adminLeaveRequests>fromDate}" textAlign="Center"/>
-                        <Text text="{adminLeaveRequests>toDate}" textAlign="Center"/>
-                        <Text text="{adminLeaveRequests>totalDays}" textAlign="Center"/>
-                        <ObjectStatus
-                          text="{adminLeaveRequests>status}"
-                          inverted="true"
-                          state="{=
-                            ${adminLeaveRequests>status} === 'APPROVED' ? 'Success' :
-                            ${adminLeaveRequests>status} === 'PENDING'  ? 'Warning' :
-                            ${adminLeaveRequests>status} === 'REJECTED' ? 'Error'   : 'None'
-                          }"/>
-                        <!-- Approve / Reject only for PENDING -->
-                        <HBox justifyContent="Center">
-                          <Button
-                            text="Approve"
-                            type="Accept"
-                            visible="{= ${adminLeaveRequests>status} === 'PENDING' }"
-                            press="onApproveLeave"
-                            class="sapUiTinyMarginEnd"/>
-                          <Button
-                            text="Reject"
-                            type="Reject"
-                            visible="{= ${adminLeaveRequests>status} === 'PENDING' }"
-                            press="onRejectLeave"/>
-                        </HBox>
-                      </cells>
-                    </ColumnListItem>
-                  </items>
-                </Table>
+                  <t:Table
+                      id="adminLeaveTable"
+                      rows="{adminLeaveRequests>/}"
+                      visibleRowCount="7"
+                      selectionMode="None"
+                      class="recentLeaveTable">
+
+                      <t:extension>
+                          <Toolbar>
+                              <Title text="All Leave Requests" level="H5"/>
+                              <ToolbarSpacer/>
+                              <SearchField
+                                  width="200px"
+                                  placeholder="Search employee..."
+                                  search="onAdminSearchLeave"
+                                  class="sapUiTinyMarginEnd"/>
+                              <Button
+                                  icon="sap-icon://refresh"
+                                  text="Refresh"
+                                  type="Success"
+                                  press="onAdminRefreshLeaveRequests"/>
+                          </Toolbar>
+                      </t:extension>
+
+                      <t:columns>
+
+                          <t:Column width="10rem">
+                              <Label text="Employee ID"/>
+                              <t:template>
+                                  <Text text="{adminLeaveRequests>employee_employeeId}"/>
+                              </t:template>
+                          </t:Column>
+
+                          <t:Column width="14rem">
+                              <Label text="Employee Name"/>
+                              <t:template>
+                                  <Text text="{adminLeaveRequests>employeeName}"/>
+                              </t:template>
+                          </t:Column>
+
+                          <t:Column width="12rem">
+                              <Label text="Leave Type"/>
+                              <t:template>
+                                  <HBox alignItems="Center">
+                                      <core:Icon src="sap-icon://calendar" class="sapUiTinyMarginEnd"/>
+                                      <Text text="{adminLeaveRequests>leaveType/leaveType}"/>
+                                  </HBox>
+                              </t:template>
+                          </t:Column>
+
+                          <t:Column width="10rem">
+                              <Label text="From"/>
+                              <t:template>
+                                  <Text text="{adminLeaveRequests>fromDate}"/>
+                              </t:template>
+                          </t:Column>
+
+                          <t:Column width="10rem">
+                              <Label text="To"/>
+                              <t:template>
+                                  <Text text="{adminLeaveRequests>toDate}"/>
+                              </t:template>
+                          </t:Column>
+
+                          <t:Column width="8rem">
+                              <Label text="Days"/>
+                              <t:template>
+                                  <Text text="{adminLeaveRequests>totalDays}"/>
+                              </t:template>
+                          </t:Column>
+
+                          <t:Column width="12rem">
+                              <Label text="Status"/>
+                              <t:template>
+                                  <ObjectStatus
+                                      text="{adminLeaveRequests>status}"
+                                      inverted="true"
+                                      state="{=
+                                          ${adminLeaveRequests>status} === 'APPROVED' ? 'Success' :
+                                          ${adminLeaveRequests>status} === 'PENDING' ? 'Warning' :
+                                          ${adminLeaveRequests>status} === 'REJECTED' ? 'Error' : 'None'
+                                      }"/>
+                              </t:template>
+                          </t:Column>
+
+                          <t:Column width="14rem">
+                              <Label text="Actions"/>
+                              <t:template>
+                                  <HBox justifyContent="Center">
+                                      <Button
+                                          text="Approve"
+                                          type="Accept"
+                                          visible="{= ${adminLeaveRequests>status} === 'PENDING' }"
+                                          press="onApproveLeave"
+                                          class="sapUiTinyMarginEnd"/>
+
+                                      <Button
+                                          text="Reject"
+                                          type="Reject"
+                                          visible="{= ${adminLeaveRequests>status} === 'PENDING' }"
+                                          press="onRejectLeave"/>
+                                  </HBox>
+                              </t:template>
+                          </t:Column>
+
+                      </t:columns>
+                  </t:Table>
               </Panel>
             </VBox>
           </ScrollContainer>
@@ -466,22 +491,9 @@
             vertical="true"
             visible="{= ${appState>/role} === 'Admin' }">
             <VBox class="sapUiSmallMargin">
-              <Panel headerText="Create New Employee" class="sapUiMediumMarginTop">
+              <Panel headerText="Create New Employee" class="sapUiSmallMarginTop">
                 <content>
                   <HBox alignItems="Start" class="sapUiSmallMargin">
-                    <!-- Info sidebar -->
-                    <VBox width="220px" class="sidebarBox">
-                      <Title text="Instructions" level="H6" class="sapUiTinyMarginBottom"/>
-                      <core:HTML content="&lt;div class='accentBar accentGreen' style='width:100%;height:4px;border-radius:2px;margin-bottom:8px'&gt;&lt;/div&gt;"/>
-                      <Text text="Fill all required fields to create a new employee account." class="sapUiTinyMarginBottom" wrapping="true"/>
-                      <core:HTML content="&lt;hr style='border:none;border-top:1px solid #e5e5e5;margin:8px 0;'/&gt;"/>
-                      <VBox class="sapUiTinyMarginBottom">
-                        <Text text="• Employee ID must be unique" class="accentName"/>
-                        <Text text="• Password min. 8 characters" class="accentName sapUiTinyMarginTop"/>
-                        <Text text="• Email must be valid" class="accentName sapUiTinyMarginTop"/>
-                        <Text text="• Role: Employee or Admin" class="accentName sapUiTinyMarginTop"/>
-                      </VBox>
-                    </VBox>
                     <!-- Divider -->
                     <core:HTML content="&lt;div style='width:1px;background-color:#e5e5e5;align-self:stretch;margin:0 16px;'&gt;&lt;/div&gt;" />
                     <!-- Create User Form -->

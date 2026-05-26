@@ -20,22 +20,24 @@ sap.ui.define([
             }
         },
         _onRouteMatched: function () {
+            this.byId("userId").setValue("");
+            this.byId("password").setValue("");
+            this.byId("loginError").setVisible(false);
             const bLoggedIn = sessionStorage.getItem("isLoggedIn");
             if (bLoggedIn) {
                 history.pushState(null, null, location.href);
                 const userData = JSON.parse(sessionStorage.getItem("currentUser"));
-                const sRoute = "RouteView2";
-                this.getOwnerComponent().getRouter().navTo(sRoute, {}, true);
+                this.getOwnerComponent().getRouter().navTo("RouteView2", {}, true);
             }
         },
         onLogin: function () {
-            const email    = this.byId("userId").getValue();
+            const email = this.byId("userId").getValue();
             const password = this.byId("password").getValue();
             if (!email || !password) {
                 MessageToast.show("Please enter email and password");
                 return;
             }
-            const oModel   = this.getOwnerComponent().getModel();
+            const oModel = this.getOwnerComponent().getModel();
             const oContext = oModel.bindContext("/login(...)");
             oContext.setParameter("email", email);
             oContext.setParameter("password", password);
@@ -43,16 +45,16 @@ sap.ui.define([
                 const result = oContext.getBoundContext().getObject();
                 if (result.success) {
                     const userData = {
-                        firstName:  result.firstName,
-                        lastName:   result.lastName,
-                        email:      result.email,
-                        Team:       result.Team,
+                        firstName: result.firstName,
+                        lastName: result.lastName,
+                        email: result.email,
+                        Team: result.Team,
                         employeeId: result.employeeId,
-                        isActive:result.isActive,
-                        role:result.role,
-                        joiningDate:result.joiningDate,
-                        location:result.location,
-                        phNo:result.phNo
+                        isActive: result.isActive,
+                        role: result.role,
+                        joiningDate: result.joiningDate,
+                        location: result.location,
+                        phNo: result.phNo
                     };
                     sessionStorage.setItem("isLoggedIn", "true");
                     sessionStorage.setItem("currentUser", JSON.stringify(userData));

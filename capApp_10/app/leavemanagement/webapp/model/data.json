@@ -37,7 +37,7 @@
           {
             "title": "Create User",
             "key": "adminCreateUser",
-            "icon": "sap-icon://add-employee"
+            "icon": "sap-icon://manager"
           }
         ]
       }
