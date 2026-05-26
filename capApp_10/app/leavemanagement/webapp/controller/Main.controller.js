@@ -137,6 +137,31 @@ sap.ui.define(
           const oDashboard = this.getOwnerComponent().getModel("adminDashboard");
           if (oDashboard) {
             oDashboard.setProperty("/totalEmployees", aEmps.length);
+            const oDashData = oDashboard.getData();
+            const aChartData = [
+              {
+                category: "Employees",
+                count: aEmps.length
+              },
+              {
+                category: "Pending",
+                count: oDashData.pendingApprovals
+              },
+              {
+                category: "Approved",
+                count: oDashData.approvedToday
+              },
+              {
+                category: "Requests",
+                count: oDashData.totalRequests
+              }
+            ];
+            this.getOwnerComponent().setModel(
+              new JSONModel({
+                items: aChartData
+              }),
+              "adminChart"
+            );
           }
         }.bind(this)).catch(function (oErr) {
           console.error("Failed to load employees", oErr);

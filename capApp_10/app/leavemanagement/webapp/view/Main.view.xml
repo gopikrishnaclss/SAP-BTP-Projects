@@ -6,6 +6,9 @@
   xmlns:f="sap.ui.layout.form"
   xmlns:t="sap.ui.table"
   xmlns:m="sap.m"
+  xmlns:viz="sap.viz.ui5.controls"
+  xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+  xmlns:viz.data="sap.viz.ui5.data"
   xmlns:unified="sap.ui.unified">
   <tnt:ToolPage id="toolPage">
     <tnt:header>
@@ -36,8 +39,7 @@
           press="onHolidayListButtonPress" />
         <Button
           text="Dashboard"
-          icon="sap-icon://home"
-          type="Emphasized"
+          type="Default"
           class="sapUiTinyMarginEnd"
           visible="{= ${appState>/role} === 'Admin' }"
           press="onGoHome" />
@@ -332,51 +334,42 @@
             vertical="true"
             visible="{= ${appState>/role} === 'Admin' }">
             <VBox class="sapUiSmallMargin">
-              <Panel headerText="Admin Dashboard" class="sapUiMediumMarginTop homePanel">
+              <Panel headerText="Dashboard" class="sapUiMediumMarginTop homePanel">
                 <content>
                   <VBox class="sapUiSmallMarginBottom">
-                    <Title text="Welcome, {currentUser>/firstName}" level="H6" />
-                    <Text text="Manage employees and leave requests" />
                   </VBox>
                   <!-- Admin stat tiles -->
-                  <HBox wrap="Wrap">
-                    <GenericTile
-                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedCasual"
-                      header="Total Employees"
-                      frameType="OneByHalf"
-                      press="onAdminTilePress">
-                      <TileContent>
-                        <NumericContent value="{adminDashboard>/totalEmployees}" />
-                      </TileContent>
-                    </GenericTile>
-                    <GenericTile
-                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPending"
-                      header="Pending Approvals"
-                      frameType="OneByHalf"
-                      press="onAdminTilePress">
-                      <TileContent>
-                        <NumericContent value="{adminDashboard>/pendingApprovals}" />
-                      </TileContent>
-                    </GenericTile>
-                    <GenericTile
-                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedSick"
-                      header="Approved Today"
-                      frameType="OneByHalf"
-                      press="onAdminTilePress">
-                      <TileContent>
-                        <NumericContent value="{adminDashboard>/approvedToday}" />
-                      </TileContent>
-                    </GenericTile>
-                    <GenericTile
-                      class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout reportPublishedPaid"
-                      header="Total Requests"
-                      frameType="OneByHalf"
-                      press="onAdminTilePress">
-                      <TileContent>
-                        <NumericContent value="{adminDashboard>/totalRequests}" />
-                      </TileContent>
-                    </GenericTile>
-                  </HBox>
+                  <viz:VizFrame
+                      id="adminDashboardChart"
+                      uiConfig="{applicationSet:'fiori'}"
+                      vizType="column"
+                      width="100%"
+                      height="350px">
+                      <viz:dataset>
+                          <viz.data:FlattenedDataset data="{adminChart>/items}">
+                              <viz.data:dimensions>
+                                  <viz.data:DimensionDefinition
+                                      name="Category"
+                                      value="{adminChart>category}" />
+                              </viz.data:dimensions>
+                              <viz.data:measures>
+                                  <viz.data:MeasureDefinition
+                                      name="Count"
+                                      value="{adminChart>count}" />
+                              </viz.data:measures>
+                          </viz.data:FlattenedDataset>
+                      </viz:dataset>
+                      <viz:feeds>
+                          <viz.feeds:FeedItem
+                              uid="valueAxis"
+                              type="Measure"
+                              values="Count" />
+                          <viz.feeds:FeedItem
+                              uid="categoryAxis"
+                              type="Dimension"
+                              values="Category" />
+                      </viz:feeds>
+                  </viz:VizFrame>
                 </content>
               </Panel>
               <!-- All Leave Requests table for admin -->
@@ -559,7 +552,6 @@
                   </HBox>
                 </content>
               </Panel>
-
               <!-- Existing Employees Table -->
               <Panel class="sapUiMediumMarginTop recentLeavePanel">
                 <Table
@@ -597,7 +589,7 @@
                         <Text text="{= ${allEmployees>firstName} + ' ' + ${allEmployees>lastName} }"/>
                         <Text text="{allEmployees>email}"/>
                         <Text text="{allEmployees>Team}"/>
-                        <Text text="{allEmployees>role}"/>
+                        <Text text="{allEmployees>role_ID}"/>
                         <ObjectStatus
                           text="{= ${allEmployees>isActive} ? 'Active' : 'Inactive' }"
                           state="{= ${allEmployees>isActive} ? 'Success' : 'Error' }"
