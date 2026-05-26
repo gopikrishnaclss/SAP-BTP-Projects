@@ -40,7 +40,7 @@ sap.ui.define(
         oNavModel.attachRequestCompleted(function () {
           const oData = oNavModel.getData();
           const oFinalNav = isAdmin ? oData.admin : oData.employee;
-          this.getOwnerComponent().setModel(new JSONModel(oFinalNav),"sideNav");
+          this.getOwnerComponent().setModel(new JSONModel(oFinalNav), "sideNav");
         }.bind(this));
         // ADMIN
         if (isAdmin) {
@@ -49,12 +49,12 @@ sap.ui.define(
         }
         // EMPLOYEE
         else {
-          this.empId =oUserData.employeeId || sessionStorage.getItem("employeeId");
+          this.empId = oUserData.employeeId || sessionStorage.getItem("employeeId");
           if (!this.empId) {
             this.getOwnerComponent().getRouter().navTo("RouteView1");
             return;
           }
-          sessionStorage.setItem("employeeId",this.empId);
+          sessionStorage.setItem("employeeId", this.empId);
           this._getLeaveBalance()
           this._getLeaveRequests();
           this.byId("pageContainer").to(this.byId("Home"));
@@ -84,6 +84,10 @@ sap.ui.define(
         const oTargetPage = this.byId(sKey);
         if (oTargetPage) {
           oNavContainer.to(oTargetPage);
+        }
+        // Clear create user form
+        if (sKey === "adminCreateUser") {
+          this.onClearCreateUser();
         }
       },
       onCollapseExpandPress: function () {
@@ -210,7 +214,7 @@ sap.ui.define(
         const oModel = this.getOwnerComponent().getModel();
         const sFirstName = this.byId("newFirstName").getValue().trim();
         const sLastName = this.byId("newLastName").getValue().trim();
-        const sEmployeeId = this.byId("newEmployeeId").getValue().trim();
+        const sEmployeeId = this.byId("newEmployeeid").getValue().trim();
         const sEmail = this.byId("newEmail").getValue().trim();
         const sPhone = this.byId("newPhone").getValue().trim();
         const sLocation = this.byId("newLocation").getValue().trim();
@@ -268,7 +272,7 @@ sap.ui.define(
           });
       },
       onClearCreateUser: function () {
-        ["newFirstName", "newLastName", "newEmployeeId", "newEmail",
+        ["newFirstName", "newLastName", "newEmployeeid", "newEmail",
           "newPhone", "newLocation", "newTeam", "newPassword"].forEach(function (sId) {
             const oCtrl = this.byId(sId);
             if (oCtrl) { oCtrl.setValue(""); oCtrl.setValueState("None"); }

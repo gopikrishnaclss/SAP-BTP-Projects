@@ -34,6 +34,13 @@
           class="sapUiTinyMarginEnd"
           visible="{= ${appState>/role} !== 'Admin' }"
           press="onHolidayListButtonPress" />
+        <Button
+          text="Dashboard"
+          icon="sap-icon://home"
+          type="Emphasized"
+          class="sapUiTinyMarginEnd"
+          visible="{= ${appState>/role} === 'Admin' }"
+          press="onGoHome" />
         <Button icon="sap-icon://person-placeholder" type="Transparent" press="pressUserIcon">
           <layoutData>
             <OverflowToolbarLayoutData priority="NeverOverflow" />
@@ -458,8 +465,7 @@
                                       }"/>
                               </t:template>
                           </t:Column>
-
-                          <t:Column width="14rem">
+                         <!-- <t:Column width="14rem">
                               <Label text="Actions"/>
                               <t:template>
                                   <HBox justifyContent="Center">
@@ -469,7 +475,6 @@
                                           visible="{= ${adminLeaveRequests>status} === 'PENDING' }"
                                           press="onApproveLeave"
                                           class="sapUiTinyMarginEnd"/>
-
                                       <Button
                                           text="Reject"
                                           type="Reject"
@@ -477,8 +482,7 @@
                                           press="onRejectLeave"/>
                                   </HBox>
                               </t:template>
-                          </t:Column>
-
+                          </t:Column> -->
                       </t:columns>
                   </t:Table>
               </Panel>
@@ -509,8 +513,8 @@
                           <Input id="newLastName" placeholder="Last Name" width="95%"/>
                         </VBox>
                         <VBox width="33%">
-                          <Label text="Employee ID:" labelFor="newEmployeeId" design="Bold" required="true"/>
-                          <Input id="newEmployeeId" placeholder="e.g. EMP001" width="95%"/>
+                          <Label text="Employee ID:" labelFor="newEmployeeid" design="Bold" required="true"/>
+                          <Input id="newEmployeeid" placeholder="e.g. EMP001" width="95%"/>
                         </VBox>
                       </HBox>
                       <!-- Row 2 -->

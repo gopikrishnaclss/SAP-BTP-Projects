@@ -22,13 +22,6 @@
     "selectedKey": "adminHome",
     "navigation": [
       {
-        "title": "Dashboard",
-        "icon": "sap-icon://home",
-        "expanded": false,
-        "key": "adminHome",
-        "items": []
-      },
-      {
         "title": "User Management",
         "icon": "sap-icon://group",
         "expanded": true,
