@@ -74,6 +74,7 @@ sap.ui.define(
           this._getLeaveRequests();
           this.byId("pageContainer").to(this.byId("Home"));
         }
+        this.onClearCreateUser();
       },
       onAfterRendering: function () {
         const oTitle = this.byId("idTitle");
@@ -189,28 +190,42 @@ sap.ui.define(
       _loadAllEmployees: function () {
         const oModel = this.getOwnerComponent().getModel();
         const oBinding = oModel.bindList("/Employees");
-        oBinding
-          .requestContexts()
-          .then(
-            function (aContexts) {
-              const aEmps = aContexts.map(function (oCtx) {
-                return oCtx.getObject();
-              });
-              this.getOwnerComponent().setModel(
-                new JSONModel(aEmps),
-                "allEmployees",
-              );
-              // Patch total employee count into dashboard model
-              const oDashboard =
-                this.getOwnerComponent().getModel("adminDashboard");
-              if (oDashboard) {
-                oDashboard.setProperty("/totalEmployees", aEmps.length);
+        oBinding.requestContexts().then(function (aContexts) {
+          const aEmps = aContexts.map(function (oCtx) { return oCtx.getObject(); });
+          this.getOwnerComponent().setModel(new JSONModel(aEmps), "allEmployees");
+          // Patch total employee count into dashboard model
+          const oDashboard = this.getOwnerComponent().getModel("adminDashboard");
+          if (oDashboard) {
+            oDashboard.setProperty("/totalEmployees", aEmps.length);
+            const oDashData = oDashboard.getData();
+            const aChartData = [
+              {
+                category: "Employees",
+                count: aEmps.length
+              },
+              {
+                category: "Pending",
+                count: oDashData.pendingApprovals
+              },
+              {
+                category: "Approved",
+                count: oDashData.approvedToday
+              },
+              {
+                category: "Requests",
+                count: oDashData.totalRequests
               }
-            }.bind(this),
-          )
-          .catch(function (oErr) {
-            console.error("Failed to load employees", oErr);
-          });
+            ];
+            this.getOwnerComponent().setModel(
+              new JSONModel({
+                items: aChartData
+              }),
+              "adminChart"
+            );
+          }
+        }.bind(this)).catch(function (oErr) {
+          console.error("Failed to load employees", oErr);
+        });
       },
       onAdminRefreshLeaveRequests: function () {
         this._loadAllLeaveRequests();
@@ -396,9 +411,6 @@ sap.ui.define(
         if (oRole) {
           oRole.setSelectedKey("Employee");
         }
-      },
-      onAdminTilePress: function () {
-        // Tiles are informational; can be extended to drill-down later
       },
       _getLeaveBalance: function () {
         const oModel = this.getOwnerComponent().getModel();
@@ -672,7 +684,7 @@ sap.ui.define(
       },
       onCloseHolidayDialog: function () {
         this.oHolidayDialog.close();
-      },
+      }
     });
   },
 );
