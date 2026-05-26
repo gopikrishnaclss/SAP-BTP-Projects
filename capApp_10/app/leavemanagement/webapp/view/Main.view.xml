@@ -501,6 +501,24 @@
                       <!-- Row 1 -->
                       <HBox width="100%" class="sapUiTinyMarginBottom">
                         <VBox width="33%">
+                          <Label text="Employee ID:" labelFor="newEmployeeId" design="Bold" required="true"/>
+                          <Input id="newEmployeeId" editable="false" placeholder="e.g. EMP001" width="95%"/>
+                        </VBox>
+                        <VBox width="33%">
+                          <Label text="Email:"  />
+                          <Input   width="95%" placeholder="Email Id"/>
+                        </VBox>
+                        <VBox width="33%">
+                          <Label text="Password:"   />
+                          <Input  width="95%" type="Password"  placeholder="Password"/>
+                        </VBox>
+                         
+                         
+                         
+                      </HBox>
+                      <!-- Row 2 -->
+                      <HBox width="100%" class="sapUiTinyMarginBottom">
+                        <VBox width="33%">
                           <Label text="First Name:" labelFor="newFirstName" design="Bold" required="true"/>
                           <Input id="newFirstName" placeholder="First Name" width="95%"/>
                         </VBox>
@@ -508,25 +526,12 @@
                           <Label text="Last Name:" labelFor="newLastName" design="Bold" required="true"/>
                           <Input id="newLastName" placeholder="Last Name" width="95%"/>
                         </VBox>
-                        <VBox width="33%">
-                          <Label text="Employee ID:" labelFor="newEmployeeId" design="Bold" required="true"/>
-                          <Input id="newEmployeeId" placeholder="e.g. EMP001" width="95%"/>
-                        </VBox>
-                      </HBox>
-                      <!-- Row 2 -->
-                      <HBox width="100%" class="sapUiTinyMarginBottom">
-                        <VBox width="33%">
-                          <Label text="Email:" labelFor="newEmail" design="Bold" required="true"/>
-                          <Input id="newEmail" placeholder="user@company.com" width="95%"/>
-                        </VBox>
+                         
                         <VBox width="33%">
                           <Label text="Phone:" labelFor="newPhone" design="Bold"/>
                           <Input id="newPhone" placeholder="+91 XXXXXXXXXX" width="95%"/>
                         </VBox>
-                        <VBox width="33%">
-                          <Label text="Location:" labelFor="newLocation" design="Bold"/>
-                          <Input id="newLocation" placeholder="City, Country" width="95%"/>
-                        </VBox>
+                        
                       </HBox>
                       <!-- Row 3 -->
                       <HBox width="100%" class="sapUiTinyMarginBottom">
@@ -541,10 +546,11 @@
                             <core:Item key="Admin" text="Admin"/>
                           </Select>
                         </VBox>
-                        <VBox width="33%">
-                          <Label text="Password:" labelFor="newPassword" design="Bold" required="true"/>
-                          <Input id="newPassword" type="Password" placeholder="Min 8 characters" width="95%"/>
+                         <VBox width="33%">
+                          <Label text="Location:" labelFor="newLocation" design="Bold"/>
+                          <Input id="newLocation" placeholder="City, Country" width="95%"/>
                         </VBox>
+                         
                       </HBox>
                       <!-- Buttons -->
                       <HBox justifyContent="End" class="sapUiSmallMarginTop">
