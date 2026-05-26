@@ -13,11 +13,7 @@
                     <!-- Header -->
                     <m:FlexBox class="loginFlexBox">
                         <m:VBox>
-                            <m:FlexBox alignItems="Center">
-                                <m:Text text="SAP" class="loginSapBadge"/>
-                                <m:Text text="Fiori" class="loginFioriText"/>
-                            </m:FlexBox>
-                            <m:Text text="Leave Management" class="loginAppTitle"/>
+                            <m:Title text="Leave Management" level="H6" class="loginAppTitle"/>
                         </m:VBox>
                     </m:FlexBox>
                     <!-- Body -->
@@ -44,7 +40,7 @@
                     </m:VBox>
                     <!-- Footer -->
                     <m:FlexBox justifyContent="Center" class="loginFooterBox">
-                        <m:Text text="SAP © 2024 · Car Service Portal v1.0" class="loginFooterText"/>
+                        <m:Text text="SAP © 2024 · Leave Management Portal V2.0" class="loginFooterText"/>
                     </m:FlexBox>
                 </m:VBox>
             </m:FlexBox>

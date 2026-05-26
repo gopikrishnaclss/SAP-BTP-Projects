@@ -9,7 +9,7 @@
         draggable="true"
         resizable="true">
         <content>
-            <Table items="{/Holidays}">
+            <Table items="{/Holidays}" class="customHolidayTable">
                 <columns>
                     <Column>
                         <Text text="Date"/>

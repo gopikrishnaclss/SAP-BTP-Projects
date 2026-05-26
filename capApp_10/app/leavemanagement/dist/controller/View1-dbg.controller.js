@@ -6,25 +6,31 @@ sap.ui.define([
     return Controller.extend("leavemanagement.controller.View1", {
         onInit: function () {
             const oRouter = this.getOwnerComponent().getRouter();
-            oRouter.getRoute("RouteView1").attachPatternMatched( this._onRouteMatched,this);
-            // Prevent browser back after login
-            window.addEventListener( "popstate",this._preventBack.bind(this));
+            oRouter.getRoute("RouteView1").attachPatternMatched(this._onRouteMatched, this);
+            window.addEventListener("popstate", this._preventBack.bind(this));
         },
         _preventBack: function () {
             const bLoggedIn = sessionStorage.getItem("isLoggedIn");
             if (bLoggedIn) {
                 history.pushState(null, null, location.href);
-                this.getOwnerComponent().getRouter().navTo("RouteView2",{},true);
+                // ✅ Respect role when preventing back navigation
+                const userData = JSON.parse(sessionStorage.getItem("currentUser"));
+                const sRoute = userData?.role === "ADMIN" ? "RouteAdmin" : "RouteView2";
+                this.getOwnerComponent().getRouter().navTo(sRoute, {}, true);
             }
         },
-        __onRouteMatched: function () {
+        _onRouteMatched: function () {
+            this.byId("userId").setValue("");
+            this.byId("password").setValue("");
+            this.byId("loginError").setVisible(false);
             const bLoggedIn = sessionStorage.getItem("isLoggedIn");
             if (bLoggedIn) {
                 history.pushState(null, null, location.href);
+                const userData = JSON.parse(sessionStorage.getItem("currentUser"));
                 this.getOwnerComponent().getRouter().navTo("RouteView2", {}, true);
             }
         },
-        onLogin() {
+        onLogin: function () {
             const email = this.byId("userId").getValue();
             const password = this.byId("password").getValue();
             if (!email || !password) {
@@ -40,30 +46,31 @@ sap.ui.define([
                 if (result.success) {
                     const userData = {
                         firstName: result.firstName,
-                        lastName:result.lastName,
+                        lastName: result.lastName,
                         email: result.email,
                         Team: result.Team,
                         employeeId: result.employeeId,
-                        isActive:result.isActive,
-                        role:result.role,
-                        location:result.location,
-                        phNo:result.phNumber
+                        isActive: result.isActive,
+                        role: result.role,
+                        joiningDate: result.joiningDate,
+                        location: result.location,
+                        phNo: result.phNo
                     };
-                    // STORE SESSION
                     sessionStorage.setItem("isLoggedIn", "true");
-                    sessionStorage.setItem(
-                        "currentUser",
-                        JSON.stringify(userData)
-                    );
+                    sessionStorage.setItem("currentUser", JSON.stringify(userData));
                     const oUserModel = new sap.ui.model.json.JSONModel(userData);
-                    MessageToast.show("Welcome " + result.firstName);
                     this.getOwnerComponent().setModel(oUserModel, "currentUser");
+                    MessageToast.show("Welcome " + result.firstName);
                     this.getOwnerComponent().getRouter().navTo("RouteView2");
+
                 } else {
-                    MessageToast.show(result.message);
+                    this.byId("loginError").setVisible(true);
+                    this.byId("loginError").setText(result.message || "Invalid credentials.");
                 }
+
             }).catch(() => {
-                MessageToast.show("Error during login");
+                this.byId("loginError").setVisible(true);
+                this.byId("loginError").setText("Something went wrong. Please try again.");
             });
         }
     });

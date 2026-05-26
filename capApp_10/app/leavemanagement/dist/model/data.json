@@ -1,20 +1,39 @@
 {
-    "selectedKey" : "Home",
-    "navigation" : [
-            {
-                "title": "Home",
-                "icon": "sap-icon://database",
-                "expanded": false,
-                "key": "root1",
-                "items": [
-                    {
-                        "title": "Apply Leave",
-                        "key": "page1",
-                        "icon": "sap-icon://folder"
-                    }
-                ]
-            }
+  "employee": {
+    "selectedKey": "Home",
+    "navigation": [
+      {
+        "title": "Home",
+        "icon": "sap-icon://home",
+        "expanded": true,
+        "key": "Home",
+        "items": [
+          {
+            "title": "Apply Leave",
+            "key": "page1",
+            "icon": "sap-icon://calendar"
+          }
         ]
+      }
+    ]
+  },
+
+  "admin": {
+    "selectedKey": "adminHome",
+    "navigation": [
+      {
+        "title": "User Management",
+        "icon": "sap-icon://group",
+        "expanded": true,
+        "key": "adminUserMgmt",
+        "items": [
+          {
+            "title": "Create User",
+            "key": "adminCreateUser",
+            "icon": "sap-icon://manager"
+          }
+        ]
+      }
+    ]
+  }
 }
-
-
