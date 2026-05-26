@@ -7,7 +7,14 @@ sap.ui.define(
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/ValueState",
   ],
-  function (Controller, MessageToast, MessageBox, Fragment, JSONModel, ValueState) {
+  function (
+    Controller,
+    MessageToast,
+    MessageBox,
+    Fragment,
+    JSONModel,
+    ValueState,
+  ) {
     "use strict";
     return Controller.extend("leavemanagement.controller.Main", {
       onInit: function () {
@@ -31,17 +38,24 @@ sap.ui.define(
         // App State Model
         const oAppStateModel = new JSONModel({
           role: oUserData.role,
-          headerTitle: isAdmin ? "Leave Management – Admin" : "Leave Management"
+          headerTitle: isAdmin
+            ? "Leave Management – Admin"
+            : "Leave Management",
         });
         this.getOwnerComponent().setModel(oAppStateModel, "appState");
         // Load Side Navigation from data.json
         const oNavModel = new JSONModel();
         oNavModel.loadData("model/data.json");
-        oNavModel.attachRequestCompleted(function () {
-          const oData = oNavModel.getData();
-          const oFinalNav = isAdmin ? oData.admin : oData.employee;
-          this.getOwnerComponent().setModel(new JSONModel(oFinalNav), "sideNav");
-        }.bind(this));
+        oNavModel.attachRequestCompleted(
+          function () {
+            const oData = oNavModel.getData();
+            const oFinalNav = isAdmin ? oData.admin : oData.employee;
+            this.getOwnerComponent().setModel(
+              new JSONModel(oFinalNav),
+              "sideNav",
+            );
+          }.bind(this),
+        );
         // ADMIN
         if (isAdmin) {
           this._loadAdminData();
@@ -55,7 +69,7 @@ sap.ui.define(
             return;
           }
           sessionStorage.setItem("employeeId", this.empId);
-          this._getLeaveBalance()
+          this._getLeaveBalance();
           this._getLeaveRequests();
           this.byId("pageContainer").to(this.byId("Home"));
         }
@@ -63,9 +77,15 @@ sap.ui.define(
       onAfterRendering: function () {
         const oTitle = this.byId("idTitle");
         if (oTitle) {
-          oTitle.$().off("click").on("click", function () {
-            this.onGoHome();
-          }.bind(this));
+          oTitle
+            .$()
+            .off("click")
+            .on(
+              "click",
+              function () {
+                this.onGoHome();
+              }.bind(this),
+            );
         }
       },
       onGoHome: function () {
@@ -83,6 +103,9 @@ sap.ui.define(
         const oNavContainer = this.byId("pageContainer");
         const oTargetPage = this.byId(sKey);
         if (oTargetPage) {
+          if (sKey === "adminCreateUser") {
+            
+          }
           oNavContainer.to(oTargetPage);
         }
         // Clear create user form
@@ -100,32 +123,58 @@ sap.ui.define(
       },
       _loadAllLeaveRequests: function () {
         const oModel = this.getOwnerComponent().getModel();
-        const oBinding = oModel.bindList("/LeaveRequests", undefined, undefined, undefined, {
-          $expand: "leaveType,employee"
-        });
-        oBinding.requestContexts().then(function (aContexts) {
-          const aRequests = aContexts.map(function (oCtx) { return oCtx.getObject(); });
-          // Enrich with employee full name if expand returns the employee object
-          aRequests.forEach(function (oReq) {
-            if (oReq.employee) {
-              oReq.employeeName = (oReq.employee.firstName || "") + " " + (oReq.employee.lastName || "");
-            } else {
-              oReq.employeeName = oReq.employee_employeeId || "";
-            }
+        const oBinding = oModel.bindList(
+          "/LeaveRequests",
+          undefined,
+          undefined,
+          undefined,
+          {
+            $expand: "leaveType,employee",
+          },
+        );
+        oBinding
+          .requestContexts()
+          .then(
+            function (aContexts) {
+              const aRequests = aContexts.map(function (oCtx) {
+                return oCtx.getObject();
+              });
+              // Enrich with employee full name if expand returns the employee object
+              aRequests.forEach(function (oReq) {
+                if (oReq.employee) {
+                  oReq.employeeName =
+                    (oReq.employee.firstName || "") +
+                    " " +
+                    (oReq.employee.lastName || "");
+                } else {
+                  oReq.employeeName = oReq.employee_employeeId || "";
+                }
+              });
+              this.getOwnerComponent().setModel(
+                new JSONModel(aRequests),
+                "adminLeaveRequests",
+              );
+              // Compute dashboard counters
+              const iPending = aRequests.filter(function (r) {
+                return r.status === "PENDING";
+              }).length;
+              const iApproved = aRequests.filter(function (r) {
+                return r.status === "APPROVED";
+              }).length;
+              this.getOwnerComponent().setModel(
+                new JSONModel({
+                  pendingApprovals: iPending,
+                  approvedToday: iApproved,
+                  totalRequests: aRequests.length,
+                  totalEmployees: 0, // filled after employee load
+                }),
+                "adminDashboard",
+              );
+            }.bind(this),
+          )
+          .catch(function (oErr) {
+            console.error("Failed to load all leave requests", oErr);
           });
-          this.getOwnerComponent().setModel(new JSONModel(aRequests), "adminLeaveRequests");
-          // Compute dashboard counters
-          const iPending = aRequests.filter(function (r) { return r.status === "PENDING"; }).length;
-          const iApproved = aRequests.filter(function (r) { return r.status === "APPROVED"; }).length;
-          this.getOwnerComponent().setModel(new JSONModel({
-            pendingApprovals: iPending,
-            approvedToday: iApproved,
-            totalRequests: aRequests.length,
-            totalEmployees: 0   // filled after employee load
-          }), "adminDashboard");
-        }.bind(this)).catch(function (oErr) {
-          console.error("Failed to load all leave requests", oErr);
-        });
       },
       _loadAllEmployees: function () {
         const oModel = this.getOwnerComponent().getModel();
@@ -184,14 +233,16 @@ sap.ui.define(
         const oCtx = oEvent.getSource().getBindingContext("adminLeaveRequests");
         const oRequest = oCtx.getObject();
         MessageBox.confirm(
-          "Reject leave request for " + (oRequest.employeeName || oRequest.employee_employeeId) + "?",
+          "Reject leave request for " +
+            (oRequest.employeeName || oRequest.employee_employeeId) +
+            "?",
           {
             onClose: function (sAction) {
               if (sAction === MessageBox.Action.OK) {
                 this._updateLeaveStatus(oRequest, "REJECTED");
               }
-            }.bind(this)
-          }
+            }.bind(this),
+          },
         );
       },
       _updateLeaveStatus: function (oRequest, sNewStatus) {
@@ -199,17 +250,23 @@ sap.ui.define(
         // Build the PATCH path using the request's key
         const sPath = "/LeaveRequests(" + oRequest.leaveRequestId + ")";
         const oContextBinding = oModel.bindContext(sPath);
-        oContextBinding.requestObject().then(function () {
-          const oBoundContext = oContextBinding.getBoundContext();
-          oBoundContext.setProperty("status", sNewStatus);
-          return oModel.submitBatch("$auto");
-        }).then(function () {
-          MessageToast.show("Status updated to " + sNewStatus);
-          this._loadAllLeaveRequests();   // refresh the table
-        }.bind(this)).catch(function (oErr) {
-          console.error("Status update failed", oErr);
-          MessageBox.error("Failed to update status. Please try again.");
-        });
+        oContextBinding
+          .requestObject()
+          .then(function () {
+            const oBoundContext = oContextBinding.getBoundContext();
+            oBoundContext.setProperty("status", sNewStatus);
+            return oModel.submitBatch("$auto");
+          })
+          .then(
+            function () {
+              MessageToast.show("Status updated to " + sNewStatus);
+              this._loadAllLeaveRequests(); // refresh the table
+            }.bind(this),
+          )
+          .catch(function (oErr) {
+            console.error("Status update failed", oErr);
+            MessageBox.error("Failed to update status. Please try again.");
+          });
       },
       onAdminSearchLeave: function (oEvent) {
         const sQuery = oEvent.getParameter("query").toLowerCase();
@@ -217,7 +274,10 @@ sap.ui.define(
         if (!oModel) return;
         const aAll = oModel.getData();
         if (!sQuery) {
-          this.getOwnerComponent().setModel(new JSONModel(aAll), "adminLeaveRequests");
+          this.getOwnerComponent().setModel(
+            new JSONModel(aAll),
+            "adminLeaveRequests",
+          );
           return;
         }
         // We keep original data in _aAllLeaveRequests for filtering
@@ -230,7 +290,10 @@ sap.ui.define(
             (r.employeeName || "").toLowerCase().includes(sQuery)
           );
         });
-        this.getOwnerComponent().setModel(new JSONModel(aFiltered), "adminLeaveRequests");
+        this.getOwnerComponent().setModel(
+          new JSONModel(aFiltered),
+          "adminLeaveRequests",
+        );
       },
       _cacheAllLeaveRequests: function (aRequests) {
         this._aAllLeaveRequests = aRequests.slice();
@@ -247,7 +310,14 @@ sap.ui.define(
         const sRole = this.byId("newRole").getSelectedKey();
         const sPassword = this.byId("newPassword").getValue();
         // Required field validation
-        if (!sFirstName || !sLastName || !sEmployeeId || !sEmail || !sRole || !sPassword) {
+        if (
+          !sFirstName ||
+          !sLastName ||
+          !sEmployeeId ||
+          !sEmail ||
+          !sRole ||
+          !sPassword
+        ) {
           MessageToast.show("Please fill all required fields");
           return;
         }
@@ -272,69 +342,126 @@ sap.ui.define(
           Team: sTeam,
           role: sRole,
           password: sPassword,
-          isActive: true
+          isActive: true,
         });
-        oModel.submitBatch("$auto")
-          .then(function () {
-            const aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData();
-            if (aMessages.length > 0) {
-              MessageBox.error(aMessages[0].message);
-              return;
-            }
-            MessageBox.success(
-              "Employee '" + sFirstName + " " + sLastName + "' created successfully.",
-              {
-                onClose: function () {
-                  this.onClearCreateUser();
-                  this._loadAllEmployees();
-                }.bind(this)
+        oModel
+          .submitBatch("$auto")
+          .then(
+            function () {
+              const aMessages = sap.ui
+                .getCore()
+                .getMessageManager()
+                .getMessageModel()
+                .getData();
+              if (aMessages.length > 0) {
+                MessageBox.error(aMessages[0].message);
+                return;
               }
-            );
-          }.bind(this))
+              MessageBox.success(
+                "Employee '" +
+                  sFirstName +
+                  " " +
+                  sLastName +
+                  "' created successfully.",
+                {
+                  onClose: function () {
+                    this.onClearCreateUser();
+                    this._loadAllEmployees();
+                  }.bind(this),
+                },
+              );
+            }.bind(this),
+          )
           .catch(function (oErr) {
             console.error("Create user failed", oErr);
             MessageBox.error("Failed to create employee. Please try again.");
           });
       },
       onClearCreateUser: function () {
-        ["newFirstName", "newLastName", "newEmployeeid", "newEmail",
-          "newPhone", "newLocation", "newTeam", "newPassword"].forEach(function (sId) {
+        [
+          "newFirstName",
+          "newLastName",
+          "newEmployeeId",
+          "newEmail",
+          "newPhone",
+          "newLocation",
+          "newTeam",
+          "newPassword",
+        ].forEach(
+          function (sId) {
             const oCtrl = this.byId(sId);
-            if (oCtrl) { oCtrl.setValue(""); oCtrl.setValueState("None"); }
-          }.bind(this));
+            if (oCtrl) {
+              oCtrl.setValue("");
+              oCtrl.setValueState("None");
+            }
+          }.bind(this),
+        );
         const oRole = this.byId("newRole");
-        if (oRole) { oRole.setSelectedKey("Employee"); }
+        if (oRole) {
+          oRole.setSelectedKey("Employee");
+        }
       },
       onAdminTilePress: function () {
         // Tiles are informational; can be extended to drill-down later
       },
       _getLeaveBalance: function () {
         const oModel = this.getOwnerComponent().getModel();
-        const oBinding = oModel.bindList("/LeaveBalances", undefined, undefined, undefined, {
-          $filter: "employee_employeeId eq '" + this.empId + "'",
-          $expand: "leaveType"
-        });
-        oBinding.requestContexts().then(function (aContexts) {
-          const aLeaveBalances = aContexts.map(function (oCtx) { return oCtx.getObject(); });
-          const oFormatted = {};
-          aLeaveBalances.forEach(function (item) {
-            oFormatted[item.leaveType.leaveType] = item;
-          });
-          this.getOwnerComponent().setModel(new JSONModel(oFormatted), "leavebalance");
-        }.bind(this));
+        const oBinding = oModel.bindList(
+          "/LeaveBalances",
+          undefined,
+          undefined,
+          undefined,
+          {
+            $filter: "employee_employeeId eq '" + this.empId + "'",
+            $expand: "leaveType",
+          },
+        );
+        oBinding.requestContexts().then(
+          function (aContexts) {
+            const aLeaveBalances = aContexts.map(function (oCtx) {
+              return oCtx.getObject();
+            });
+            const oFormatted = {};
+            aLeaveBalances.forEach(function (item) {
+              oFormatted[item.leaveType.leaveType] = item;
+            });
+            this.getOwnerComponent().setModel(
+              new JSONModel(oFormatted),
+              "leavebalance",
+            );
+          }.bind(this),
+        );
       },
       _getLeaveRequests: function () {
         const oModel = this.getOwnerComponent().getModel();
-        const oBinding = oModel.bindList("/LeaveRequests", undefined, undefined, undefined, {
-          $filter: "employee_employeeId eq '" + this.empId + "'",
-          $expand: "leaveType"
-        });
-        oBinding.requestContexts().then(function (aContexts) {
-          const aRequests = aContexts.map(function (oCtx) { return oCtx.getObject(); });
-          this.getOwnerComponent().setModel(new JSONModel(aRequests), "leaveRequest");
-          const iPending = aRequests.filter(function (r) { return r.status === "PENDING"; }).length;
-          this.getOwnerComponent().setModel(new JSONModel({ pendingCount: iPending }), "dashboard");
-        }.bind(this));
+        const oBinding = oModel.bindList(
+          "/LeaveRequests",
+          undefined,
+          undefined,
+          undefined,
+          {
+            $filter: "employee_employeeId eq '" + this.empId + "'",
+            $expand: "leaveType",
+          },
+        );
+        oBinding.requestContexts().then(
+          function (aContexts) {
+            const aRequests = aContexts.map(function (oCtx) {
+              return oCtx.getObject();
+            });
+            this.getOwnerComponent().setModel(
+              new JSONModel(aRequests),
+              "leaveRequest",
+            );
+            const iPending = aRequests.filter(function (r) {
+              return r.status === "PENDING";
+            }).length;
+            this.getOwnerComponent().setModel(
+              new JSONModel({ pendingCount: iPending }),
+              "dashboard",
+            );
+          }.bind(this),
+        );
       },
       onRefreshLeaveRequests: function () {
         this._getLeaveRequests();
@@ -367,19 +494,26 @@ sap.ui.define(
           leaveType_leaveTypeId: parseInt(leaveTypeId),
           fromDate: formatDate(fromDateObj),
           toDate: formatDate(toDateObj),
-          reason: reason
+          reason: reason,
         });
-        oModel.submitBatch("$auto")
-          .then(function () {
-            const aMessages = sap.ui.getCore().getMessageManager().getMessageModel().getData();
-            if (aMessages.length > 0) {
-              MessageBox.error(aMessages[0].message);
-              return;
-            }
-            MessageBox.success("Leave applied successfully");
-            this._resetApplyLeaveForm();
-            oModel.refresh();
-          }.bind(this))
+        oModel
+          .submitBatch("$auto")
+          .then(
+            function () {
+              const aMessages = sap.ui
+                .getCore()
+                .getMessageManager()
+                .getMessageModel()
+                .getData();
+              if (aMessages.length > 0) {
+                MessageBox.error(aMessages[0].message);
+                return;
+              }
+              MessageBox.success("Leave applied successfully");
+              this._resetApplyLeaveForm();
+              oModel.refresh();
+            }.bind(this),
+          )
           .catch(function (oErr) {
             console.error(oErr);
             MessageBox.error("Failed to apply leave");
@@ -391,7 +525,10 @@ sap.ui.define(
         const oNoOfDays = this.byId("noOfDays");
         const dFrom = oDP1.getDateValue();
         const dTo = oDP2.getDateValue();
-        if (!dFrom || !dTo) { oNoOfDays.setValue(""); return; }
+        if (!dFrom || !dTo) {
+          oNoOfDays.setValue("");
+          return;
+        }
         if (dTo.getDay() === 0 || dTo.getDay() === 6) {
           oDP2.setValue("");
           oDP2.setValueState("Error");
@@ -409,7 +546,9 @@ sap.ui.define(
         const dCur = new Date(dFrom);
         while (dCur <= dTo) {
           const iDay = dCur.getDay();
-          if (iDay !== 0 && iDay !== 6) { iDays++; }
+          if (iDay !== 0 && iDay !== 6) {
+            iDays++;
+          }
           dCur.setDate(dCur.getDate() + 1);
         }
         oNoOfDays.setValue(iDays.toString());
@@ -418,7 +557,9 @@ sap.ui.define(
         const oDP1 = this.byId("DP1");
         const oDP2 = this.byId("DP2");
         const dFrom = oDP1.getDateValue();
-        if (!dFrom) { return; }
+        if (!dFrom) {
+          return;
+        }
         if (dFrom.getDay() === 0 || dFrom.getDay() === 6) {
           oDP1.setValue("");
           oDP1.setDateValue(null);
@@ -434,10 +575,12 @@ sap.ui.define(
         this.handleChange();
       },
       onCancelLeave: function () {
-        ["DP1", "DP2"].forEach(function (sId) {
-          this.byId(sId).setValue("");
-          this.byId(sId).setValueState("None");
-        }.bind(this));
+        ["DP1", "DP2"].forEach(
+          function (sId) {
+            this.byId(sId).setValue("");
+            this.byId(sId).setValueState("None");
+          }.bind(this),
+        );
         this.byId("noOfDays").setValue("");
         this.byId("Leave").setValue("");
         this.byId("reason").setValue("");
@@ -454,7 +597,7 @@ sap.ui.define(
         if (!this._oPopover) {
           this._oPopover = await Fragment.load({
             name: "leavemanagement.fragments.UserDetail",
-            controller: this
+            controller: this,
           });
           this.getView().addDependent(this._oPopover);
         }
@@ -492,7 +635,8 @@ sap.ui.define(
       onChangePasswordFragmentOpen: function () {
         if (!this.oChangePasswordDialog) {
           this.oChangePasswordDialog = sap.ui.xmlfragment(
-            "leavemanagement.fragments.ChangePassword", this
+            "leavemanagement.fragments.ChangePassword",
+            this,
           );
           this.getView().addDependent(this.oChangePasswordDialog);
         }
@@ -501,13 +645,18 @@ sap.ui.define(
       onUpdatePassword: function () {
         const sOldPassword = sap.ui.getCore().byId("idOldPassword").getValue();
         const sNewPassword = sap.ui.getCore().byId("idNewPassword").getValue();
-        const sConfirmPassword = sap.ui.getCore().byId("idConformPassword").getValue();
+        const sConfirmPassword = sap.ui
+          .getCore()
+          .byId("idConformPassword")
+          .getValue();
         if (!sOldPassword || !sNewPassword || !sConfirmPassword) {
           MessageBox.information("Please fill all fields");
           return;
         }
         if (sNewPassword !== sConfirmPassword) {
-          MessageBox.information("New Password and Confirm Password do not match");
+          MessageBox.information(
+            "New Password and Confirm Password do not match",
+          );
           return;
         }
         MessageBox.information("Password updated successfully");
@@ -519,7 +668,7 @@ sap.ui.define(
         if (!this.oHolidayDialog) {
           this.oHolidayDialog = await sap.ui.core.Fragment.load({
             name: "leavemanagement.fragments.HolidayList",
-            controller: this
+            controller: this,
           });
           this.getView().addDependent(this.oHolidayDialog);
         }
@@ -527,7 +676,7 @@ sap.ui.define(
       },
       onCloseHolidayDialog: function () {
         this.oHolidayDialog.close();
-      }
+      },
     });
-  }
+  },
 );
