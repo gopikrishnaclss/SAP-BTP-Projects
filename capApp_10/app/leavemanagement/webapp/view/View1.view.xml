@@ -40,7 +40,7 @@
                     </m:VBox>
                     <!-- Footer -->
                     <m:FlexBox justifyContent="Center" class="loginFooterBox">
-                        <m:Text text="SAP © 2024 · Car Service Portal v1.0" class="loginFooterText"/>
+                        <m:Text text="SAP © 2024 · Leave Management Portal V2.0" class="loginFooterText"/>
                     </m:FlexBox>
                 </m:VBox>
             </m:FlexBox>
