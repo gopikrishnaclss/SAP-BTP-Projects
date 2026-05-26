@@ -63,8 +63,7 @@ sap.ui.define(
         }
         // EMPLOYEE
         else {
-          this.empId =
-            oUserData.employeeId || sessionStorage.getItem("employeeId");
+          this.empId = oUserData.employeeId || sessionStorage.getItem("employeeId");
           if (!this.empId) {
             this.getOwnerComponent().getRouter().navTo("RouteView1");
             return;
@@ -108,6 +107,10 @@ sap.ui.define(
             
           }
           oNavContainer.to(oTargetPage);
+        }
+        // Clear create user form
+        if (sKey === "adminCreateUser") {
+          this.onClearCreateUser();
         }
       },
       onCollapseExpandPress: function () {
@@ -285,7 +288,7 @@ sap.ui.define(
         const oModel = this.getOwnerComponent().getModel();
         const sFirstName = this.byId("newFirstName").getValue().trim();
         const sLastName = this.byId("newLastName").getValue().trim();
-        const sEmployeeId = this.byId("newEmployeeId").getValue().trim();
+        const sEmployeeId = this.byId("newEmployeeid").getValue().trim();
         const sEmail = this.byId("newEmail").getValue().trim();
         const sPhone = this.byId("newPhone").getValue().trim();
         const sLocation = this.byId("newLocation").getValue().trim();
