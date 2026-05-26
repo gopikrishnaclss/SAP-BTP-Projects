@@ -40,11 +40,16 @@
 }
 
 /* App name below badge */
-.loginAppTitle.sapMText {
-  color: #ffffff !important;
+.loginAppTitle.sapMTitle  {
+  color: #f1f1f1 !important;
   font-size: 17px !important;
   margin-top: 6px !important;
   opacity: 0.92 !important;
+}
+
+.loginSignInTitle {
+  display: block !important;
+  color: #1d2d3e !important;
 }
 
 /* ── Form Body ── */

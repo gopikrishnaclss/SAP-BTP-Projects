@@ -73,6 +73,7 @@ sap.ui.define(
           this._getLeaveRequests();
           this.byId("pageContainer").to(this.byId("Home"));
         }
+        this.onClearCreateUser();
       },
       onAfterRendering: function () {
         const oTitle = this.byId("idTitle");
@@ -401,9 +402,6 @@ sap.ui.define(
           oRole.setSelectedKey("Employee");
         }
       },
-      onAdminTilePress: function () {
-        // Tiles are informational; can be extended to drill-down later
-      },
       _getLeaveBalance: function () {
         const oModel = this.getOwnerComponent().getModel();
         const oBinding = oModel.bindList(
@@ -676,7 +674,7 @@ sap.ui.define(
       },
       onCloseHolidayDialog: function () {
         this.oHolidayDialog.close();
-      },
+      }
     });
   },
 );

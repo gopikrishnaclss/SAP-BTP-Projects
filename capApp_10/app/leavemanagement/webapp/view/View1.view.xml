@@ -13,11 +13,7 @@
                     <!-- Header -->
                     <m:FlexBox class="loginFlexBox">
                         <m:VBox>
-                            <m:FlexBox alignItems="Center">
-                                <m:Text text="SAP" class="loginSapBadge"/>
-                                <m:Text text="Fiori" class="loginFioriText"/>
-                            </m:FlexBox>
-                            <m:Text text="Leave Management" class="loginAppTitle"/>
+                            <m:Title text="Leave Management" level="H6" class="loginAppTitle"/>
                         </m:VBox>
                     </m:FlexBox>
                     <!-- Body -->
