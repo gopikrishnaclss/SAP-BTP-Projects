@@ -7,9 +7,9 @@
   xmlns:t="sap.ui.table"
   xmlns:m="sap.m"
   xmlns:viz="sap.viz.ui5.controls"
-  xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
   xmlns:viz.data="sap.viz.ui5.data"
-  xmlns:unified="sap.ui.unified">
+  xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+>
   <tnt:ToolPage id="toolPage">
     <tnt:header>
       <tnt:ToolHeader id="shellLikeToolHeader" class="sapUiTinyMargin">
@@ -367,42 +367,69 @@
                   <VBox class="sapUiSmallMarginBottom">
                   </VBox>
                   <!-- Admin stat tiles -->
+                  <!-- Filter -->
+                  <SegmentedButton
+                    id="attendanceFilter"
+                    selectedKey="today"
+                    selectionChange="onAttendanceFilterChange"
+                    class="sapUiSmallMarginBottom">
+
+                    <items>
+                      <SegmentedButtonItem key="today" text="Today" />
+                      <SegmentedButtonItem key="week" text="Week" />
+                      <SegmentedButtonItem key="month" text="Month" />
+                    </items>
+
+                  </SegmentedButton>
+
+                  <!-- Chart -->
                   <viz:VizFrame
-                      id="adminDashboardChart"
-                      uiConfig="{applicationSet:'fiori'}"
-                      vizType="column"
-                      vizProperties="{
-                          title: {
-                              text: 'Employee Analytics',
-                              visible: true
-                          }
-                      }"
-                      width="100%"
-                      height="350px">
-                      <viz:dataset>
-                          <viz.data:FlattenedDataset data="{adminChart>/items}">
-                              <viz.data:dimensions>
-                                  <viz.data:DimensionDefinition
-                                      name="Category"
-                                      value="{adminChart>category}" />
-                              </viz.data:dimensions>
-                              <viz.data:measures>
-                                  <viz.data:MeasureDefinition
-                                      name="Count"
-                                      value="{adminChart>count}" />
-                              </viz.data:measures>
-                          </viz.data:FlattenedDataset>
-                      </viz:dataset>
-                      <viz:feeds>
-                          <viz.feeds:FeedItem
-                              uid="valueAxis"
-                              type="Measure"
-                              values="Count" />
-                          <viz.feeds:FeedItem
-                              uid="categoryAxis"
-                              type="Dimension"
-                              values="Category" />
-                      </viz:feeds>
+                    id="attendanceChart"
+                    vizType="column"
+                    width="100%"
+                    height="400px"
+                    uiConfig="{applicationSet:'fiori'}"
+                    vizProperties='{
+                "title":{"text":"Attendance Percentage"},
+                "plotArea":{"dataLabel":{"visible":true}},
+                "valueAxis":{"title":{"visible":true,"text":"Attendance %"}},
+                "categoryAxis":{"title":{"visible":true,"text":"Period"}}
+            }'>
+
+                    <!-- Dataset -->
+                    <viz:dataset>
+                      <viz.data:FlattenedDataset data="{attendance>/}">
+
+                        <viz.data:dimensions>
+                          <viz.data:DimensionDefinition
+                            name="Period"
+                            value="{attendance>label}" />
+                        </viz.data:dimensions>
+
+                        <viz.data:measures>
+                          <viz.data:MeasureDefinition
+                            name="Attendance"
+                            value="{attendance>percentage}" />
+                        </viz.data:measures>
+
+                      </viz.data:FlattenedDataset>
+                    </viz:dataset>
+
+                    <!-- Feeds -->
+                    <viz:feeds>
+
+                      <viz.feeds:FeedItem
+                        uid="valueAxis"
+                        type="Measure"
+                        values="Attendance" />
+
+                      <viz.feeds:FeedItem
+                        uid="categoryAxis"
+                        type="Dimension"
+                        values="Period" />
+
+                    </viz:feeds>
+
                   </viz:VizFrame>
                 </content>
               </Panel>
@@ -599,6 +626,18 @@
                   </HBox>
                 </content>
               </Panel>
+
+            </VBox>
+          </ScrollContainer>
+
+          <!-- ADMIN: Employee Management Page -->
+          <ScrollContainer
+            id="adminEmployeeManagement"
+            height="100%"
+            vertical="true"
+            visible="{= ${appState>/role} === 'Admin' }">
+            <VBox class="sapUiSmallMargin">
+
               <!-- Existing Employees Table -->
               <Panel class="sapUiMediumMarginTop recentLeavePanel">
                 <Table
@@ -606,8 +645,10 @@
                   items="{allEmployees>/}"
                   growing="true"
                   growingScrollToLoad="true"
-                  inset="false"
-                  class="recentLeaveTable">
+                  mode="SingleSelectMaster"
+                  fixedLayout="false"
+                  class="recentLeaveTable"
+                >
                   <noData>
                     <IllustratedMessage
                       illustrationType="sapIllus-NoData"
@@ -618,29 +659,39 @@
                     <Toolbar>
                       <Title text="All Employees" level="H5" />
                       <ToolbarSpacer />
-                      <Button icon="sap-icon://refresh" text="Refresh" type="Success"
+                      <Button icon="sap-icon://refresh" text="Refresh" type="Ghost"
                         press="onRefreshEmployees" />
+                       
+                      <Button icon="sap-icon://manager" text="View" type="Ghost"
+                        press="onViewEmployees" />
                     </Toolbar>
                   </headerToolbar>
                   <columns>
-                    <Column width="10rem">
+
+                    <Column width="8rem">
                       <Text text="Employee ID" />
                     </Column>
-                    <Column width="14rem">
+
+                    <Column>
                       <Text text="Name" />
                     </Column>
-                    <Column width="16rem">
+
+                    <Column>
                       <Text text="Email" />
                     </Column>
+
                     <Column width="10rem">
                       <Text text="Team" />
                     </Column>
+
                     <Column width="8rem">
                       <Text text="Role" />
                     </Column>
-                    <Column width="10rem" hAlign="Center">
+
+                    <Column width="8rem" hAlign="Center">
                       <Text text="Status" />
                     </Column>
+
                   </columns>
                   <items>
                     <ColumnListItem type="Inactive">
@@ -649,7 +700,7 @@
                         <Text text="{= ${allEmployees>firstName} + ' ' + ${allEmployees>lastName} }" />
                         <Text text="{allEmployees>email}" />
                         <Text text="{allEmployees>Team}" />
-                        <Text text="{allEmployees>role}" />
+                        <Text text="{allEmployees>roleName}" />
                         <ObjectStatus
                           text="{= ${allEmployees>isActive} ? 'Active' : 'Inactive' }"
                           state="{= ${allEmployees>isActive} ? 'Success' : 'Error' }"
@@ -661,6 +712,117 @@
               </Panel>
             </VBox>
           </ScrollContainer>
+
+          <!-- ADMIN:Employee Profile Page -->
+          <ScrollContainer
+            id="adminEmployeeProfilePage"
+            height="100%"
+            vertical="true"
+            visible="{= ${appState>/role} === 'Admin' }">
+
+
+            <!-- Employee Edit Section -->
+            <Panel
+              headerText="Edit Employee Details"
+              class="sapUiMediumMarginTop">
+
+              <content>
+
+                <ScrollContainer
+                  height="400px"
+                  vertical="true"
+                  horizontal="false">
+
+                  <VBox class="sapUiMediumMargin">
+
+                    <HBox width="100%" wrap="Wrap">
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="Employee ID" />
+                        <Input
+                          value="{editEmployee>/employeeId}"
+                          editable="false" />
+                      </VBox>
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="First Name" />
+                        <Input value="{editEmployee>/firstName}" />
+                      </VBox>
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="Last Name" />
+                        <Input value="{editEmployee>/lastName}" />
+                      </VBox>
+
+                    </HBox>
+
+                    <HBox width="100%" wrap="Wrap">
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="Email" />
+                        <Input value="{editEmployee>/email}" />
+                      </VBox>
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="Phone" />
+                        <Input value="{editEmployee>/phNumber}" />
+                      </VBox>
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="Location" />
+                        <Input value="{editEmployee>/location}" />
+                      </VBox>
+
+                    </HBox>
+
+                    <HBox width="100%" wrap="Wrap">
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="Team" />
+                        <Input value="{editEmployee>/Team}" />
+                      </VBox>
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="Role" />
+                        <Select
+                          selectedKey="{editEmployee>/role_ID}">
+
+                          <items>
+                            <core:Item key="RO1" text="Employee" />
+                            <core:Item key="RO2" text="Manager" />
+                            <core:Item key="RO3" text="Admin" />
+                          </items>
+
+                        </Select>
+                      </VBox>
+
+                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                        <Label text="Status" />
+                        <Switch
+                          state="{editEmployee>/isActive}" />
+                      </VBox>
+
+                    </HBox>
+
+                    <HBox justifyContent="End">
+
+                      <Button
+                        text="Update Employee"
+                        type="Emphasized"
+                        icon="sap-icon://save"
+                        press="onUpdateEmployee" />
+
+                    </HBox>
+
+                  </VBox>
+
+                </ScrollContainer>
+
+              </content>
+
+            </Panel>
+          </ScrollContainer>
+
         </pages>
       </NavContainer>
     </tnt:mainContents>

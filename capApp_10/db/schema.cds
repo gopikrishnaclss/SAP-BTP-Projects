@@ -46,14 +46,19 @@ entity LeaveRequest {
   approvedBy         : Association to Employees;
   comments           : String(500);
 }
-
 entity Holiday {
   key holidayId : String(10);
   date:Date;
   day:String;
   holiday:String
 }
-
+entity NumberRange {
+    key objectName : String(50);
+    prefix         : String(10);
+    startNo        : Integer;
+    currentNo      : Integer;
+    length         : Integer;
+}
 
 
 

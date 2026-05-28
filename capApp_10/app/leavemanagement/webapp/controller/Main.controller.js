@@ -59,6 +59,7 @@ sap.ui.define(
         // ADMIN
         if (isAdmin) {
           this._loadAdminData();
+          this._loadAttendance("today");
           this.byId("pageContainer").to(this.byId("adminHome"));
         }
         // EMPLOYEE
@@ -109,20 +110,20 @@ sap.ui.define(
         }
         // Clear create user form
         if (sKey === "adminCreateUser") {
-          this._getTotalEmp();
+          this._getLastEmp();
           this.onClearCreateUser();
         }
       },
-      _getTotalEmp: async function () {
+      _getLastEmp: async function () {
         const oModel = this.getOwnerComponent().getModel();
 
-        const oAction = oModel.bindContext("/totalEmp(...)");
+        const oAction = oModel.bindContext("/LastEmp(...)");
 
-        const iTotal = await oAction.execute().then(() => {
-          const total = oAction.getBoundContext().getObject().value + 1;
-          const empID = "EMP" + String(total).padStart(5, "0");
-          this.byId("newEmployeeId").setValue(empID);
-        });
+        await oAction.execute();
+
+        const empID = oAction.getBoundContext().getObject().value;
+
+        this.byId("newEmployeeId").setValue(empID);
       },
       onCollapseExpandPress: function () {
         const oSideNavigation = this.byId("sideNavigation");
@@ -187,45 +188,54 @@ sap.ui.define(
             console.error("Failed to load all leave requests", oErr);
           });
       },
+
+      _setGraph: function () {
+        const oDashboard = this.getOwnerComponent().getModel("adminDashboard");
+        const aEmployees = this.getOwnerComponent()
+          .getModel("allEmployees")
+          .getData();
+        if (oDashboard) {
+          oDashboard.setProperty("/totalEmployees", aEmployees.length);
+          const oDashData = oDashboard.getData();
+          const aChartData = [
+            {
+              category: "Employees",
+              count: aEmployees.length,
+            },
+            {
+              category: "Pending",
+              count: oDashData.pendingApprovals,
+            },
+            {
+              category: "Approved",
+              count: oDashData.approvedToday,
+            },
+            {
+              category: "Requests",
+              count: oDashData.totalRequests,
+            },
+          ];
+          this.getOwnerComponent().setModel(
+            new JSONModel({
+              items: aChartData,
+            }),
+            "adminChart",
+          );
+        }
+      },
       _loadAllEmployees: function () {
         const oModel = this.getOwnerComponent().getModel();
-        const oBinding = oModel.bindList("/Employees");
-        oBinding.requestContexts().then(function (aContexts) {
-          const aEmps = aContexts.map(function (oCtx) { return oCtx.getObject(); });
-          this.getOwnerComponent().setModel(new JSONModel(aEmps), "allEmployees");
-          // Patch total employee count into dashboard model
-          const oDashboard = this.getOwnerComponent().getModel("adminDashboard");
-          if (oDashboard) {
-            oDashboard.setProperty("/totalEmployees", aEmps.length);
-            const oDashData = oDashboard.getData();
-            const aChartData = [
-              {
-                category: "Employees",
-                count: aEmps.length
-              },
-              {
-                category: "Pending",
-                count: oDashData.pendingApprovals
-              },
-              {
-                category: "Approved",
-                count: oDashData.approvedToday
-              },
-              {
-                category: "Requests",
-                count: oDashData.totalRequests
-              }
-            ];
-            this.getOwnerComponent().setModel(
-              new JSONModel({
-                items: aChartData
-              }),
-              "adminChart"
-            );
-          }
-        }.bind(this)).catch(function (oErr) {
-          console.error("Failed to load employees", oErr);
-        });
+        const oAction = oModel.bindContext("/getEmployees(...)");
+        oAction
+          .execute()
+          .then(() => {
+            const aEmployees = oAction.getBoundContext().getObject().value;
+            const employees = new JSONModel(aEmployees);
+            this.getOwnerComponent().setModel(employees, "allEmployees");
+          })
+          .catch(function (oErr) {
+            console.error("Failed to load employees", oErr);
+          });
       },
       onAdminRefreshLeaveRequests: function () {
         this._loadAllLeaveRequests();
@@ -351,7 +361,7 @@ sap.ui.define(
           phNumber: sPhone,
           location: sLocation,
           Team: sTeam,
-          role_ID: parseInt(sRole),
+          role_ID: sRole,
           password: sPassword,
           isActive: true,
         });
@@ -684,6 +694,86 @@ sap.ui.define(
       },
       onCloseHolidayDialog: function () {
         this.oHolidayDialog.close();
+      },
+      onDeleteEmployees: async function () {
+        const oTable = this.byId("employeesTable");
+
+        const aSelectedItems = oTable.getSelectedItems();
+
+        if (aSelectedItems.length === 0) {
+          MessageBox.information("Please select at least one employee");
+          return;
+        }
+
+        const aEmployeeIds = aSelectedItems.map((oItem) => {
+          return oItem.getBindingContext("allEmployees").getObject().employeeId;
+        });
+
+        MessageBox.confirm(
+          "Are you sure you want to delete the selected employees?",
+          {
+            title: "Confirm Delete",
+
+            onClose: async function (sAction) {
+              if (sAction !== MessageBox.Action.OK) {
+                return;
+              }
+
+              try {
+                const oModel = this.getOwnerComponent().getModel();
+
+                const oAction = oModel.bindContext("/deleteEmployees(...)");
+
+                oAction.setParameter("employeeIds", aEmployeeIds);
+
+                await oAction.execute();
+
+                MessageToast.show("Employees deleted successfully");
+
+                this._loadAllEmployees();
+
+                oTable.removeSelections(true);
+              } catch (oErr) {
+                console.error("Delete failed", oErr);
+
+                MessageBox.error("Failed to delete employees");
+              }
+            }.bind(this),
+          },
+        );
+      },
+      _loadAttendance: async function (sType) {
+        const oModel = this.getOwnerComponent().getModel();
+
+        const oAction = oModel.bindContext("/getAttendance(...)");
+
+        oAction.setParameter("type", sType);
+
+        await oAction.execute();
+
+        const aData = oAction.getBoundContext().getObject().value;
+
+        this.getOwnerComponent().setModel(
+          new sap.ui.model.json.JSONModel(aData),
+          "attendance",
+        );
+      },
+      onAttendanceFilterChange: function (oEvent) {
+        const sKey = oEvent.getParameter("item").getKey();
+        this._loadAttendance(sKey);
+      },
+
+      onViewEmployees : function (oEvent) {
+        const oTable = this.byId("employeesTable");
+
+        const aSelectedItems = oTable.getSelectedItems();
+        const oSelectedItem = aSelectedItems[0];
+
+        if (!oSelectedItem) {
+          MessageBox.information("Please select an employee to view details");
+          return;
+        }
+        const oEmployee = oSelectedItem.getBindingContext("allEmployees").getObject();
       }
     });
   },

@@ -31,6 +31,10 @@
             "title": "Create User",
             "key": "adminCreateUser",
             "icon": "sap-icon://manager"
+          },{
+            "title": "Employee Management",
+            "key": "adminEmployeeManagement",
+            "icon": "sap-icon://manager"
           }
         ]
       }
