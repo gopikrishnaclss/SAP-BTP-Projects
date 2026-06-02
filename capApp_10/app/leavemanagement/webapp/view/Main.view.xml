@@ -716,14 +716,23 @@
             id="adminEmployeeProfilePage"
             height="100%"
             vertical="true"
-            visible="{= ${appState>/role} === 'Admin' }">
+            visible="{= ${appState>/role} === 'Admin' }"
+            
+            >
             <!-- Employee Edit Section -->
             <VBox class="sapUiSmallMargin">
               <Panel
                 headerText="Edit Employee Details"
-                class="sapUiMediumMarginTop">
+                class="sapUiMediumMarginTop"  >
+                <headerToolbar>
+                  <Toolbar>
+                      <Button
+                          icon="sap-icon://nav-back"
+                          press="onBackToEmployeeList" />
+                      <Title text="Edit Employee Details" />
+                  </Toolbar>
+                </headerToolbar>
                 <content>
-
                   <VBox class="sapUiMediumMargin">
                     <HBox width="100%" wrap="Wrap">
                       <VBox width="31%" class="sapUiSmallMarginBottom sapUiSmallMarginEnd">

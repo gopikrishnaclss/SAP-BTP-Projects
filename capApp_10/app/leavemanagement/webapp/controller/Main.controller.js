@@ -18,7 +18,7 @@ sap.ui.define(
     "use strict";
     return Controller.extend("leavemanagement.controller.Main", {
       onInit: function () {
-        this.empId = null;
+         
         // Restore session
         const oStoredUser = sessionStorage.getItem("currentUser");
         if (!oStoredUser) {
@@ -27,6 +27,7 @@ sap.ui.define(
         }
         const oUserData = JSON.parse(oStoredUser);
         const oUserModel = new JSONModel(oUserData);
+        this.empId = oUserData.employeeId;
         this.getOwnerComponent().setModel(oUserModel, "currentUser");
         // Prevent back-button to login
         history.pushState(null, null, location.href);
@@ -188,7 +189,6 @@ sap.ui.define(
             console.error("Failed to load all leave requests", oErr);
           });
       },
-
       _setGraph: function () {
         const oDashboard = this.getOwnerComponent().getModel("adminDashboard");
         const aEmployees = this.getOwnerComponent()
@@ -255,8 +255,8 @@ sap.ui.define(
         const oRequest = oCtx.getObject();
         MessageBox.confirm(
           "Reject leave request for " +
-            (oRequest.employeeName || oRequest.employee_employeeId) +
-            "?",
+          (oRequest.employeeName || oRequest.employee_employeeId) +
+          "?",
           {
             onClose: function (sAction) {
               if (sAction === MessageBox.Action.OK) {
@@ -342,7 +342,7 @@ sap.ui.define(
           MessageToast.show("Please fill all required fields");
           return;
         }
-        if (sPassword.length < 8) {
+        if (sPassword.length < 6) {
           MessageBox.information("Password must be at least 8 characters");
           return;
         }
@@ -380,10 +380,10 @@ sap.ui.define(
               }
               MessageBox.success(
                 "Employee '" +
-                  sFirstName +
-                  " " +
-                  sLastName +
-                  "' created successfully.",
+                sFirstName +
+                " " +
+                sLastName +
+                "' created successfully.",
                 {
                   onClose: function () {
                     this.onClearCreateUser();
@@ -400,6 +400,7 @@ sap.ui.define(
       },
       onClearCreateUser: function () {
         [
+          ,
           "newFirstName",
           "newLastName",
 
@@ -663,21 +664,42 @@ sap.ui.define(
       onUpdatePassword: function () {
         const sOldPassword = sap.ui.getCore().byId("idOldPassword").getValue();
         const sNewPassword = sap.ui.getCore().byId("idNewPassword").getValue();
-        const sConfirmPassword = sap.ui
-          .getCore()
-          .byId("idConformPassword")
-          .getValue();
+        const sConfirmPassword = sap.ui.getCore().byId("idConformPassword").getValue();
+
         if (!sOldPassword || !sNewPassword || !sConfirmPassword) {
           MessageBox.information("Please fill all fields");
           return;
         }
+
         if (sNewPassword !== sConfirmPassword) {
-          MessageBox.information(
-            "New Password and Confirm Password do not match",
-          );
+          MessageBox.information("New Password and Confirm Password do not match");
           return;
         }
-        MessageBox.information("Password updated successfully");
+
+        const oModel = this.getOwnerComponent().getModel();
+        // const empId = sessionStorage.getItem("employeeId");
+
+        // Call changePassword action
+        const oAction = oModel.bindContext("/changePassword(...)");
+        oAction.setParameter("employeeId", this.empId);
+        oAction.setParameter("oldPassword", sOldPassword);
+        oAction.setParameter("newPassword", sNewPassword);
+
+        oAction.execute().then(() => {
+          const result = oAction.getBoundContext().getObject();
+          if (result.success) {
+            MessageBox.success("Password updated successfully");
+            this.onChangePasswordFragmentClose();
+            // Clear fields
+            sap.ui.getCore().byId("idOldPassword").setValue("");
+            sap.ui.getCore().byId("idNewPassword").setValue("");
+            sap.ui.getCore().byId("idConformPassword").setValue("");
+          } else {
+            MessageBox.error(result.message);
+          }
+        }).catch((err) => {
+          MessageBox.error(err?.message || "Failed to update password");
+        });
       },
       onChangePasswordFragmentClose: function () {
         this.oChangePasswordDialog.close();
@@ -762,24 +784,36 @@ sap.ui.define(
         const sKey = oEvent.getParameter("item").getKey();
         this._loadAttendance(sKey);
       },
+      onViewEmployees: function () {
 
-      onViewEmployees : function (oEvent) {
-         
         const oTable = this.byId("employeesTable");
 
         const aSelectedItems = oTable.getSelectedItems();
+
         const oSelectedItem = aSelectedItems[0];
 
         if (!oSelectedItem) {
-          MessageBox.information("Please select an employee to view details");
+
+          MessageBox.information(
+            "Please select an employee to view details"
+          );
+
           return;
         }
-        const oEmployee = oSelectedItem.getBindingContext("allEmployees").getObject();
-        const oEmployeeDetails = new sap.ui.model.json.JSONModel(oEmployee);
-        this.getOwnerComponent().setModel(oEmployeeDetails, "editEmployee");
-        const oNavContainer = this.byId("pageContainer");
-        oNavContainer.to(this.byId("adminEmployeeProfilePage"));
-      
+
+        const oEmployee = oSelectedItem
+          .getBindingContext("allEmployees")
+          .getObject();
+
+        const oEmployeeModel = new JSONModel(oEmployee);
+
+        this.getOwnerComponent().setModel(
+          oEmployeeModel,
+          "editEmployee"
+        );
+
+        this.byId("pageContainer")
+          .to(this.byId("adminEmployeeProfilePage"));
       },
       onUpdateEmployee: function () {
         const oModel = this.getOwnerComponent().getModel();
@@ -791,43 +825,50 @@ sap.ui.define(
         const sLocation = this.byId("idLocationInput").getValue().trim();
         const sTeam = this.byId("idTeamInput").getValue().trim();
         const sRole = this.byId("idRoleSelect").getSelectedKey();
-        const bIsActive = this.byId("idStatusSwitch").getState(); 
+        const bIsActive = this.byId("idStatusSwitch").getState();
 
-          if (!sFirstName || !sLastName || !sEmail || !sRole) {
-            MessageToast.show("Please fill all required fields");
-            return;
-          }
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sEmail)) {
-            MessageBox.information("Please enter a valid email address");
-            return;
-          }
+        if (!sFirstName || !sLastName || !sEmail || !sRole) {
+          MessageToast.show("Please fill all required fields");
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sEmail)) {
+          MessageBox.information("Please enter a valid email address");
+          return;
+        }
 
-          const sPath = "/Employees('" + oEmployee + "')";
-          const oContextBinding = oModel.bindContext(sPath);
-          oContextBinding.requestObject().then(function () {
-            const oBoundContext = oContextBinding.getBoundContext();
-            oBoundContext.setProperty("firstName", sFirstName);
-            oBoundContext.setProperty("lastName", sLastName);
-            oBoundContext.setProperty("email", sEmail);
-            oBoundContext.setProperty("phNumber", sPhone);
-            oBoundContext.setProperty("location", sLocation);
-            oBoundContext.setProperty("Team", sTeam);
-            oBoundContext.setProperty("role_ID", sRole);
-            oBoundContext.setProperty("isActive", bIsActive);
-            return oModel.submitBatch("$auto");
-          }).then(function () {
-            MessageBox.success("Employee updated successfully", {
-              onClose: function () {
-                // this._loadAllEmployees();
-                this.byId("pageContainer").to(this.byId("adminEmployeeProfilePage"))
-            }});
-          }).catch(function (oErr) {
-            console.error("Update failed", oErr);
-            MessageBox.error("Failed to update employee. Please try again.");
-          })
+        const sPath = "/Employees('" + oEmployee + "')";
+        const oContextBinding = oModel.bindContext(sPath);
+        oContextBinding.requestObject().then(function () {
+          const oBoundContext = oContextBinding.getBoundContext();
+          oBoundContext.setProperty("firstName", sFirstName);
+          oBoundContext.setProperty("lastName", sLastName);
+          oBoundContext.setProperty("email", sEmail);
+          oBoundContext.setProperty("phNumber", sPhone);
+          oBoundContext.setProperty("location", sLocation);
+          oBoundContext.setProperty("Team", sTeam);
+          oBoundContext.setProperty("role_ID", sRole);
+          oBoundContext.setProperty("isActive", bIsActive);
+          return oModel.submitBatch("$auto");
+        }).then(function () {
+          MessageBox.success("Employee updated successfully", {
+            onClose: function () {
+              // this._loadAllEmployees();
+              this.byId("pageContainer").to(this.byId("adminEmployeeProfilePage"))
+            }
+          });
+        }).catch(function (oErr) {
+          console.error("Update failed", oErr);
+          MessageBox.error("Failed to update employee. Please try again.");
+        })
 
 
       },
+      onBackToEmployeeList: function () {
+        this.byId("pageContainer").to(this.byId("adminEmployeeManagement"));
+      }
+
+
+
     });
   },
 );
