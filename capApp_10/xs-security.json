@@ -1,49 +1,14 @@
 {
-  "xsappname": "capApp_10",
-  "tenant-mode": "dedicated",
+  
   "scopes": [
-    {
-      "name": "$XSAPPNAME.manager",
-      "description": "manager scope"
-    },
-    {
-      "name": "$XSAPPNAME.employee",
-      "description": "employee scope"
-    }
+    
   ],
   "attributes": [],
   "role-templates": [
-    {
-      "name": "managerTemplate",
-      "description": "Template containing both manager and employee roles",
-      "scope-references": [
-        "$XSAPPNAME.manager",
-        "$XSAPPNAME.employee"
-      ]
-    },
-    {
-      "name": "employeeTemplate",
-      "description": "Template containing employee role",
-      "scope-references": [
-        "$XSAPPNAME.employee"
-      ]
-    }
+    
   ],
   "role-collections": [
-    {
-      "name": "capApp_10_manager",
-      "description": "Role collection for application administrators",
-      "role-template-references": [
-        "$XSAPPNAME.managerTemplate"
-      ]
-    },
-    {
-      "name": "capApp_10_employee",
-      "description": "Role collection for application administrators",
-      "role-template-references": [
-        "$XSAPPNAME.employeeTemplate"
-      ]
-    }
+    
   ],
   "authorities-inheritance": false
 }

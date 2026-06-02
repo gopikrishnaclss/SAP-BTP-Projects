@@ -17,7 +17,6 @@ service leaveManagementService @(path: '/leavemanage') {
         message    : String;
     }
 
-     
 
     action getEmployees()                                returns array of {
         employeeId  : String;
@@ -35,16 +34,23 @@ service leaveManagementService @(path: '/leavemanage') {
 
     action deleteEmployees(employeeIds: array of String) returns String;
 
-    action getAttendance(type : String) returns array of {
-    label      : String;
-    percentage : Decimal(5,2);
-};
+    action getAttendance(type: String)                   returns array of {
+        label      : String;
+        percentage : Decimal(5, 2);
+    };
+
+    action changePassword(employeeId: String,
+                          oldPassword: String,
+                          newPassword: String)           returns {
+        success : Boolean;
+        message : String;
+    };
 
     entity LeaveTypes    as projection on leaveApp.LeaveType;
     entity LeaveBalances as projection on leaveApp.LeaveBalance;
     entity LeaveRequests as projection on leaveApp.LeaveRequest;
     entity Holidays      as projection on leaveApp.Holiday;
-    entity NumberRange     as projection on leaveApp.NumberRange;
+    entity NumberRange   as projection on leaveApp.NumberRange;
 
-    action LastEmp() returns String;
+    action LastEmp()                                     returns String;
 }

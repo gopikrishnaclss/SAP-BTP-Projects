@@ -67,7 +67,7 @@ export default class leaveManagementService extends cds.ApplicationService {
       const empId =
         numberRange.prefix + String(nextNo).padStart(numberRange.length, "0");
 
-      
+
 
       // update number range
       await UPDATE("leaveApp.NumberRange")
@@ -312,6 +312,41 @@ export default class leaveManagementService extends cds.ApplicationService {
       }
 
       return result;
+    });
+
+    //password hashing
+    this.on('changePassword', async (req) => {
+      const { employeeId, oldPassword, newPassword } = req.data;
+
+      // Get employee
+      const user = await SELECT.one
+        .from('leaveApp.Employees')
+        .where({ employeeId });
+
+      if (!user) {
+        return { success: false, message: 'Employee not found' };
+      }
+
+      // Verify old password
+      const match = await bcrypt.compare(oldPassword, user.password);
+      if (!match) {
+        return { success: false, message: 'Current password is incorrect' };
+      }
+
+      // Validate new password
+      if (newPassword.length < 6) {
+        return { success: false, message: 'New password must be at least 6 characters' };
+      }
+
+      // Hash new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update password
+      await UPDATE('leaveApp.Employees')
+        .set({ password: hashedPassword })
+        .where({ employeeId });
+
+      return { success: true, message: 'Password updated successfully' };
     });
     return super.init();
   }
