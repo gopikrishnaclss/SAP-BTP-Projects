@@ -629,7 +629,6 @@
 
             </VBox>
           </ScrollContainer>
-
           <!-- ADMIN: Employee Management Page -->
           <ScrollContainer
             id="adminEmployeeManagement"
@@ -645,7 +644,7 @@
                   items="{allEmployees>/}"
                   growing="true"
                   growingScrollToLoad="true"
-                  mode="SingleSelectMaster"
+                  mode="SingleSelectMaster"                         
                   fixedLayout="false"
                   class="recentLeaveTable"
                 >
@@ -661,7 +660,7 @@
                       <ToolbarSpacer />
                       <Button icon="sap-icon://refresh" text="Refresh" type="Ghost"
                         press="onRefreshEmployees" />
-                       
+
                       <Button icon="sap-icon://manager" text="View" type="Ghost"
                         press="onViewEmployees" />
                     </Toolbar>
@@ -712,117 +711,87 @@
               </Panel>
             </VBox>
           </ScrollContainer>
-
           <!-- ADMIN:Employee Profile Page -->
           <ScrollContainer
             id="adminEmployeeProfilePage"
             height="100%"
             vertical="true"
             visible="{= ${appState>/role} === 'Admin' }">
-
-
             <!-- Employee Edit Section -->
-            <Panel
-              headerText="Edit Employee Details"
-              class="sapUiMediumMarginTop">
-
-              <content>
-
-                <ScrollContainer
-                  height="400px"
-                  vertical="true"
-                  horizontal="false">
+            <VBox class="sapUiSmallMargin">
+              <Panel
+                headerText="Edit Employee Details"
+                class="sapUiMediumMarginTop">
+                <content>
 
                   <VBox class="sapUiMediumMargin">
-
                     <HBox width="100%" wrap="Wrap">
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom sapUiSmallMarginEnd">
                         <Label text="Employee ID" />
                         <Input
+                          id="idEmployeeIdInput"
                           value="{editEmployee>/employeeId}"
                           editable="false" />
                       </VBox>
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom sapUiSmallMarginEnd">
                         <Label text="First Name" />
-                        <Input value="{editEmployee>/firstName}" />
+                        <Input id="idFirstNameInput" value="{editEmployee>/firstName}" />
                       </VBox>
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom sapUiSmallMarginEnd">
                         <Label text="Last Name" />
-                        <Input value="{editEmployee>/lastName}" />
+                        <Input id="idLastNameInput" value="{editEmployee>/lastName}" />
                       </VBox>
-
                     </HBox>
-
                     <HBox width="100%" wrap="Wrap">
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom sapUiSmallMarginEnd">
                         <Label text="Email" />
-                        <Input value="{editEmployee>/email}" />
+                        <Input id="idEmailInput" value="{editEmployee>/email}" />
                       </VBox>
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom sapUiSmallMarginEnd">
                         <Label text="Phone" />
-                        <Input value="{editEmployee>/phNumber}" />
+                        <Input id="idPhoneInput" value="{editEmployee>/phNumber}" />
                       </VBox>
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom   sapUiSmallMarginEnd">
                         <Label text="Location" />
-                        <Input value="{editEmployee>/location}" />
+                        <Input id="idLocationInput" value="{editEmployee>/location}" />
                       </VBox>
-
                     </HBox>
-
                     <HBox width="100%" wrap="Wrap">
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom   sapUiSmallMarginEnd">
                         <Label text="Team" />
-                        <Input value="{editEmployee>/Team}" />
+                        <Input id="idTeamInput" value="{editEmployee>/Team}" />
                       </VBox>
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom   sapUiSmallMarginEnd">
                         <Label text="Role" />
                         <Select
+                          id="idRoleSelect"
                           selectedKey="{editEmployee>/role_ID}">
-
                           <items>
                             <core:Item key="RO1" text="Employee" />
                             <core:Item key="RO2" text="Manager" />
                             <core:Item key="RO3" text="Admin" />
                           </items>
-
                         </Select>
                       </VBox>
-
-                      <VBox width="33%" class="sapUiSmallMarginBottom">
+                      <VBox width="31%" class="sapUiSmallMarginBottom  sapUiSmallMarginEnd">
                         <Label text="Status" />
                         <Switch
-                          state="{editEmployee>/isActive}" />
+                          state="{editEmployee>/isActive}" id="idStatusSwitch" />
                       </VBox>
-
                     </HBox>
-
                     <HBox justifyContent="End">
-
                       <Button
                         text="Update Employee"
                         type="Emphasized"
                         icon="sap-icon://save"
                         press="onUpdateEmployee" />
-
                     </HBox>
-
                   </VBox>
 
-                </ScrollContainer>
-
-              </content>
-
-            </Panel>
+                </content>
+              </Panel>
+            </VBox>
           </ScrollContainer>
-
         </pages>
       </NavContainer>
     </tnt:mainContents>

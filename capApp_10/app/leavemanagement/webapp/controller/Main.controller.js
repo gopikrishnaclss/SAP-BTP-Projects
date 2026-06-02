@@ -764,6 +764,7 @@ sap.ui.define(
       },
 
       onViewEmployees : function (oEvent) {
+         
         const oTable = this.byId("employeesTable");
 
         const aSelectedItems = oTable.getSelectedItems();
@@ -774,7 +775,59 @@ sap.ui.define(
           return;
         }
         const oEmployee = oSelectedItem.getBindingContext("allEmployees").getObject();
-      }
+        const oEmployeeDetails = new sap.ui.model.json.JSONModel(oEmployee);
+        this.getOwnerComponent().setModel(oEmployeeDetails, "editEmployee");
+        const oNavContainer = this.byId("pageContainer");
+        oNavContainer.to(this.byId("adminEmployeeProfilePage"));
+      
+      },
+      onUpdateEmployee: function () {
+        const oModel = this.getOwnerComponent().getModel();
+        const oEmployee = this.byId("idEmployeeIdInput").getValue();
+        const sFirstName = this.byId("idFirstNameInput").getValue().trim();
+        const sLastName = this.byId("idLastNameInput").getValue().trim();
+        const sEmail = this.byId("idEmailInput").getValue().trim();
+        const sPhone = this.byId("idPhoneInput").getValue().trim();
+        const sLocation = this.byId("idLocationInput").getValue().trim();
+        const sTeam = this.byId("idTeamInput").getValue().trim();
+        const sRole = this.byId("idRoleSelect").getSelectedKey();
+        const bIsActive = this.byId("idStatusSwitch").getState(); 
+
+          if (!sFirstName || !sLastName || !sEmail || !sRole) {
+            MessageToast.show("Please fill all required fields");
+            return;
+          }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sEmail)) {
+            MessageBox.information("Please enter a valid email address");
+            return;
+          }
+
+          const sPath = "/Employees('" + oEmployee + "')";
+          const oContextBinding = oModel.bindContext(sPath);
+          oContextBinding.requestObject().then(function () {
+            const oBoundContext = oContextBinding.getBoundContext();
+            oBoundContext.setProperty("firstName", sFirstName);
+            oBoundContext.setProperty("lastName", sLastName);
+            oBoundContext.setProperty("email", sEmail);
+            oBoundContext.setProperty("phNumber", sPhone);
+            oBoundContext.setProperty("location", sLocation);
+            oBoundContext.setProperty("Team", sTeam);
+            oBoundContext.setProperty("role_ID", sRole);
+            oBoundContext.setProperty("isActive", bIsActive);
+            return oModel.submitBatch("$auto");
+          }).then(function () {
+            MessageBox.success("Employee updated successfully", {
+              onClose: function () {
+                // this._loadAllEmployees();
+                this.byId("pageContainer").to(this.byId("adminEmployeeProfilePage"))
+            }});
+          }).catch(function (oErr) {
+            console.error("Update failed", oErr);
+            MessageBox.error("Failed to update employee. Please try again.");
+          })
+
+
+      },
     });
   },
 );
